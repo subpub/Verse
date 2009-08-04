@@ -2,8 +2,6 @@
 
 local server = require "server";
 local events = require "events";
-local xmlhandlers = require "xmlhandlers";
-local st = require "util.stanza";
 
 module("verse", package.seeall);
 local verse = _M;
