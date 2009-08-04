@@ -1,40 +1,82 @@
 
 
 local server = require "server";
+local events = require "events";
 local xmlhandlers = require "xmlhandlers";
-local jid = require "jid";
-local jid_split = jid.split;
+local st = require "util.stanza";
 
 module("verse", package.seeall);
 local verse = _M;
 
 local stream = {};
 stream.__index = stream;
+stream_mt = stream;
 
 function verse.new()
-	return setmetatable({}, stream);
+	local t = {};
+	t.id = tostring(t):match("%x*$");
+	t.logger = logger.init(t.id);
+	t.events = events.new();
+	return setmetatable(t, stream);
 end
 
 function verse.loop()
 	return server.loop();
 end
 
-function stream:connect(jid, pass)
-	self.jid, self.password = jid, pass;
-	self.username, self.host, self.resource = jid_split(jid);
-	local conn, err = server.addclient(self.connect_host or self.host, tonumber(self.connect_port) or 5222, new_listener(self), "*a");
+function stream:connect(connect_host, connect_port)
+	connect_host = connect_host or "localhost";
+	connect_port = tonumber(connect_port) or 5222;
 	
+	-- Create and initiate connection
+	local conn = socket.tcp()
+	conn:settimeout(0);
+	local success, err = conn:connect(connect_host, connect_port);
+	
+	if not success and err ~= "timeout" then
+		self:warn("connect() to %s:%d failed: %s", connect_host, connect_port, err);
+		return false, err;
+	end
+
+	--local conn, err = server.addclient(self.connect_host or self.host, tonumber(self.connect_port) or 5222, new_listener(self), "*a");
+	local conn = server.wrapclient(conn, connect_host, connect_port, new_listener(self), "*a"); --, hosts[from_host].ssl_ctx, false );
 	if not conn then
 		return nil, err;
 	end
 	
 	self.conn = conn;
+	local w, t = conn.write, tostring;
+	self.send = function (_, data) return w(t(data)); end
 end
 
+-- Logging functions
+function stream:debug(...)
+	return self.logger("debug", ...);
+end
+
+function stream:warn(...)
+	return self.logger("warn", ...);
+end
+
+function stream:error(...)
+	return self.logger("error", ...);
+end
+
+-- Event handling
+function stream:event(name, ...)
+	return self.events.fire_event(name, ...);
+end
+
+function stream:hook(name, callback)
+	return self.events.add_handler(name, callback);
+end
+
+-- Listener factory
 function new_listener(stream)
 	local conn_listener = {};
 	
 	function conn_listener.incoming(conn, data)
+		stream:debug("Data");
 		if not stream.connected then
 			stream.connected = true;
 			stream.send = function (stream, data) stream:debug("Sending data: "..tostring(data)); return conn.write(tostring(data)); end;

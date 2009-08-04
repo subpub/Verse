@@ -12,6 +12,9 @@ Module "util.termcolours"	"util/termcolours.lua"
 Module "server"			"net/server.lua"
 Module "xmlhandlers"		"core/xmlhandlers.lua"
 Module "jid"			"util/jid.lua"
+Module "events"			"util/events.lua"
+
+Module "verse2.client" "client.lua"
 
 -- Main verse file
 Main "init.lua"
