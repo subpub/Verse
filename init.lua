@@ -64,6 +64,7 @@ end
 
 -- Event handling
 function stream:event(name, ...)
+	self:debug("Firing event: "..tostring(name));
 	return self.events.fire_event(name, ...);
 end
 
