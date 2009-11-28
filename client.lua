@@ -52,11 +52,16 @@ function stream:connect_client(jid, pass)
 	self.jid, self.password = jid, pass;
 	self.username, self.host, self.resource = jid_split(jid);
 	
-	reset_stream(self);	
 	self:hook("incoming-raw", function (data) return self.data(self.conn, data); end);
 	
 	-- Initialise connection
 	self:connect(self.connect_host or self.host, self.connect_port or 5222);
-	self:send(st.stanza("stream:stream", { to = self.host, ["xmlns:stream"]='http://etherx.jabber.org/streams' }):top_tag());
+	--reset_stream(self);	
+	self:reopen();
+end
+
+function stream:reopen()
+	reset_stream(self);
+	self:send(st.stanza("stream:stream", { to = self.host, ["xmlns:stream"]='http://etherx.jabber.org/streams', xmlns = "jabber:client" }):top_tag());
 end
 
