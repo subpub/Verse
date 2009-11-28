@@ -65,3 +65,10 @@ function stream:reopen()
 	self:send(st.stanza("stream:stream", { to = self.host, ["xmlns:stream"]='http://etherx.jabber.org/streams', xmlns = "jabber:client" }):top_tag());
 end
 
+function stream:close(reason)
+	if not self.notopen then
+		self:send("</stream:stream>");
+	end
+	self.conn:close();
+end
+
