@@ -10,6 +10,8 @@ local stream = {};
 stream.__index = stream;
 stream_mt = stream;
 
+verse.plugins = {};
+
 function verse.new()
 	local t = {};
 	t.id = tostring(t):match("%x*$");
@@ -67,6 +69,18 @@ end
 
 function stream:hook(name, callback)
 	return self.events.add_handler(name, callback);
+end
+
+function stream:add_plugin(name)
+	if require("verse.plugins."..name) then
+		local ok, err = verse.plugins[name](self);
+		if ok then
+			self:debug("Loaded %s plugin", name);
+		else
+			self:warn("Failed to load %s plugin: %s", name, err);
+		end
+	end
+	return self;
 end
 
 -- Listener factory
