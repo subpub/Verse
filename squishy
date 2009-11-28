@@ -3,6 +3,7 @@ Output "verse2.lua"
 -- Verse-specific versions of libraries
 Module "util.encodings"		"libs/encodings.lua"
 Module "util.logger"		"libs/logger.lua"
+Module "util.xstanza"		"libs/xstanza.lua"
 
 -- Prosody libraries
 AutoFetchURL "http://prosody.im/tip/?"
