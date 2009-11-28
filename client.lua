@@ -6,8 +6,9 @@ local lxp = require "lxp";
 local st = require "util.stanza";
 local init_xmlhandlers = require "xmlhandlers";
 
+local xmlns_stream = "http://etherx.jabber.org/streams";
 
-local stream_callbacks = { stream_tag = "http://etherx.jabber.org/streams|stream", 
+local stream_callbacks = { stream_tag = xmlns_stream.."|stream", 
 		default_ns = "jabber:client" };
 	
 function stream_callbacks.streamopened(stream, attr)
@@ -22,6 +23,11 @@ function stream_callbacks.streamclosed(stream)
 end
 
 function stream_callbacks.handlestanza(stream, stanza)
+	if stanza.attr.xmlns == xmlns_stream then
+		return stream:event("stream-"..stanza.name, stanza);
+	elseif stanza.attr.xmlns then
+		return stream:event("stream/"..stanza.attr.xmlns, stanza);
+	end
 	return stream:event("stanza", stanza);
 end
 
