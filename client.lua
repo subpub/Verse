@@ -54,6 +54,18 @@ function stream:connect_client(jid, pass)
 	
 	self:hook("incoming-raw", function (data) return self.data(self.conn, data); end);
 	
+	self.curr_id = 0;
+	
+	self.tracked_iqs = {};
+	self:hook("stanza", function (stanza)
+		local id, type = stanza.attr.id, stanza.attr.type;
+		if id and stanza.name == "iq" and (type == "result" or type == "error") and self.tracked_iqs[id] then
+			self.tracked_iqs[id](stanza);
+			self.tracked_iqs[id] = nil;
+			return true;
+		end
+	end);
+	
 	-- Initialise connection
 	self:connect(self.connect_host or self.host, self.connect_port or 5222);
 	--reset_stream(self);	
@@ -72,3 +84,14 @@ function stream:close(reason)
 	self.conn:close();
 end
 
+function stream:send_iq(iq, callback)
+	local id = self:new_id();
+	self.tracked_iqs[id] = callback;
+	iq.attr.id = id;
+	self:send(iq);
+end
+
+function stream:new_id()
+	self.curr_id = self.curr_id + 1;
+	return tostring(self.curr_id);
+end
