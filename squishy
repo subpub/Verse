@@ -15,6 +15,10 @@ Module "xmlhandlers"		"core/xmlhandlers.lua"
 Module "jid"			"util/jid.lua"
 Module "events"			"util/events.lua"
 
+-- Verse plugins
+Module "verse.plugins.sasl"	"plugins/sasl.lua"
+Module "verse.plugins.bind"	"plugins/bind.lua"
+
 Module "verse2.client" "client.lua"
 
 -- Main verse file
