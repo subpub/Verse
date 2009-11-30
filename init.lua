@@ -68,8 +68,8 @@ function stream:event(name, ...)
 	return self.events.fire_event(name, ...);
 end
 
-function stream:hook(name, callback)
-	return self.events.add_handler(name, callback);
+function stream:hook(name, ...)
+	return self.events.add_handler(name, ...);
 end
 
 function stream:add_plugin(name)
