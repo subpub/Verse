@@ -1,4 +1,6 @@
 
+-- Use LuaRocks if available
+pcall(require, "luarocks.require");
 
 local server = require "server";
 local events = require "events";
