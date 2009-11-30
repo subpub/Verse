@@ -1,13 +1,15 @@
 local stanza_mt = getmetatable(require "util.stanza".stanza());
 
-function stanza_mt:error_from_stanza()
+local xmlns_stanzas = "urn:ietf:params:xml:ns:xmpp-stanzas";
+
+function stanza_mt:get_error()
 	local type, condition, text;
 	
-	local error_tag = self:get_child("error", "urn:ietf:params:xml:ns:xmpp-stanzas");
+	local error_tag = self:get_child("error");
 	if not error_tag then
 		return nil, nil;
 	end
-	type = error.attr.type;
+	type = error_tag.attr.type;
 	
 	for child in error_tag:children() do
 		if child.attr.xmlns == xmlns_stanzas then
