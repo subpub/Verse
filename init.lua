@@ -48,7 +48,7 @@ function stream:connect(connect_host, connect_port)
 	
 	self.conn = conn;
 	local w, t = conn.write, tostring;
-	self.send = function (_, data) return w(t(data)); end
+	self.send = function (_, data) return w(conn, t(data)); end
 end
 
 -- Logging functions
@@ -90,11 +90,11 @@ end
 function new_listener(stream)
 	local conn_listener = {};
 	
-	function conn_listener.incoming(conn, data)
+	function conn_listener.onincoming(conn, data)
 		stream:debug("Data");
 		if not stream.connected then
 			stream.connected = true;
-			stream.send = function (stream, data) stream:debug("Sending data: "..tostring(data)); return conn.write(tostring(data)); end;
+			stream.send = function (stream, data) stream:debug("Sending data: "..tostring(data)); return conn:write(tostring(data)); end;
 			stream:event("connected");
 		end
 		if data then
@@ -102,7 +102,7 @@ function new_listener(stream)
 		end
 	end
 	
-	function conn_listener.disconnect(conn, err)
+	function conn_listener.ondisconnect(conn, err)
 		stream.connected = false;
 		stream:event("disconnected", { reason = err });
 	end
