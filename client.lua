@@ -8,7 +8,7 @@ local init_xmlhandlers = require "xmlhandlers";
 
 local xmlns_stream = "http://etherx.jabber.org/streams";
 
-local stream_callbacks = { stream_tag = xmlns_stream.."|stream", 
+local stream_callbacks = { stream_tag = xmlns_stream.."\1stream", 
 		default_ns = "jabber:client" };
 	
 function stream_callbacks.streamopened(stream, attr)
@@ -33,7 +33,7 @@ end
 
 local function reset_stream(stream)
 	-- Reset stream
-	local parser = lxp.new(init_xmlhandlers(stream, stream_callbacks), "|");
+	local parser = lxp.new(init_xmlhandlers(stream, stream_callbacks), "\1");
 	stream.parser = parser;
 	
 	stream.notopen = true;
