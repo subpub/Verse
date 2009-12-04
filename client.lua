@@ -4,6 +4,11 @@ local stream = verse.stream_mt;
 local jid_split = require "jid".split;
 local lxp = require "lxp";
 local st = require "util.stanza";
+
+-- Shortcuts to save having to load util.stanza
+verse.message, verse.presence, verse.iq, verse.stanza = 
+	st.message, st.presence, st.iq, st.stanza;
+
 local init_xmlhandlers = require "xmlhandlers";
 
 local xmlns_stream = "http://etherx.jabber.org/streams";
