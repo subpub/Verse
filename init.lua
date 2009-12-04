@@ -14,8 +14,8 @@ stream_mt = stream;
 
 verse.plugins = {};
 
-function verse.new()
-	local t = {};
+function verse.new(base)
+	local t = base or {};
 	t.id = tostring(t):match("%x*$");
 	t.logger = logger.init(t.id);
 	t.events = events.new();
