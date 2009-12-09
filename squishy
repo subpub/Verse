@@ -1,4 +1,4 @@
-Output "verse2.lua"
+Output "verse.lua"
 
 -- Verse-specific versions of libraries
 Module "util.encodings"		"libs/encodings.lua"
@@ -21,7 +21,7 @@ Module "events"			"util/events.lua"
 Module "verse.plugins.sasl"	"plugins/sasl.lua"
 Module "verse.plugins.bind"	"plugins/bind.lua"
 
-Module "verse2.client" "client.lua"
+Module "verse.client" "client.lua"
 
 -- Main verse file
 Main "init.lua"

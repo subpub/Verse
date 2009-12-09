@@ -1,4 +1,4 @@
-local verse = require "verse2";
+local verse = require "verse";
 local stream = verse.stream_mt;
 
 local jid_split = require "jid".split;
