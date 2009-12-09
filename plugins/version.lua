@@ -1,6 +1,6 @@
 local xmlns_version = "jabber:iq:version";
 
-local function set_version(version_info)
+local function set_version(self, version_info)
 	self.name = version_info.name;
 	self.version = version_info.version;
 	self.platform = version_info.platform;
@@ -8,9 +8,9 @@ end
 
 function verse.plugins.version(stream)
 	stream.version = { set = set_version };
-	stream:hook("iq/"..xmlns_version, function (event)
-		if event.stanza.attr.type ~= "get" then return; end
-		local reply = verse.reply(event.stanza)
+	stream:hook("iq/"..xmlns_version, function (stanza)
+		if stanza.attr.type ~= "get" then return; end
+		local reply = verse.reply(stanza)
 			:tag("query", { xmlns = xmlns_version });
 		if stream.version.name then
 			reply:tag("name"):text(tostring(stream.version.name)):up();
@@ -21,6 +21,7 @@ function verse.plugins.version(stream)
 		if stream.version.platform then
 			reply:tag("os"):text(stream.version.platform);
 		end
+		stream:send(reply);
 	end);
 	
 	function stream:query_version(target_jid, callback)
