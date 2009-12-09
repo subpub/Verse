@@ -6,8 +6,8 @@ local lxp = require "lxp";
 local st = require "util.stanza";
 
 -- Shortcuts to save having to load util.stanza
-verse.message, verse.presence, verse.iq, verse.stanza = 
-	st.message, st.presence, st.iq, st.stanza;
+verse.message, verse.presence, verse.iq, verse.stanza, verse.reply = 
+	st.message, st.presence, st.iq, st.stanza, st.reply;
 
 local init_xmlhandlers = require "xmlhandlers";
 
