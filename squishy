@@ -12,10 +12,10 @@ Module "util.stanza"		"util/stanza.lua"
 Module "util.timer"		"util/timer.lua"
 Module "util.termcolours"	"util/termcolours.lua"
 Module "util.uuid"		"util/uuid.lua"
-Module "server"			"net/server_select.lua"
+Module "net.server"		"net/server_select.lua"
 Module "xmlhandlers"		"core/xmlhandlers.lua"
-Module "jid"			"util/jid.lua"
-Module "events"			"util/events.lua"
+Module "util.jid"		"util/jid.lua"
+Module "util.events"		"util/events.lua"
 
 -- Verse plugins
 Module "verse.plugins.sasl"	"plugins/sasl.lua"

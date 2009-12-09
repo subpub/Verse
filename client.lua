@@ -1,7 +1,7 @@
 local verse = require "verse";
 local stream = verse.stream_mt;
 
-local jid_split = require "jid".split;
+local jid_split = require "util.jid".split;
 local lxp = require "lxp";
 local st = require "util.stanza";
 
