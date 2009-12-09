@@ -20,6 +20,7 @@ Module "util.events"		"util/events.lua"
 -- Verse plugins
 Module "verse.plugins.sasl"	"plugins/sasl.lua"
 Module "verse.plugins.bind"	"plugins/bind.lua"
+Module "verse.plugins.version"	"plugins/version.lua"
 
 Module "verse.client" "client.lua"
 
