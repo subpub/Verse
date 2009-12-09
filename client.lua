@@ -33,6 +33,24 @@ function stream_callbacks.handlestanza(stream, stanza)
 	elseif stanza.attr.xmlns then
 		return stream:event("stream/"..stanza.attr.xmlns, stanza);
 	end
+	
+	stream:hook("stanza", function (stanza)
+		if stanza.attr.xmlns == nil or stanza.attr.xmlns == "jabber:client" then
+			if stanza.name == "iq" and (stanza.attr.type == "get" or stanza.attr.type == "set") then
+				local xmlns = stanza.tags[1] and stanza.tags[1].attr.xmlns;
+				if xmlns then
+					ret = stream:event("iq/"..xmlns, stanza);
+					if not ret then
+						ret = stream:event("iq", stanza);
+					end
+				end
+			else
+				ret = stream:event(stanza.name, stanza);
+			end
+		end
+		return ret;
+	end, -1);
+
 	return stream:event("stanza", stanza);
 end
 
