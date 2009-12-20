@@ -21,6 +21,7 @@ Module "util.events"		"util/events.lua"
 Module "verse.plugins.sasl"	"plugins/sasl.lua"
 Module "verse.plugins.bind"	"plugins/bind.lua"
 Module "verse.plugins.version"	"plugins/version.lua"
+Module "verse.plugins.ping"	"plugins/ping.lua"
 
 Module "verse.client" "client.lua"
 
