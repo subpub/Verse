@@ -50,5 +50,5 @@ function verse.plugins.version(stream)
 				end
 			end);
 	end
-
+	return true;
 end
