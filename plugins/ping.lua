@@ -7,4 +7,5 @@ function verse.plugins.ping(stream)
 				callback(socket.gettime()-t, jid);
 			end);
 	end
+	return true;
 end
