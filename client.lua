@@ -58,6 +58,9 @@ function stream:connect_client(jid, pass)
 	self.jid, self.password = jid, pass;
 	self.username, self.host, self.resource = jid_split(jid);
 	
+	self:add_plugin("sasl");
+	self:add_plugin("bind");
+	
 	self:hook("incoming-raw", function (data) return self.data(self.conn, data); end);
 	
 	self.curr_id = 0;
