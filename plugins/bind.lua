@@ -5,7 +5,7 @@ function verse.plugins.bind(stream)
 	local function handle_features(features)
 		if stream.bound then return; end
 		stream:debug("Binding resource...");
-		stream:send_iq(st.iq({ type = "set" }):tag("bind", {xmlns=xmlns_bind}):text(stream.jid),
+		stream:send_iq(st.iq({ type = "set" }):tag("bind", {xmlns=xmlns_bind}):tag("jid"):text(stream.jid),
 			function (reply)
 				if reply.attr.type == "result" then
 					local result_jid = reply
