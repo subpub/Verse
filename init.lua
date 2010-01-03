@@ -22,6 +22,8 @@ function verse.new(base)
 	return setmetatable(t, stream);
 end
 
+verse.add_task = require "util.timer".add_task;
+
 function verse.loop()
 	return server.loop();
 end
