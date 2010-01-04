@@ -16,8 +16,8 @@ function verse.plugins.bind(stream)
 					stream.jid, stream.bound = result_jid, true;
 					stream:event("binding-success", full_jid);
 				elseif reply.attr.type == "error" then
-					local err = result:child_with_name("error");
-					local type, condition, text = result:get_error();
+					local err = reply:child_with_name("error");
+					local type, condition, text = reply:get_error();
 					stream:event("binding-failure", { error = condition, text = text, type = type });
 				end
 			end);
