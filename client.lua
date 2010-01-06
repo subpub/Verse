@@ -107,7 +107,9 @@ function stream:close(reason)
 	if not self.notopen then
 		self:send("</stream:stream>");
 	end
+	local on_disconnect = self.conn.disconnect();
 	self.conn:close();
+	on_disconnect(conn, reason);
 end
 
 function stream:send_iq(iq, callback)
