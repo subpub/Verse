@@ -28,6 +28,10 @@ function verse.loop()
 	return server.loop();
 end
 
+function verse.quit()
+	return server.setquitting(true);
+end
+
 verse.logger = logger.init;
 
 function verse.set_logger(logger)
