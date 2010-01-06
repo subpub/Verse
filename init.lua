@@ -14,18 +14,24 @@ stream_mt = stream;
 
 verse.plugins = {};
 
-function verse.new(base)
-	local t = base or {};
+function verse.new(logger, base)
+	local t = setmetatable(base or {}, stream);
 	t.id = tostring(t):match("%x*$");
-	t.logger = logger.init(t.id);
+	t:set_logger(logger, true);
 	t.events = events.new();
-	return setmetatable(t, stream);
+	return t;
 end
 
 verse.add_task = require "util.timer".add_task;
 
 function verse.loop()
 	return server.loop();
+end
+
+verse.logger = logger.init;
+
+function verse.set_logger(logger)
+	server.setlogger(logger);
 end
 
 function stream:connect(connect_host, connect_port)
@@ -55,15 +61,38 @@ end
 
 -- Logging functions
 function stream:debug(...)
-	return self.logger("debug", ...);
+	if self.logger and self.log.debug then
+		return self.logger("debug", ...);
+	end
 end
 
 function stream:warn(...)
-	return self.logger("warn", ...);
+	if self.logger and self.log.warn then
+		return self.logger("warn", ...);
+	end
 end
 
 function stream:error(...)
-	return self.logger("error", ...);
+	if self.logger and self.log.error then
+		return self.logger("error", ...);
+	end
+end
+
+function stream:set_logger(logger, levels)
+	local old_logger = self.logger;
+	if logger then
+		self.logger = logger;
+	end
+	if levels then
+		if levels == true then
+			levels = { "debug", "info", "warn", "error" };
+		end
+		self.log = {};
+		for _, level in ipairs(levels) do
+			self.log[level] = true;
+		end
+	end
+	return old_logger;
 end
 
 -- Event handling
