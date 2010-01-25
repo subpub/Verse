@@ -13,7 +13,7 @@ Module "util.timer"		"util/timer.lua"
 Module "util.termcolours"	"util/termcolours.lua"
 Module "util.uuid"		"util/uuid.lua"
 Module "net.server"		"net/server_select.lua"
-Module "xmlhandlers"		"core/xmlhandlers.lua"
+Module "core.xmlhandlers"	"core/xmlhandlers.lua"
 Module "util.jid"		"util/jid.lua"
 Module "util.events"		"util/events.lua"
 

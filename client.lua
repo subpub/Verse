@@ -9,7 +9,7 @@ local st = require "util.stanza";
 verse.message, verse.presence, verse.iq, verse.stanza, verse.reply = 
 	st.message, st.presence, st.iq, st.stanza, st.reply;
 
-local init_xmlhandlers = require "xmlhandlers";
+local init_xmlhandlers = require "core.xmlhandlers";
 
 local xmlns_stream = "http://etherx.jabber.org/streams";
 
