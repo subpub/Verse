@@ -102,7 +102,8 @@ end
 
 function stream:reopen()
 	reset_stream(self);
-	self:send(st.stanza("stream:stream", { to = self.host, ["xmlns:stream"]='http://etherx.jabber.org/streams', xmlns = "jabber:client" }):top_tag());
+	self:send(st.stanza("stream:stream", { to = self.host, ["xmlns:stream"]='http://etherx.jabber.org/streams',
+		xmlns = "jabber:client", version = "1.0" }):top_tag());
 end
 
 function stream:close(reason)
