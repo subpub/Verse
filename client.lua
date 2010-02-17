@@ -13,8 +13,10 @@ local init_xmlhandlers = require "core.xmlhandlers";
 
 local xmlns_stream = "http://etherx.jabber.org/streams";
 
-local stream_callbacks = { stream_tag = xmlns_stream.."\1stream", 
-		default_ns = "jabber:client" };
+local stream_callbacks = {
+	stream_ns = xmlns_stream,
+	stream_tag = "stream",
+	 default_ns = "jabber:client" };
 	
 function stream_callbacks.streamopened(stream, attr)
 	if not stream:event("opened") then
