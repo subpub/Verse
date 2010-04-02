@@ -62,6 +62,7 @@ function stream:connect_client(jid, pass)
 	
 	self:add_plugin("sasl");
 	self:add_plugin("bind");
+	self:add_plugin("session");
 	
 	self:hook("incoming-raw", function (data) return self.data(self.conn, data); end);
 	
