@@ -30,7 +30,7 @@ function verse.plugins.version(stream)
 			:tag("query", { xmlns = xmlns_version }), 
 			function (reply)
 				local query = reply:get_child("query", xmlns_version);
-				if query then
+				if reply.attr.type == "result" then
 					local name = query:get_child("name");
 					local version = query:get_child("version");
 					local os = query:get_child("os");
