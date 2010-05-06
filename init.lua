@@ -109,6 +109,10 @@ function stream:hook(name, ...)
 	return self.events.add_handler(name, ...);
 end
 
+function stream:unhook(name, handler)
+	return self.events.remove_handler(name, handler);
+end
+
 function stream:add_plugin(name)
 	if require("verse.plugins."..name) then
 		local ok, err = verse.plugins[name](self);
