@@ -143,6 +143,10 @@ function new_listener(stream)
 		stream.connected = false;
 		stream:event("disconnected", { reason = err });
 	end
+
+	function conn_listener.ondrain(conn)
+		stream:event("drained");
+	end
 	
 	return conn_listener;
 end
