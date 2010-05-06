@@ -129,16 +129,14 @@ end
 function new_listener(stream)
 	local conn_listener = {};
 	
+	function conn_listener.onconnect(conn)
+		stream.connected = true;
+		stream.send = function (stream, data) stream:debug("Sending data: "..tostring(data)); return conn:write(tostring(data)); end;
+		stream:event("connected");
+	end
+	
 	function conn_listener.onincoming(conn, data)
-		stream:debug("Data");
-		if not stream.connected then
-			stream.connected = true;
-			stream.send = function (stream, data) stream:debug("Sending data: "..tostring(data)); return conn:write(tostring(data)); end;
-			stream:event("connected");
-		end
-		if data then
-			stream:event("incoming-raw", data);
-		end
+		stream:event("incoming-raw", data);
 	end
 	
 	function conn_listener.ondisconnect(conn, err)
