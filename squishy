@@ -16,6 +16,7 @@ Module "net.server"		"net/server_select.lua"
 Module "core.xmlhandlers"	"core/xmlhandlers.lua"
 Module "util.jid"		"util/jid.lua"
 Module "util.events"		"util/events.lua"
+Module "util.sha1"		"util/sha1.lua"
 
 -- Verse plugins
 Module "verse.plugins.sasl"	"plugins/sasl.lua"
