@@ -60,6 +60,8 @@ function stream:connect_client(jid, pass)
 	self.jid, self.password = jid, pass;
 	self.username, self.host, self.resource = jid_split(jid);
 	
+	-- Required XMPP features
+	self:add_plugin("tls");
 	self:add_plugin("sasl");
 	self:add_plugin("bind");
 	self:add_plugin("session");
