@@ -8,9 +8,9 @@ function verse.plugins.tls(stream)
 			stream:debug("Negotiating TLS...");
 			stream:send(st.stanza("starttls", { xmlns = xmlns_tls }));
 			return true;
-		elseif not stream.conn.starttls then
+		elseif not stream.conn.starttls and not self.secure then
 			stream:warn("SSL libary (LuaSec) not loaded, so TLS not available");
-		else
+		elseif not self.secure then
 			stream:debug("Server doesn't offer TLS :(");
 		end
 	end
@@ -22,6 +22,7 @@ function verse.plugins.tls(stream)
 	end
 	local function handle_status(new_status)
 		if new_status == "ssl-handshake-complete" then
+			self.secure = true;
 			stream:debug("Re-opening stream...");
 			stream:reopen();
 		end
