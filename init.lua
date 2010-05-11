@@ -147,6 +147,10 @@ function new_listener(stream)
 		stream:event("drained");
 	end
 	
+	function conn_listener.onstatus(conn, new_status)
+		stream:event("status", new_status);
+	end
+	
 	return conn_listener;
 end
 
