@@ -30,4 +30,6 @@ function verse.plugins.tls(stream)
 	stream:hook("stream-features", handle_features, 400);
 	stream:hook("stream/"..xmlns_tls, handle_tls);
 	stream:hook("status", handle_status, 400);
+	
+	return true;
 end
