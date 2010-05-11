@@ -52,8 +52,7 @@ function stream:connect(connect_host, connect_port)
 		return false, err;
 	end
 
-	--local conn, err = server.addclient(self.connect_host or self.host, tonumber(self.connect_port) or 5222, new_listener(self), "*a");
-	local conn = server.wrapclient(conn, connect_host, connect_port, new_listener(self), "*a"); --, hosts[from_host].ssl_ctx, false );
+	local conn = server.wrapclient(conn, connect_host, connect_port, new_listener(self), "*a");
 	if not conn then
 		return nil, err;
 	end
