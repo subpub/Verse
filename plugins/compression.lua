@@ -118,6 +118,6 @@ function verse.plugins.compression(stream)
 			stream:warn("Failed to establish compression");
 		end
 	end
-	stream:hook("stream-features", handle_features, 200);
+	stream:hook("stream-features", handle_features, 250);
 	stream:hook("stream/"..xmlns_compression_protocol, handle_compressed);
 end
