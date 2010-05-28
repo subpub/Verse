@@ -39,19 +39,12 @@ function stream_callbacks.handlestanza(stream, stanza)
 	return stream:event("stanza", stanza);
 end
 
-local function reset_stream(stream)
+function stream:reset()
 	-- Reset stream
-	local parser = lxp.new(init_xmlhandlers(stream, stream_callbacks), "\1");
-	stream.parser = parser;
+	local parser = lxp.new(init_xmlhandlers(self, stream_callbacks), "\1");
+	self.parser = parser;
 	
-	stream.notopen = true;
-	
-	function stream.data(conn, data)
-		local ok, err = parser:parse(data);
-		if ok then return; end
-		stream:debug("debug", "Received invalid XML (%s) %d bytes: %s", tostring(err), #data, data:sub(1, 300):gsub("[\r\n]+", " "));
-		stream:close("xml-not-well-formed");
-	end
+	self.notopen = true;
 	
 	return true;
 end
@@ -65,6 +58,13 @@ function stream:connect_client(jid, pass)
 	self:add_plugin("sasl");
 	self:add_plugin("bind");
 	self:add_plugin("session");
+	
+	function self.data(conn, data)
+		local ok, err = self.parser:parse(data);
+		if ok then return; end
+		stream:debug("debug", "Received invalid XML (%s) %d bytes: %s", tostring(err), #data, data:sub(1, 300):gsub("[\r\n]+", " "));
+		stream:close("xml-not-well-formed");
+	end
 	
 	self:hook("incoming-raw", function (data) return self.data(self.conn, data); end);
 	
@@ -99,12 +99,11 @@ function stream:connect_client(jid, pass)
 
 	-- Initialise connection
 	self:connect(self.connect_host or self.host, self.connect_port or 5222);
-	--reset_stream(self);	
 	self:reopen();
 end
 
 function stream:reopen()
-	reset_stream(self);
+	self:reset();
 	self:send(st.stanza("stream:stream", { to = self.host, ["xmlns:stream"]='http://etherx.jabber.org/streams',
 		xmlns = "jabber:client", version = "1.0" }):top_tag());
 end
