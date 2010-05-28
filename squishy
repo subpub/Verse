@@ -19,12 +19,13 @@ Module "util.events"		"util/events.lua"
 Module "util.sha1"		"util/sha1.lua"
 
 -- Verse plugins
-Module "verse.plugins.tls"      "plugins/tls.lua"
-Module "verse.plugins.sasl"	"plugins/sasl.lua"
-Module "verse.plugins.bind"	"plugins/bind.lua"
-Module "verse.plugins.version"	"plugins/version.lua"
-Module "verse.plugins.ping"	"plugins/ping.lua"
-Module "verse.plugins.session"  "plugins/session.lua"
+Module "verse.plugins.tls"         "plugins/tls.lua"
+Module "verse.plugins.sasl"	   "plugins/sasl.lua"
+Module "verse.plugins.bind"	   "plugins/bind.lua"
+Module "verse.plugins.version"	   "plugins/version.lua"
+Module "verse.plugins.ping"	   "plugins/ping.lua"
+Module "verse.plugins.session"     "plugins/session.lua"
+Module "verse.plugins.compression" "plugins/compression.lua"
 
 Module "verse.client" "client.lua"
 
