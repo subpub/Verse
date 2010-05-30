@@ -14,11 +14,11 @@ function verse.plugins.bind(stream)
 								:get_text();
 					stream.username, stream.host, stream.resource = jid.split(result_jid);
 					stream.jid, stream.bound = result_jid, true;
-					stream:event("binding-success", full_jid);
+					stream:event("bind-success", full_jid);
 				elseif reply.attr.type == "error" then
 					local err = reply:child_with_name("error");
 					local type, condition, text = reply:get_error();
-					stream:event("binding-failure", { error = condition, text = text, type = type });
+					stream:event("bind-failure", { error = condition, text = text, type = type });
 				end
 			end);
 	end

@@ -20,7 +20,7 @@ function verse.plugins.session(stream)
 					end);
 				return true;
 			end
-			stream:hook("binding-success", handle_binding);
+			stream:hook("bind-success", handle_binding);
 		end
 	end
 	stream:hook("stream-features", handle_features);
