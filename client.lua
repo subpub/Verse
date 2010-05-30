@@ -97,6 +97,12 @@ function stream:connect_client(jid, pass)
 		return ret;
 	end, -1);
 
+	local function stream_ready()
+		self:event("ready");
+	end
+	self:hook("session-success", stream_ready, -1)
+	self:hook("binding-success", stream_ready, -1);
+
 	-- Initialise connection
 	self:connect(self.connect_host or self.host, self.connect_port or 5222);
 	self:reopen();
