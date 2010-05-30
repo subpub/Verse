@@ -30,8 +30,8 @@ c:hook("disconnected", function () print("Disconnected!"); os.exit(); end);
 -- Now, actually start the connection:
 c:connect_client(jid, password);
 
--- Catch binding-success which is (currently) how you know when a stream is ready
-c:hook("binding-success", function ()
+-- Catch the "ready" event to know when the stream is ready to use
+c:hook("ready", function ()
 	print("Stream ready!");
 	c.version:set{ name = "verse example client" };
 	c:query_version(c.jid, function (v) print("I am using "..(v.name or "<unknown>")); end);
