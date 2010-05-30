@@ -73,7 +73,6 @@ local function setup_decompression(session, inflate_stream)
 			end
 			return old_data(conn, decompressed);
 		end;
-	session:debug("Replaced session.data %s with %s", old_data, session.data);
 end
 
 function verse.plugins.compression(stream)
