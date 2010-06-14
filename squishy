@@ -26,6 +26,7 @@ Module "verse.plugins.version"	   "plugins/version.lua"
 Module "verse.plugins.ping"	   "plugins/ping.lua"
 Module "verse.plugins.session"     "plugins/session.lua"
 Module "verse.plugins.compression" "plugins/compression.lua"
+Module "verse.plugins.blocking"    "plugins/blocking.lua"
 
 Module "verse.client" "client.lua"
 
