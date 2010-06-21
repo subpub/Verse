@@ -90,6 +90,10 @@ function stream:connect_client(jid, pass)
 						ret = self:event("iq", stanza);
 					end
 				end
+				if ret == nil then
+					self:send(verse.error_reply(stanza, "cancel", "service-unavailable"));
+					return true;
+				end
 			else
 				ret = self:event(stanza.name, stanza);
 			end
