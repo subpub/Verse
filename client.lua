@@ -19,7 +19,8 @@ local stream_callbacks = {
 	 default_ns = "jabber:client" };
 	
 function stream_callbacks.streamopened(stream, attr)
-	if not stream:event("opened") then
+	stream.stream_id = attr.id;
+	if not stream:event("opened", attr) then
 		stream.notopen = nil;
 	end
 	return true;
