@@ -1,4 +1,4 @@
-local jid, password = "echo.localhost", "testtest123testtesttesttest123testtests"; --"hellohello";
+local jid, password = "echo.localhost", "hellohello";
 
 --os.execute("squish --minify-level=none verse");
 require "verse"
