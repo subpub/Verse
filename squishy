@@ -28,6 +28,14 @@ Module "verse.plugins.session"     "plugins/session.lua"
 Module "verse.plugins.compression" "plugins/compression.lua"
 Module "verse.plugins.blocking"    "plugins/blocking.lua"
 
+if GetOption "with-bosh" then
+	Module "net.httpclient_listener" "net/httpclient_listener.lua"
+	Module "net.connlisteners" "net/connlisteners.lua"
+	Module "net.http" "net/http.lua"
+
+	Module "verse.bosh" "bosh.lua"
+end
+
 Module "verse.client" "client.lua"
 
 -- Main verse file
