@@ -1,6 +1,8 @@
 
 local init_xmlhandlers = require "core.xmlhandlers";
 local st = require "util.stanza";
+require "net.httpclient_listener"; -- Required for net.http to work
+local http = require "net.http";
 
 local stream_mt = setmetatable({}, { __index = verse.stream_mt });
 stream_mt.__index = stream_mt;
@@ -25,7 +27,6 @@ function verse.new_bosh(logger, url)
 		return stream:_handle_response(response, code, request);
 	end
 	local conn = verse.new(logger, stream);
-	conn:add_plugin("http");
 	return setmetatable(conn, stream_mt);
 end
 
@@ -50,7 +51,7 @@ function stream_mt:flush(force)
 			payload:add_child(stanza);
 			buffer[i] = nil;
 		end
-		local request = self.http.request(self.bosh_url, { body = tostring(payload) }, self.bosh_response_handler);
+		local request = http.request(self.bosh_url, { body = tostring(payload) }, self.bosh_response_handler);
 		table.insert(self.bosh_waiting_requests, request);
 	else
 		self:debug("Decided not to flush.");
@@ -71,7 +72,7 @@ function stream_mt:_send_session_request()
 	body.attr.to = self.host;
 	body.attr.secure = 'true';
 	
-	self.http.request(self.bosh_url, { body = tostring(body) }, function (response)
+	http.request(self.bosh_url, { body = tostring(body) }, function (response)
 		-- Handle session creation response
 		local payload = self:_parse_response(response)
 		if not payload then
