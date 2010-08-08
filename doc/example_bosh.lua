@@ -1,5 +1,6 @@
 -- Change these:
 local jid, password = "user@example.com", "secret";
+local url = "http://example.com:80/http-bind";
 
 -- This line squishes verse each time you run,
 -- handy if you're hacking on Verse itself
@@ -9,7 +10,7 @@ require "verse" -- Verse main library
 require "verse.bosh" -- Verse BOSH support
 require "verse.client" -- XMPP client library
 
-c = verse.new_bosh(nil, "http://example.com:5280/http-bind");
+c = verse.new_bosh(nil, url);
 c:add_plugin("version");
 
 -- Add some hooks for debugging
