@@ -101,6 +101,10 @@ function stream:set_logger(logger, levels)
 	return old_logger;
 end
 
+function stream_mt:set_log_levels(levels)
+	self:set_logger(nil, levels);
+end
+
 -- Event handling
 function stream:event(name, ...)
 	self:debug("Firing event: "..tostring(name));
