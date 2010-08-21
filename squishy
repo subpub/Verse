@@ -27,6 +27,11 @@ Module "verse.plugins.ping"	   "plugins/ping.lua"
 Module "verse.plugins.session"     "plugins/session.lua"
 Module "verse.plugins.compression" "plugins/compression.lua"
 Module "verse.plugins.blocking"    "plugins/blocking.lua"
+Module "verse.plugins.proxy65"     "plugins/proxy65.lua"
+Module "verse.plugins.jingle"      "plugins/jingle.lua"
+Module "verse.plugins.jingle_ft"   "plugins/jingle_ft.lua"
+Module "verse.plugins.jingle_s5b"  "plugins/jingle_s5b.lua"
+Module "verse.plugins.disco"       "plugins/disco.lua"
 
 if GetOption "bosh" ~= false then
 	Module "net.httpclient_listener" "net/httpclient_listener.lua"
