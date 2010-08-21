@@ -11,8 +11,31 @@ local negotiate_socks5;
 
 function verse.plugins.proxy65(stream)
 	stream.proxy65 = setmetatable({ stream = stream }, proxy65_mt);
-	stream:hook("disco-result", function (result)
+	stream.proxy65.available_streamhosts = {};
+	local outstanding_proxies = 0;
+	stream:hook("disco/service-discovered/proxy", function (service)
 		-- Fill list with available proxies
+		if service.type == "bytestreams" then
+			outstanding_proxies = outstanding_proxies + 1;
+			stream:send_iq(verse.iq({ to = service.jid, type = "get" })
+				:tag("query", { xmlns = xmlns_bytestreams }), function (result)
+				
+				outstanding_proxies = outstanding_proxies - 1;
+				if result.attr.type == "result" then
+					local streamhost = result:get_child("query", xmlns_bytestreams)
+						:get_child("streamhost").attr;
+					
+					stream.proxy65.available_streamhosts[streamhost.jid] = {
+						jid = streamhost.jid;
+						host = streamhost.host;
+						port = tonumber(streamhost.port);
+					};
+				end
+				if outstanding_proxies == 0 then
+					stream:event("proxy65/discovered-proxies", stream.proxy65.available_streamhosts);
+				end
+			end);
+		end
 	end);
 	stream:hook("iq/"..xmlns_bytestreams, function (request)
 		local conn = verse.new(nil, {
