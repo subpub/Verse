@@ -63,6 +63,13 @@ function stream:connect(connect_host, connect_port)
 	self.conn = conn;
 	local w, t = conn.write, tostring;
 	self.send = function (_, data) return w(conn, t(data)); end
+	return true;
+end
+
+function stream:close()
+	local on_disconnect = self.conn.disconnect();
+	self.conn:close();
+	on_disconnect(conn, reason);
 end
 
 -- Logging functions
