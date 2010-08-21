@@ -119,7 +119,7 @@ end
 
 -------------------------------------------------
 
-local function sha1(str, hex)
+local function sha1(str, hexres)
 	str = PreProcess(str)
 	h0  = 1732584193
 	h1  = 4023233417
@@ -129,7 +129,7 @@ local function sha1(str, hex)
 	MainLoop(str)
 	local hex = ToHex(h0)..ToHex(h1)..ToHex(h2)
 	            ..ToHex(h3)..ToHex(h4);
-	if hex then
+	if hexres then
 		return  hex;
 	else
 		return hex:gsub("..", function (byte)
