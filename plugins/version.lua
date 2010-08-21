@@ -22,6 +22,7 @@ function verse.plugins.version(stream)
 			reply:tag("os"):text(stream.version.platform);
 		end
 		stream:send(reply);
+		return true;
 	end);
 	
 	function stream:query_version(target_jid, callback)
