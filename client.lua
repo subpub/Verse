@@ -108,6 +108,14 @@ function stream:connect_client(jid, pass)
 	self:hook("session-success", stream_ready, -1)
 	self:hook("bind-success", stream_ready, -1);
 
+	local _base_close = self.close;
+	function self:close(reason)
+		if not self.notopen then
+			self:send("</stream:stream>");
+		end
+		return _base_close(self);
+	end
+	
 	-- Initialise connection
 	self:connect(self.connect_host or self.host, self.connect_port or 5222);
 	self:reopen();
@@ -117,15 +125,6 @@ function stream:reopen()
 	self:reset();
 	self:send(st.stanza("stream:stream", { to = self.host, ["xmlns:stream"]='http://etherx.jabber.org/streams',
 		xmlns = "jabber:client", version = "1.0" }):top_tag());
-end
-
-function stream:close(reason)
-	if not self.notopen then
-		self:send("</stream:stream>");
-	end
-	local on_disconnect = self.conn.disconnect();
-	self.conn:close();
-	on_disconnect(conn, reason);
 end
 
 function stream:send_iq(iq, callback)
