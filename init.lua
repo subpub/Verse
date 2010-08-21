@@ -126,6 +126,16 @@ function stream:unhook(name, handler)
 	return self.events.remove_handler(name, handler);
 end
 
+function verse.eventable(object)
+        object.events = events.new();
+        object.hook, object.unhook = stream.hook, stream.unhook;
+        local fire_event = object.events.fire_event;
+        function object:event(name, ...)
+                return fire_event(name, ...);
+        end
+        return object;
+end
+
 function stream:add_plugin(name)
 	if require("verse.plugins."..name) then
 		local ok, err = verse.plugins[name](self);
