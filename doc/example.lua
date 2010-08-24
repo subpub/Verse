@@ -8,8 +8,7 @@ local jid, password = "user@example.com", "secret";
 require "verse" -- Verse main library
 require "verse.client" -- XMPP client library
 
-c = verse.new()
-c:add_plugin("sasl");
+c = verse.new();
 c:add_plugin("version");
 
 -- Add some hooks for debugging
