@@ -332,7 +332,10 @@ function verse.plugins.disco(stream)
 		end
 	end);
 	
+	local initial_disco_started;
 	stream:hook("ready", function ()
+		if initial_disco_started then return; end
+		initial_disco_started = true;
 		stream:disco_local_services(function (services)
 			for _, service in ipairs(services) do
 				for identity in pairs(stream.disco.cache[service.jid].identities) do
@@ -342,7 +345,9 @@ function verse.plugins.disco(stream)
 					});
 				end
 			end
+			stream:event("ready");
 		end);
+		return true;
 	end, 5);
 end
 
