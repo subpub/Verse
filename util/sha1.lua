@@ -132,9 +132,9 @@ local function sha1(str, hexres)
 	if hexres then
 		return  hex;
 	else
-		return hex:gsub("..", function (byte)
+		return (hex:gsub("..", function (byte)
 			return string.char(tonumber(byte, 16));
-		end);
+		end));
 	end
 end
 
