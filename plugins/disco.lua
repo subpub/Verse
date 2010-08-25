@@ -89,6 +89,15 @@ function verse.plugins.disco(stream)
 	function stream:add_disco_feature(feature)
 		table.insert(self.disco.info.features, {var=feature});		
 	end
+	
+	function stream:remove_disco_feature(feature)
+		for idx, disco_feature in ipairs(self.disco.info.features) do
+			if disco_feature.var == feature then
+				table.remove(self.disco.info.features, idx);
+				return true;
+			end
+		end
+	end
 
 	function stream:jid_has_identity(jid, category, type)
 		local cached_disco = self.disco.cache[jid];
