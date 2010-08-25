@@ -8,13 +8,6 @@
 
 local st = require "util.stanza"
 local b64 = require("mime").b64
--- NOTE: The b64 routine in LuaSocket 2.0.2 and below
--- contains a bug regarding handling \0, it's advisable
--- that you use another base64 routine, or a patched
--- version of LuaSocket.
--- You can borrow Prosody's (binary) util.encodings lib:
---local b64 = require("util.encodings").base64.encode
-
 local sha1 = require("util.sha1").sha1
 
 local xmlns_disco = "http://jabber.org/protocol/disco";
