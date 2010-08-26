@@ -18,6 +18,8 @@ Module "util.jid"		"util/jid.lua"
 Module "util.events"		"util/events.lua"
 Module "util.sha1"		"util/sha1.lua"
 
+Module "lib.adhoc"              "libs/adhoc.lib.lua"
+
 -- Verse plugins
 Module "verse.plugins.tls"         "plugins/tls.lua"
 Module "verse.plugins.sasl"	   "plugins/sasl.lua"
@@ -33,6 +35,7 @@ Module "verse.plugins.jingle_ft"   "plugins/jingle_ft.lua"
 Module "verse.plugins.jingle_s5b"  "plugins/jingle_s5b.lua"
 Module "verse.plugins.disco"       "plugins/disco.lua"
 Module "verse.plugins.pep"         "plugins/pep.lua"
+Module "verse.plugins.adhoc"       "plugins/adhoc.lua"
 
 if GetOption "bosh" ~= false then
 	Module "net.httpclient_listener" "net/httpclient_listener.lua"
