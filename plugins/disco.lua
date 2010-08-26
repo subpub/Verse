@@ -99,6 +99,19 @@ function verse.plugins.disco(stream)
 		end
 	end
 
+	function stream:add_disco_item(item, node)
+		local disco_items = self.disco.items;
+		if node then
+			disco_items = self.disco.nodes[node];
+			if not disco_items then
+				disco_items = { features = {}, items = {} };
+				self.disco.nodes[node] = disco_items;
+				disco_items = disco_items.items;
+			end
+		end
+		table.insert(disco_items, item);
+	end
+
 	function stream:jid_has_identity(jid, category, type)
 		local cached_disco = self.disco.cache[jid];
 		if not cached_disco then
