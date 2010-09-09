@@ -226,6 +226,7 @@ function verse.plugins.disco(stream)
 					table.insert(disco_items, {
 						name = tag.attr.name;
 						jid = tag.attr.jid;
+						node = tag.attr.node;
 					});
 				end
 			end
