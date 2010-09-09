@@ -258,6 +258,7 @@ function jingle_mt:terminate(reason)
 end
 
 function jingle_mt:destroy()
+	self:event("terminated");
 	self.stream:unhook("jingle/"..self.sid, self.handle_command);
 end
 
