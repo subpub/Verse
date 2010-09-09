@@ -107,6 +107,8 @@ function verse.plugins.disco(stream)
 				disco_items = { features = {}, items = {} };
 				self.disco.nodes[node] = disco_items;
 				disco_items = disco_items.items;
+			else
+				disco_items = disco_items.items;
 			end
 		end
 		table.insert(disco_items, item);
@@ -198,8 +200,8 @@ function verse.plugins.disco(stream)
 			end
 
 			if node then
-				if not self.disco.cache.nodes[node] then
-					self.disco.cache.nodes[node] = { nodes = {} };
+				if not self.disco.cache[jid].nodes[node] then
+					self.disco.cache[jid].nodes[node] = { nodes = {} };
 				end
 				self.disco.cache[jid].nodes[node].identities = identities;
 				self.disco.cache[jid].nodes[node].features = features;
