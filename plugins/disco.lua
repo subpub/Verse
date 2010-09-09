@@ -236,10 +236,10 @@ function verse.plugins.disco(stream)
 			end
 			
 			if node then
-				if not self.disco.cache.nodes[node] then
-					self.disco.cache.nodes[node] = { nodes = {} };
+				if not self.disco.cache[jid].nodes[node] then
+					self.disco.cache[jid].nodes[node] = { nodes = {} };
 				end
-				self.disco.cache.nodes[node].items = disco_items;
+				self.disco.cache[jid].nodes[node].items = disco_items;
 			else
 				self.disco.cache[jid].items = disco_items;
 			end
