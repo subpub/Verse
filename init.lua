@@ -57,6 +57,7 @@ function stream:connect(connect_host, connect_port)
 
 	local conn = server.wrapclient(conn, connect_host, connect_port, new_listener(self), "*a");
 	if not conn then
+		self:warn("connection initialisation failed: %s", err);
 		return false, err;
 	end
 	
