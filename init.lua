@@ -27,18 +27,29 @@ end
 
 verse.add_task = require "util.timer".add_task;
 
+verse.logger = logger.init;
+verse.log = verse.logger("verse");
+
+function verse.set_logger(logger)
+	verse.log = logger("verse");
+	server.setlogger(logger);
+end
+
+local function error_handler(err)
+	verse.log("error", "Error: %s", err);
+	verse.log("error", "Traceback: %s", debug.traceback());
+end
+
+function verse.set_error_handler(new_error_handler)
+	error_handler = new_error_handler;
+end
+
 function verse.loop()
 	return server.loop();
 end
 
 function verse.quit()
 	return server.setquitting(true);
-end
-
-verse.logger = logger.init;
-
-function verse.set_logger(logger)
-	server.setlogger(logger);
 end
 
 function stream:connect(connect_host, connect_port)
