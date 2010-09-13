@@ -83,6 +83,10 @@ function stream:connect(connect_host, connect_port)
 end
 
 function stream:close()
+	if not self.conn then 
+		verse.log("error", "Attempt to close disconnected connection - possibly a bug");
+		return;
+	end
 	local on_disconnect = self.conn.disconnect();
 	self.conn:close();
 	on_disconnect(conn, reason);
