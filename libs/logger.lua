@@ -1,5 +1,5 @@
-local print = print
 local select, tostring = select, tostring;
+local io_write = io.write;
 module "logger"
 
 local function format(format, ...)
@@ -15,7 +15,7 @@ end
 
 function init(name)
 	return function (level, message, ...)
-		print(level, format(message, ...));
+		io_write(level, "\t", format(message, ...), "\n");
 	end
 end
 
