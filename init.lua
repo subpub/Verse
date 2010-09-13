@@ -45,7 +45,11 @@ function verse.set_error_handler(new_error_handler)
 end
 
 function verse.loop()
-	return server.loop();
+	return xpcall(server.loop, error_handler);
+end
+
+function verse.step()
+	return xpcall(server.step, error_handler);
 end
 
 function verse.quit()
