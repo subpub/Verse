@@ -47,6 +47,10 @@ if GetOption "bosh" ~= false then
 	Module "verse.bosh" "bosh.lua"
 end
 
+if GetOption "internal-bit-module" then
+	Module "bit" "libs/bit.lua"
+end
+
 Module "verse.client" "client.lua"
 
 -- Main verse file
