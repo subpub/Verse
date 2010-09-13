@@ -2,6 +2,7 @@ Output "verse.lua"
 
 -- Verse-specific versions of libraries
 Module "util.encodings"		"libs/encodings.lua"
+Module "util.hashes"		"libs/hashes.lua"
 Module "util.logger"		"libs/logger.lua"
 Module "util.xstanza"		"libs/xstanza.lua"
 
