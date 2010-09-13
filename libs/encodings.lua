@@ -1,10 +1,12 @@
 local function not_impl()
-	error("Encoding function not implemented");
+	error("Function not implemented");
 end
+
+local mime = require "mime";
 
 module "encodings"
 
 stringprep = {};
-base64 = { encode = not_impl, decode = not_impl };
+base64 = { encode = mime.b64, decode = not_impl }; --mime.unb64 is buggy with \0
 
 return _M;
