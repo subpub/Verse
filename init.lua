@@ -67,13 +67,13 @@ function stream:connect(connect_host, connect_port)
 	
 	if not success and err ~= "timeout" then
 		self:warn("connect() to %s:%d failed: %s", connect_host, connect_port, err);
-		return false, err;
+		return self:event("disconnected", { reason = err }) or false, err;
 	end
 
 	local conn = server.wrapclient(conn, connect_host, connect_port, new_listener(self), "*a");
 	if not conn then
 		self:warn("connection initialisation failed: %s", err);
-		return false, err;
+		return self:event("disconnected", { reason = err }) or false, err;
 	end
 	
 	self.conn = conn;
