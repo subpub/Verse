@@ -54,6 +54,7 @@ if GetOption "internal-bit-module" then
 end
 
 Module "verse.client" "client.lua"
+Module "verse.component" "component.lua"
 
 -- Main verse file
 Main "init.lua"
