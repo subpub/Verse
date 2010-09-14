@@ -5,6 +5,8 @@ Module "util.encodings"		"libs/encodings.lua"
 Module "util.hashes"		"libs/hashes.lua"
 Module "util.logger"		"libs/logger.lua"
 Module "util.xstanza"		"libs/xstanza.lua"
+Module "util.sha1"		"util/sha1.lua"
+Module "lib.adhoc"              "libs/adhoc.lib.lua"
 
 -- Prosody libraries
 AutoFetchURL "http://prosody.im/tip/?"
@@ -13,14 +15,14 @@ Module "util.stanza"		"util/stanza.lua"
 Module "util.timer"		"util/timer.lua"
 Module "util.termcolours"	"util/termcolours.lua"
 Module "util.uuid"		"util/uuid.lua"
+Module "net.dns"               "net/dns.lua"
+Module "net.adns"              "net/adns.lua"
 Module "net.server"		"net/server_select.lua"
 Module "core.xmlhandlers"	"core/xmlhandlers.lua"
 Module "util.jid"		"util/jid.lua"
 Module "util.events"		"util/events.lua"
-Module "util.sha1"		"util/sha1.lua"
 Module "util.dataforms"		"util/dataforms.lua"
-
-Module "lib.adhoc"              "libs/adhoc.lib.lua"
+Module "util.ztact"		"util/ztact.lua"
 
 -- Verse plugins
 Module "verse.plugins.tls"         "plugins/tls.lua"
