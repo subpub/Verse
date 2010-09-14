@@ -2,6 +2,7 @@ local verse = require "verse";
 local stream = verse.stream_mt;
 
 local jid_split = require "util.jid".split;
+local adns = require "net.adns";
 local lxp = require "lxp";
 local st = require "util.stanza";
 
@@ -12,6 +13,10 @@ verse.message, verse.presence, verse.iq, verse.stanza, verse.reply, verse.error_
 local init_xmlhandlers = require "core.xmlhandlers";
 
 local xmlns_stream = "http://etherx.jabber.org/streams";
+
+local function compare_srv_priorities(a,b)
+	return a.priority < b.priority or (a.priority == b.priority and a.weight > b.weight);
+end
 
 local stream_callbacks = {
 	stream_ns = xmlns_stream,
@@ -116,9 +121,49 @@ function stream:connect_client(jid, pass)
 		return _base_close(self);
 	end
 	
-	-- Initialise connection
-	self:connect(self.connect_host or self.host, self.connect_port or 5222);
-	self:reopen();
+	local function start_connect()
+		-- Initialise connection
+		self:connect(self.connect_host or self.host, self.connect_port or 5222);
+		self:reopen();
+	end
+	
+	if not (self.connect_host or self.connect_port) then
+		-- Look up SRV records
+		adns.lookup(function (answer)
+			if answer then
+				local srv_hosts = {};
+				self.srv_hosts = srv_hosts;
+				for _, record in ipairs(answer) do
+					table.insert(srv_hosts, record.srv);
+				end
+				table.sort(srv_hosts, compare_srv_priorities);
+				
+				local srv_choice = srv_hosts[1];
+				self.srv_choice = 1;
+				if srv_choice then
+					self.connect_host, self.connect_port = srv_choice.target, srv_choice.port;
+					self:debug("Best record found, will connect to %s:%d", self.connect_host or self.host, self.connect_port or 5222);
+				end
+				
+				self:hook("disconnected", function ()
+					if self.srv_hosts and self.srv_choice < #self.srv_hosts then
+						self.srv_choice = self.srv_choice + 1;
+						local srv_choice = srv_hosts[self.srv_choice];
+						self.connect_host, self.connect_port = srv_choice.target, srv_choice.port;
+						start_connect();
+						return true;
+					end
+				end, 1000);
+				
+				self:hook("connected", function ()
+					self.srv_hosts = nil;
+				end, 1000);
+			end
+			start_connect();
+		end, "_xmpp-client._tcp."..(self.host)..".", "SRV");
+	else
+		start_connect();
+	end
 end
 
 function stream:reopen()
