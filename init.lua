@@ -35,6 +35,18 @@ function verse.set_logger(logger)
 	server.setlogger(logger);
 end
 
+function verse.filter_log(levels, logger)
+	local level_set = {};
+	for _, level in ipairs(levels) do
+		level_set[level] = true;
+	end
+	return function (level, name, ...)
+		if level_set[level] then
+			return logger(level, name, ...);
+		end
+	end;
+end
+
 local function error_handler(err)
 	verse.log("error", "Error: %s", err);
 	verse.log("error", "Traceback: %s", debug.traceback());
