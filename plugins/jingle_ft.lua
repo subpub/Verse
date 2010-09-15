@@ -60,7 +60,7 @@ function verse.plugins.jingle_ft(stream)
 		
 		local source = ltn12.source.file(file);
 		
-		local jingle = c:jingle(to);
+		local jingle = self:jingle(to);
 		jingle:offer("file", {
 			filename = filename:match("[^"..dirsep.."]+$");
 			size = file_size;
