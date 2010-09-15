@@ -141,8 +141,9 @@ function verse.plugins.jingle_s5b(stream)
 		if #streamhost_array > 0 then
 			self.connecting_peer_candidates = true;
 			local function onconnect(streamhost, conn)
-				self.jingle:send_command("transport-info", verse.stanza("transport", { xmlns = xmlns_s5b, sid = self.s5b_sid })
-					:tag("candidate-used", { cid = streamhost.cid }));
+				self.jingle:send_command("transport-info", verse.stanza("content", { creator = self.creator, name = self.name })
+					:tag("transport", { xmlns = xmlns_s5b, sid = self.s5b_sid })
+						:tag("candidate-used", { cid = streamhost.cid }));
 				self.onconnect_callback = callback;
 				self.conn = conn;
 			end
@@ -156,7 +157,8 @@ function verse.plugins.jingle_s5b(stream)
 	
 	function s5b:info_received(jingle_tag)
 		stream:warn("Info received");
-		local transport_tag = jingle_tag:child_with_name("content"):child_with_name("transport");
+		local content_tag = jingle_tag:child_with_name("content");
+		local transport_tag = content_tag:child_with_name("transport");
 		if transport_tag:get_child("candidate-used") and not self.connecting_peer_candidates then
 			local candidate_used = transport_tag:child_with_name("candidate-used");
 			if candidate_used then
@@ -169,8 +171,9 @@ function verse.plugins.jingle_s5b(stream)
 								:tag("activate"):text(self.jingle.peer), function (result)
 							
 							if result.attr.type == "result" then
-								self.jingle:send_command("transport-info", verse.stanza("transport", { xmlns = xmlns_s5b, sid = self.s5b_sid })
-									:tag("activated", { cid = candidate_used.attr.cid }));
+								self.jingle:send_command("transport-info", verse.stanza("content", content_tag.attr)
+									:tag("transport", { xmlns = xmlns_s5b, sid = self.s5b_sid })
+										:tag("activated", { cid = candidate_used.attr.cid }));
 								self.conn = conn;
 								self.onconnect_callback(conn);
 							else

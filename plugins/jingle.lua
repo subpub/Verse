@@ -159,9 +159,7 @@ function verse.plugins.jingle(stream)
 				action = command,
 				initiator = self.role == "initiator" and self.stream.jid or nil,
 				responder = self.role == "responder" and self.jid or nil,
-			})
-				:tag("content", { creator = self.creator, name = self.name })
-					:add_child(element);
+			}):add_child(element);
 		if not callback then
 			self.stream:send(stanza);
 		else
