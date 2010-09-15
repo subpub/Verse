@@ -31,7 +31,7 @@ verse.logger = logger.init;
 verse.log = verse.logger("verse");
 
 function verse.set_logger(logger)
-	verse.log = logger("verse");
+	verse.log = logger;
 	server.setlogger(logger);
 end
 
