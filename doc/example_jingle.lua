@@ -40,7 +40,7 @@ c:hook("ready", function ()
 	
 	-- Handle incoming Jingle requests
 	c:hook("jingle", function (jingle)
-		if jingle.content.name == "file" then
+		if jingle.content.type == "file" then
 			print("File offer from "..jingle.peer.."!");
 			print("Filename: "..jingle.content.file.name.." Size: "..jingle.content.file.size);
 			jingle:accept({ save_file = jingle.content.file.name..".received" });
