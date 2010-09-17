@@ -10,7 +10,7 @@ function verse.plugins.jingle_ft(stream)
 		stream:add_disco_feature(xmlns_jingle_ft);
 	end, 10);
 	
-	local ft_content = { name = "file" };
+	local ft_content = { type = "file" };
 	
 	function ft_content:generate_accept(description, options)
 		if options and options.save_file then
