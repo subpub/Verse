@@ -356,11 +356,14 @@ function verse.plugins.disco(stream)
 		initial_disco_started = true;
 		stream:disco_local_services(function (services)
 			for _, service in ipairs(services) do
-				for identity in pairs(stream.disco.cache[service.jid].identities) do
-					local category, type = identity:match("^(.*)/(.*)$");
-					stream:event("disco/service-discovered/"..category, {
-						type = type, jid = service.jid;
-					});
+				local service_disco_info = stream.disco.cache[service.jid];
+				if service_disco_info then
+					for identity in pairs(service_disco_info.identities) do
+						local category, type = identity:match("^(.*)/(.*)$");
+						stream:event("disco/service-discovered/"..category, {
+							type = type, jid = service.jid;
+						});
+					end
 				end
 			end
 			stream:event("ready");
