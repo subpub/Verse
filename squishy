@@ -4,7 +4,6 @@ Output "verse.lua"
 Module "util.encodings"		"libs/encodings.lua"
 Module "util.hashes"		"libs/hashes.lua"
 Module "util.logger"		"libs/logger.lua"
-Module "util.xstanza"		"libs/xstanza.lua"
 Module "util.sha1"		"util/sha1.lua"
 Module "lib.adhoc"              "libs/adhoc.lib.lua"
 

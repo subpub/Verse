@@ -1,5 +1,4 @@
 local st = require "util.stanza";
-local stx = require "util.xstanza";
 local base64 = require "mime".b64;
 local xmlns_sasl = "urn:ietf:params:xml:ns:xmpp-sasl";
 

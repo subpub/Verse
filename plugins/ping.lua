@@ -1,5 +1,3 @@
-require "util.xstanza";
-
 local xmlns_ping = "urn:xmpp:ping";
 
 function verse.plugins.ping(stream)
