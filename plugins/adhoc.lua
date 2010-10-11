@@ -88,11 +88,9 @@ end
 
 -- Initial execution of a command
 function command_mt:execute()
-	io.write(":execute()\n");
 	local iq = verse.iq({ to = self.jid, type = "set" })
 		:tag("command", { xmlns = xmlns_commands, node = self.command });
 	self.stream:send_iq(iq, function (result)
-		io.write(":send_iq() response\n");
 		self:_process_response(result);
 	end);
 end
