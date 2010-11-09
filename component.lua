@@ -18,7 +18,7 @@ local xmlns_component = "jabber:component:accept";
 local stream_callbacks = {
 	stream_ns = xmlns_stream,
 	stream_tag = "stream",
-	 default_ns = "jabber:client" };
+	 default_ns = xmlns_component };
 	
 function stream_callbacks.streamopened(stream, attr)
 	stream.stream_id = attr.id;
@@ -35,8 +35,8 @@ end
 function stream_callbacks.handlestanza(stream, stanza)
 	if stanza.attr.xmlns == xmlns_stream then
 		return stream:event("stream-"..stanza.name, stanza);
-	elseif stanza.attr.xmlns then
-		return stream:event("stream/"..stanza.attr.xmlns, stanza);
+	elseif stanza.attr.xmlns or stanza.name == "handshake" then
+		return stream:event("stream/"..(stanza.attr.xmlns or xmlns_component), stanza);
 	end
 
 	return stream:event("stanza", stanza);
