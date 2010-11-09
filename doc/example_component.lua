@@ -33,5 +33,11 @@ c:hook("ready", function ()
 	c.version:set{ name = "verse example component" };
 end);
 
+-- Echo, echo, echo, echo...
+c:hook("stanza", function (stanza)
+	stanza.attr.from, stanza.attr.to = stanza.attr.to, stanza.attr.from;
+	c:send(stanza);
+end)
+
 print("Starting loop...")
 verse.loop()
