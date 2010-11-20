@@ -1,12 +1,20 @@
+-- Implements XEP-0049: Private XML Storage
+
 local xmlns_private = "jabber:iq:private";
 
 function verse.plugins.private(stream)
 	function stream:private_set(name, xmlns, data, callback)
 		local iq = verse.iq({ type = "set" })
-			:tag("query", { xmlns = xmlns_private })
-				:tag(name, { xmlns = xmlns });
-		if data then iq:add_child(data); end
-		self:send_iq(iq, function () callback(); end);
+			:tag("query", { xmlns = xmlns_private });
+		if data then
+			if data.name == name and data.attr and data.attr.xmlns == xmlns then
+				iq:add_child(data);
+			else
+				iq:tag(name, { xmlns = xmlns })
+					:add_child(data);
+			end
+		end
+		self:send_iq(iq, callback);
 	end
 	
 	function stream:private_get(name, xmlns, callback)
