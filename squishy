@@ -41,6 +41,7 @@ Module "verse.plugins.jingle_s5b"  "plugins/jingle_s5b.lua"
 Module "verse.plugins.disco"       "plugins/disco.lua"
 Module "verse.plugins.pep"         "plugins/pep.lua"
 Module "verse.plugins.adhoc"       "plugins/adhoc.lua"
+Module "verse.plugins.private"     "plugins/private.lua"
 
 if GetOption "bosh" ~= false then
 	Module "net.httpclient_listener" "net/httpclient_listener.lua"
