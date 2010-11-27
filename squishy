@@ -43,13 +43,12 @@ Module "verse.plugins.pep"         "plugins/pep.lua"
 Module "verse.plugins.adhoc"       "plugins/adhoc.lua"
 Module "verse.plugins.private"     "plugins/private.lua"
 
-if GetOption "bosh" ~= false then
-	Module "net.httpclient_listener" "net/httpclient_listener.lua"
-	Module "net.connlisteners" "net/connlisteners.lua"
-	Module "net.http" "net/http.lua"
+Module "net.httpclient_listener" "net/httpclient_listener.lua"
+Module "net.connlisteners" "net/connlisteners.lua"
+Module "util.httpstream" "util/httpstream.lua"
+Module "net.http" "net/http.lua"
 
-	Module "verse.bosh" "bosh.lua"
-end
+Module "verse.bosh" "bosh.lua"
 
 if GetOption "internal-bit-module" then
 	Module "bit" "libs/bit.lua"
