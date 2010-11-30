@@ -8,7 +8,11 @@ Module "util.sha1"		"util/sha1.lua"
 Module "lib.adhoc"              "libs/adhoc.lib.lua"
 
 -- Prosody libraries
-AutoFetchURL "http://prosody.im/tip/?"
+if not GetOption("prosody") then
+	AutoFetchURL "http://prosody.im/tip/?"
+else
+	AutoFetchURL(GetOption("prosody").."/?")
+end
 
 Module "util.stanza"		"util/stanza.lua"
 Module "util.timer"		"util/timer.lua"
