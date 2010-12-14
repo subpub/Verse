@@ -1,5 +1,5 @@
 
-local init_xmlhandlers = require "core.xmlhandlers";
+local new_xmpp_stream = require "util.xmppstream".new;
 local st = require "util.stanza";
 require "net.httpclient_listener"; -- Required for net.http to work
 local http = require "net.http";
@@ -186,8 +186,8 @@ function stream_mt:_parse_response(response)
 		return;
 	end
 	local session = { notopen = true, log = self.log };
-	local parser = lxp.new(init_xmlhandlers(session, stream_callbacks), "\1");
-	parser:parse(response);
+	local stream = new_xmpp_stream(session, stream_callbacks);
+	stream:feed(response);
 	return session.payload;
 end
 
