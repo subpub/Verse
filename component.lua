@@ -10,7 +10,7 @@ local sha1 = require "util.sha1".sha1;
 verse.message, verse.presence, verse.iq, verse.stanza, verse.reply, verse.error_reply =
 	st.message, st.presence, st.iq, st.stanza, st.reply, st.error_reply;
 
-local init_xmlhandlers = require "core.xmlhandlers";
+local new_xmpp_stream = require "util.xmppstream".new;
 
 local xmlns_stream = "http://etherx.jabber.org/streams";
 local xmlns_component = "jabber:component:accept";
@@ -43,12 +43,12 @@ function stream_callbacks.handlestanza(stream, stanza)
 end
 
 function stream:reset()
-	-- Reset stream
-	local parser = lxp.new(init_xmlhandlers(self, stream_callbacks), "\1");
-	self.parser = parser;
-	
+	if self.stream then
+		self.stream:reset();
+	else
+		self.stream = new_xmpp_stream(self, stream_callbacks);
+	end
 	self.notopen = true;
-	
 	return true;
 end
 
@@ -57,7 +57,7 @@ function stream:connect_component(jid, pass)
 	self.username, self.host, self.resource = jid_split(jid);
 	
 	function self.data(conn, data)
-		local ok, err = self.parser:parse(data);
+		local ok, err = self.stream:feed(data);
 		if ok then return; end
 		stream:debug("debug", "Received invalid XML (%s) %d bytes: %s", tostring(err), #data, data:sub(1, 300):gsub("[\r\n]+", " "));
 		stream:close("xml-not-well-formed");

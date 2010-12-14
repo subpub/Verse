@@ -21,11 +21,10 @@ Module "util.uuid"		"util/uuid.lua"
 Module "net.dns"               "net/dns.lua"
 Module "net.adns"              "net/adns.lua"
 Module "net.server"		"net/server_select.lua"
-Module "core.xmlhandlers"	"core/xmlhandlers.lua"
+Module "util.xmppstream"	"util/xmppstream.lua"
 Module "util.jid"		"util/jid.lua"
 Module "util.events"		"util/events.lua"
 Module "util.dataforms"		"util/dataforms.lua"
-Module "util.ztact"		"util/ztact.lua"
 
 -- Verse plugins
 Module "verse.plugins.tls"         "plugins/tls.lua"
