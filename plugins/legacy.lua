@@ -7,7 +7,9 @@ function verse.plugins.legacy(stream)
 		local query = result:get_child("query", xmlns_auth);
 		if result.attr.type ~= "result" or not query then
 			local type, cond, text = result:get_error();
-			stream:event("authentication-failure", { condition = cond });
+                       stream:debug("warn", "%s %s: %s", type, cond, text);
+                       --stream:event("authentication-failure", { condition = cond });
+                       -- COMPAT continue anyways
 		end
 		local auth_data = {
 			username = stream.username;
@@ -17,6 +19,7 @@ function verse.plugins.legacy(stream)
 		};
 		local request = verse.iq({ to = stream.host, type = "set" })
 			:tag("query", { xmlns = xmlns_auth });
+               if #query > 0 then
 		for tag in query:childtags() do
 			local field = tag.name;
 			local value = auth_data[field];
@@ -28,6 +31,13 @@ function verse.plugins.legacy(stream)
 				return false;
 			end
 		end
+               else -- COMPAT for servers not following XEP 78
+                       for field, value in pairs(auth_data) do
+                               if value then
+                                       request:tag(field):text(value):up();
+                               end
+                       end
+               end
 		stream:send_iq(request, function (response)
 			if response.attr.type == "result" then
 				stream.resource = auth_data.resource;
