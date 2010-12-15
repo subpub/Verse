@@ -22,8 +22,11 @@ function verse.plugins.pep(stream)
 	end);
 	
 	function stream:hook_pep(node, callback, priority)
+		local handlers = stream.events._handlers["pep/"..node];
+		if not(handlers) or #handlers == 0 then
+			stream:add_disco_feature(node.."+notify");
+		end
 		stream:hook("pep/"..node, callback, priority);
-		stream:add_disco_feature(node.."+notify");
 	end
 	
 	function stream:unhook_pep(node, callback)
