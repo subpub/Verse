@@ -24,6 +24,7 @@ function verse.plugins.pubsub(stream)
 			end
 		end
 	end);
+	return true;
 end
 
 function pubsub:subscribe(server, node, jid, callback)
