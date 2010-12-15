@@ -171,7 +171,7 @@ end
 function stream:add_plugin(name)
 	if require("verse.plugins."..name) then
 		local ok, err = verse.plugins[name](self);
-		if ok then
+		if ok ~= false then
 			self:debug("Loaded %s plugin", name);
 		else
 			self:warn("Failed to load %s plugin: %s", name, err);
