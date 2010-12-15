@@ -34,6 +34,7 @@ c:connect_client(jid, password);
 -- Catch the "ready" event to know when the stream is ready to use
 c:hook("ready", function ()
 	print("Stream ready!");
+	c:send(verse.presence());
 	c.version:set{ name = "verse example client" };
 	c:publish_pep(verse.stanza("tune", { xmlns = "http://jabber.org/protocol/tune" })
 		:tag("title"):text("Beautiful Cedars"):up()
@@ -45,7 +46,10 @@ c:hook("ready", function ()
 	c:hook_pep("http://jabber.org/protocol/mood", function (event)
 		print(event.from.." is "..event.item.tags[1].name);
 	end);
-	c:send(verse.presence():add_child(c:caps()));
+	
+	c:hook_pep("http://jabber.org/protocol/tune", function (event)
+		print(event.from.." is listening to "..event.item:get_child("title"):get_text());
+	end);
 end);
 
 print("Starting loop...")
