@@ -107,6 +107,18 @@ function stream:connect_client(jid, pass)
 		return ret;
 	end, -1);
 
+	self:hook("outgoing", function (data)
+		if data.name then
+			self:event("stanza-out", data);
+		end
+	end);
+	
+	self:hook("stanza-out", function (stanza)
+		if not stanza.attr.xmlns then
+			self:event(stanza.name.."-out", stanza);
+		end
+	end);
+	
 	local function stream_ready()
 		self:event("ready");
 	end
