@@ -22,6 +22,7 @@ function verse.new(logger, base)
 	t.id = tostring(t):match("%x*$");
 	t:set_logger(logger, true);
 	t.events = events.new();
+	t.plugins = {};
 	return t;
 end
 
@@ -173,10 +174,12 @@ function verse.eventable(object)
 end
 
 function stream:add_plugin(name)
+	if self.plugins[name] then return true; end
 	if require("verse.plugins."..name) then
 		local ok, err = verse.plugins[name](self);
 		if ok ~= false then
 			self:debug("Loaded %s plugin", name);
+			self.plugins[name] = true;
 		else
 			self:warn("Failed to load %s plugin: %s", name, err);
 		end
