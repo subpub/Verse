@@ -160,6 +160,9 @@ function verse.plugins.disco(stream)
 	
 	function stream:disco_local_services(callback)
 		self:disco_items(self.host, nil, function (items)
+			if not items then
+				return callback({});
+			end
 			local n_items = 0;
 			local function item_callback()
 				n_items = n_items - 1;
