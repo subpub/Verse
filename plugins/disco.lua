@@ -10,6 +10,7 @@ local st = require "util.stanza"
 local b64 = require("mime").b64
 local sha1 = require("util.sha1").sha1
 
+local xmlns_caps = "http://jabber.org/protocol/caps";
 local xmlns_disco = "http://jabber.org/protocol/disco";
 local xmlns_disco_info = xmlns_disco.."#info";
 local xmlns_disco_items = xmlns_disco.."#items";
