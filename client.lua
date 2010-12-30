@@ -68,8 +68,8 @@ function stream:connect_client(jid, pass)
 	function self.data(conn, data)
 		local ok, err = self.stream:feed(data);
 		if ok then return; end
-		stream:debug("debug", "Received invalid XML (%s) %d bytes: %s", tostring(err), #data, data:sub(1, 300):gsub("[\r\n]+", " "));
-		stream:close("xml-not-well-formed");
+		self:debug("debug", "Received invalid XML (%s) %d bytes: %s", tostring(err), #data, data:sub(1, 300):gsub("[\r\n]+", " "));
+		self:close("xml-not-well-formed");
 	end
 	
 	self:hook("incoming-raw", function (data) return self.data(self.conn, data); end);
