@@ -16,6 +16,7 @@ local xmlns_disco_info = xmlns_disco.."#info";
 local xmlns_disco_items = xmlns_disco.."#items";
 
 function verse.plugins.disco(stream)
+	stream:add_plugin("presence");
 	stream.disco = { cache = {}, info = {} }
 	stream.disco.info.identities = {
 		{category = 'client', type='pc', name='Verse'},
