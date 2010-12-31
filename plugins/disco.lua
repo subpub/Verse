@@ -31,8 +31,6 @@ function verse.plugins.disco(stream)
 	stream.caps = {}
 	stream.caps.node = 'http://code.matthewwild.co.uk/verse/'
 
-	local _resend_presence; -- Forward declaration of a function
-
 	local function cmp_identity(item1, item2)
 		if item1.category < item2.category then
 			return true;
@@ -91,14 +89,14 @@ function verse.plugins.disco(stream)
 	
 	function stream:add_disco_feature(feature)
 		table.insert(self.disco.info.features, {var=feature});
-		_resend_presence();
+		stream:resend_presence();
 	end
 	
 	function stream:remove_disco_feature(feature)
 		for idx, disco_feature in ipairs(self.disco.info.features) do
 			if disco_feature.var == feature then
 				table.remove(self.disco.info.features, idx);
-				_resend_presence();
+				stream:resend_presence();
 				return true;
 			end
 		end
@@ -379,29 +377,11 @@ function verse.plugins.disco(stream)
 		return true;
 	end, 5);
 	
-	local last_presence; -- Cache to re-send with updated caps
-	
 	stream:hook("presence-out", function (presence)
 		if not presence:get_child("c", xmlns_caps) then
 			presence:reset():add_child(stream:caps()):reset();
 		end
-		if not presence.attr.to then
-			last_presence = presence; -- Cache non-directed presence
-		end
-	end);
-	
-	local function update_caps(tag)
-		if tag.name == "c" and tag.attr.xmlns == xmlns_caps then
-			return stream:caps();
-		end
-	end
-	
-	function _resend_presence() -- Local via forward declaration
-		if last_presence then
-			last_presence = last_presence:maptags(update_caps);
-			stream:send(last_presence);
-		end
-	end
+	end, 10);
 end
 
 -- end of disco.lua
