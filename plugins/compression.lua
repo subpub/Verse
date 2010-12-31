@@ -47,7 +47,7 @@ local function setup_compression(session, deflate_stream)
 				session:close({
 					condition = "undefined-condition";
 					text = compressed;
-					extra = st.stanza("failure", {xmlns="http://jabber.org/protocol/compress"}):tag("processing-failed");
+					extra = st.stanza("failure", {xmlns=xmlns_compression_protocol}):tag("processing-failed");
 				});
 				session:warn("Compressed send failed: %s", tostring(compressed));
 				return;
@@ -66,7 +66,7 @@ local function setup_decompression(session, inflate_stream)
 				session:close({
 					condition = "undefined-condition";
 					text = decompressed;
-					extra = st.stanza("failure", {xmlns="http://jabber.org/protocol/compress"}):tag("processing-failed");
+					extra = st.stanza("failure", {xmlns=xmlns_compression_protocol}):tag("processing-failed");
 				});
 				stream:warn("%s", tostring(decompressed));
 				return;
