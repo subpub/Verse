@@ -21,9 +21,9 @@ function verse.plugins.disco(stream)
 		{category = 'client', type='pc', name='Verse'},
 	}
 	stream.disco.info.features = {
-		{var = 'http://jabber.org/protocol/caps'},
-		{var = 'http://jabber.org/protocol/disco#info'},
-		{var = 'http://jabber.org/protocol/disco#items'},
+		{var = xmlns_caps},
+		{var = xmlns_disco_info},
+		{var = xmlns_disco_items},
 	}
 	stream.disco.items = {}
 	stream.disco.nodes = {}
@@ -81,7 +81,7 @@ function verse.plugins.disco(stream)
 			-- presence stanza
 			local hash = calculate_hash()
 			return st.stanza('c', {
-				xmlns = 'http://jabber.org/protocol/caps',
+				xmlns = xmlns_caps,
 				hash = 'sha-1',
 				node = stream.caps.node,
 				ver = hash
@@ -255,7 +255,7 @@ function verse.plugins.disco(stream)
 		end);
 	end
 	
-	stream:hook("iq/http://jabber.org/protocol/disco#info", function (stanza)
+	stream:hook("iq/"..xmlns_disco_info, function (stanza)
 		if stanza.attr.type == 'get' then
 			local query = stanza:child_with_name('query')
 			if not query then return; end
@@ -280,7 +280,7 @@ function verse.plugins.disco(stream)
 						id = stanza.attr.id,
 						type = 'error'
 					})
-					response:tag('query',{xmlns = 'http://jabber.org/protocol/disco#info'}):reset()
+					response:tag('query',{xmlns = xmlns_disco_info}):reset()
 					response:tag('error',{type = 'cancel'}):tag(
 						'item-not-found',{xmlns = 'urn:ietf:params:xml:ns:xmpp-stanzas'}
 					)
@@ -293,7 +293,7 @@ function verse.plugins.disco(stream)
 			end
 			-- construct the response
 			local result = st.stanza('query',{
-				xmlns = 'http://jabber.org/protocol/disco#info',
+				xmlns = xmlns_disco_info,
 				node = query.attr.node
 			})
 			for key,identity in pairs(identities) do
@@ -312,7 +312,7 @@ function verse.plugins.disco(stream)
 		end
 	end);
 
-	stream:hook("iq/http://jabber.org/protocol/disco#items", function (stanza)
+	stream:hook("iq/"..xmlns_disco_items, function (stanza)
 		if stanza.attr.type == 'get' then
 			local query = stanza:child_with_name('query')
 			if not query then return; end
@@ -330,7 +330,7 @@ function verse.plugins.disco(stream)
 						id = stanza.attr.id,
 						type = 'error'
 					})
-					response:tag('query',{xmlns = 'http://jabber.org/protocol/disco#items'}):reset()
+					response:tag('query',{xmlns = xmlns_disco_items}):reset()
 					response:tag('error',{type = 'cancel'}):tag(
 						'item-not-found',{xmlns = 'urn:ietf:params:xml:ns:xmpp-stanzas'}
 					)
@@ -342,7 +342,7 @@ function verse.plugins.disco(stream)
 			end
 			-- construct the response
 			local result = st.stanza('query',{
-				xmlns = 'http://jabber.org/protocol/disco#items',
+				xmlns = xmlns_disco_items,
 				node = query.attr.node
 			})
 			for key,item in pairs(items) do
