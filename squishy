@@ -46,6 +46,7 @@ Module "verse.plugins.disco"       "plugins/disco.lua"
 Module "verse.plugins.pep"         "plugins/pep.lua"
 Module "verse.plugins.adhoc"       "plugins/adhoc.lua"
 Module "verse.plugins.private"     "plugins/private.lua"
+Module "verse.plugins.groupchat"   "plugins/groupchat.lua"
 
 Module "net.httpclient_listener" "net/httpclient_listener.lua"
 Module "net.connlisteners" "net/connlisteners.lua"
