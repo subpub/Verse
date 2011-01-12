@@ -84,14 +84,11 @@ function verse.plugins.groupchat(stream)
 				room.subject = subject and subject:get_text() or "";
 			end
 		end);
-		local join_st = presence({to = jid.."/"..nick})
+		local join_st = st.presence({to = jid.."/"..nick})
 			:tag("x",{xmlns = xmlns_muc}):reset();
-		-- Is this a good API for adding stuff etc?
-		local ok, err = self:event("pre-groupchat/joining", join_st);
-		if ok then
-			self:send(join_st)
-			self:event("groupchat/joining", room);
-		end
+		self:event("pre-groupchat/joining", join_st);
+		self:send(join_st)
+		self:event("groupchat/joining", room);
 		return room;
 	end
 
