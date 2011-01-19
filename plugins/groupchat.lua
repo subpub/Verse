@@ -38,7 +38,7 @@ function verse.plugins.groupchat(stream)
 		end
 		local room = setmetatable({
 			stream = stream, jid = jid, nick = nick,
-			subject = "",
+			subject = nil,
 			occupants = {},
 			events = events.new()
 		}, room_mt);
@@ -80,8 +80,9 @@ function verse.plugins.groupchat(stream)
 		end);
 		room:hook("message", function(msg)
 			local subject = msg.stanza:get_child("subject");
+			subject = subject and subject:get_text();
 			if subject then
-				room.subject = subject and subject:get_text() or "";
+				room.subject = #subject > 0 and subject or nil;
 			end
 		end);
 		local join_st = st.presence({to = jid.."/"..nick})
