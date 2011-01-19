@@ -13,7 +13,8 @@ function verse.plugins.groupchat(stream)
 	
 	stream:hook("stanza", function (stanza)
 		local room_jid = jid.bare(stanza.attr.from);
-		local room = stream.rooms[room_jid]
+		local room = stream.rooms[room_jid] or stream.rooms[stanza.attr.to.." "..room_jid] or nil
+		if room and room.opts.source and stanza.attr.to ~= room.opts.source then return end
 		if room then
 			local nick = select(3, jid.split(stanza.attr.from));
 			local body = stanza:get_child("body");
@@ -32,7 +33,7 @@ function verse.plugins.groupchat(stream)
 		end
 	end, 500);
 	
-	function stream:join_room(jid, nick)
+	function stream:join_room(jid, nick, opts)
 		if not nick then
 			return false, "no nickname supplied"
 		end
@@ -40,9 +41,14 @@ function verse.plugins.groupchat(stream)
 			stream = stream, jid = jid, nick = nick,
 			subject = nil,
 			occupants = {},
+			opts = opts,
 			events = events.new()
 		}, room_mt);
-		self.rooms[jid] = room;
+		if opts.source then
+			self.rooms[opts.source.." "..jid] = room;
+		else
+			self.rooms[jid] = room;
+		end
 		local occupants = room.occupants;
 		room:hook("presence", function (presence)
 			local nick = presence.nick or nick;
@@ -70,7 +76,11 @@ function verse.plugins.groupchat(stream)
 			elseif occupants[nick] and presence.stanza.attr.type == "unavailable" then
 				if nick == room.nick then
 					room.stream:event("groupchat/left", room);
-					self.rooms[room.jid] = nil;
+					if room.opts.source then
+						self.rooms[room.opts.source.." "..jid] = nil;
+					else
+						self.rooms[jid] = nil;
+					end
 				else
 					occupants[nick].presence = presence.stanza;
 					room:event("occupant-left", occupants[nick]);
@@ -85,10 +95,9 @@ function verse.plugins.groupchat(stream)
 				room.subject = #subject > 0 and subject or nil;
 			end
 		end);
-		local join_st = st.presence({to = jid.."/"..nick})
-			:tag("x",{xmlns = xmlns_muc}):reset();
+		local join_st = st.presence():tag("x",{xmlns = xmlns_muc}):reset();
 		self:event("pre-groupchat/joining", join_st);
-		self:send(join_st)
+		room:send(join_st)
 		self:event("groupchat/joining", room);
 		return room;
 	end
@@ -107,8 +116,14 @@ function room_mt:send(stanza)
 	if stanza.name == "message" and not stanza.attr.type then
 		stanza.attr.type = "groupchat";
 	end
+	if stanza.name == "presence" or not stanza.attr.to then
+		stanza.attr.to = self.jid .."/"..self.nick;
+	end
 	if stanza.attr.type == "groupchat" or not stanza.attr.to then
 		stanza.attr.to = self.jid;
+	end
+	if self.opts.source then
+		stanza.attr.from = self.opts.source
 	end
 	self.stream:send(stanza);
 end
