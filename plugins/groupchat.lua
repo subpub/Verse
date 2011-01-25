@@ -13,7 +13,11 @@ function verse.plugins.groupchat(stream)
 	
 	stream:hook("stanza", function (stanza)
 		local room_jid = jid.bare(stanza.attr.from);
-		local room = stream.rooms[room_jid] or stream.rooms[stanza.attr.to.." "..room_jid] or nil
+		if not room_jid then return end
+		local room = stream.rooms[room_jid]
+		if not room and stanza.attr.to and room_jid then
+			room = stream.rooms[stanza.attr.to.." "..room_jid]
+		end
 		if room and room.opts.source and stanza.attr.to ~= room.opts.source then return end
 		if room then
 			local nick = select(3, jid.split(stanza.attr.from));
@@ -37,6 +41,7 @@ function verse.plugins.groupchat(stream)
 		if not nick then
 			return false, "no nickname supplied"
 		end
+		opts = opts or {};
 		local room = setmetatable({
 			stream = stream, jid = jid, nick = nick,
 			subject = nil,
@@ -116,7 +121,7 @@ function room_mt:send(stanza)
 	if stanza.name == "message" and not stanza.attr.type then
 		stanza.attr.type = "groupchat";
 	end
-	if stanza.name == "presence" or not stanza.attr.to then
+	if stanza.name == "presence" then
 		stanza.attr.to = self.jid .."/"..self.nick;
 	end
 	if stanza.attr.type == "groupchat" or not stanza.attr.to then
