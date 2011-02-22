@@ -142,7 +142,7 @@ function room_mt:set_subject(text)
 end
 
 function room_mt:leave(message)
-	self.stream:event("groupchat/leaving", room);
+	self.stream:event("groupchat/leaving", self);
 	self:send(st.presence({type="unavailable"}));
 end
 
