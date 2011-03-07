@@ -24,7 +24,7 @@ function verse.plugins.presence(stream)
 				p:tag("show"):text(opts.show):up();
 			end
 			if opts.prio then
-				p:tag("priority"):text(opts.priority):up();
+				p:tag("priority"):text(tostring(opts.prio)):up();
 			end
 			if opts.msg then
 				p:tag("status"):text(opts.msg):up();
