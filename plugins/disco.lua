@@ -6,7 +6,6 @@
 -- COPYING file in the source package for more information.
 --
 
-local st = require "util.stanza"
 local b64 = require("mime").b64
 local sha1 = require("util.sha1").sha1
 
@@ -79,7 +78,7 @@ function verse.plugins.disco(stream)
 			-- retrieve the c stanza to insert into the
 			-- presence stanza
 			local hash = calculate_hash()
-			return st.stanza('c', {
+			return verse.stanza('c', {
 				xmlns = xmlns_caps,
 				hash = 'sha-1',
 				node = stream.caps.node,
@@ -273,7 +272,7 @@ function verse.plugins.disco(stream)
 					features = stream.disco.info.features
 				else
 					-- unknown node: give an error
-					local response = st.stanza('iq',{
+					local response = verse.stanza('iq',{
 						to = stanza.attr.from,
 						from = stanza.attr.to,
 						id = stanza.attr.id,
@@ -291,7 +290,7 @@ function verse.plugins.disco(stream)
 				features = stream.disco.info.features
 			end
 			-- construct the response
-			local result = st.stanza('query',{
+			local result = verse.stanza('query',{
 				xmlns = xmlns_disco_info,
 				node = query.attr.node
 			})
@@ -301,7 +300,7 @@ function verse.plugins.disco(stream)
 			for key,feature in pairs(features) do
 				result:tag('feature', feature):reset()
 			end
-			stream:send(st.stanza('iq',{
+			stream:send(verse.stanza('iq',{
 				to = stanza.attr.from,
 				from = stanza.attr.to,
 				id = stanza.attr.id,
@@ -323,7 +322,7 @@ function verse.plugins.disco(stream)
 					items = node.items or {}
 				else
 					-- unknown node: give an error
-					local response = st.stanza('iq',{
+					local response = verse.stanza('iq',{
 						to = stanza.attr.from,
 						from = stanza.attr.to,
 						id = stanza.attr.id,
@@ -340,14 +339,14 @@ function verse.plugins.disco(stream)
 				items = stream.disco.items
 			end
 			-- construct the response
-			local result = st.stanza('query',{
+			local result = verse.stanza('query',{
 				xmlns = xmlns_disco_items,
 				node = query.attr.node
 			})
 			for key,item in pairs(items) do
 				result:tag('item', item):reset()
 			end
-			stream:send(st.stanza('iq',{
+			stream:send(verse.stanza('iq',{
 				to = stanza.attr.from,
 				from = stanza.attr.to,
 				id = stanza.attr.id,

@@ -1,5 +1,4 @@
 local sha1 = require "util.sha1".sha1;
-local st = require "util.stanza";
 local timer = require "util.timer";
 local uuid_generate = require "util.uuid".generate;
 
@@ -52,7 +51,7 @@ function verse.plugins.jingle(stream)
 		-- No existing Jingle object handled this action, our turn...
 		if action ~= "session-initiate" then
 			-- Trying to send a command to a session we don't know
-			local reply = st.error_reply(stanza, "cancel", "item-not-found")
+			local reply = verse.error_reply(stanza, "cancel", "item-not-found")
 				:tag("unknown-session", { xmlns = xmlns_jingle_errors }):up();
 			stream:send(reply);
 			return;
@@ -97,17 +96,17 @@ function verse.plugins.jingle(stream)
 		end
 		if not content then
 			-- FIXME: Fail, no content
-			stream:send(st.error_reply(stanza, "cancel", "feature-not-implemented", "The specified content is not supported"));
+			stream:send(verse.error_reply(stanza, "cancel", "feature-not-implemented", "The specified content is not supported"));
 			return;
 		end
 		
 		if not transport then
 			-- FIXME: Refuse session, no transport
-			stream:send(st.error_reply(stanza, "cancel", "feature-not-implemented", "The specified transport is not supported"));
+			stream:send(verse.error_reply(stanza, "cancel", "feature-not-implemented", "The specified transport is not supported"));
 			return;
 		end
 		
-		stream:send(st.reply(stanza));
+		stream:send(verse.reply(stanza));
 		
 		jingle.content_tag = content_tag;
 		jingle.creator, jingle.name = content_tag.attr.creator, content_tag.attr.name;
@@ -152,7 +151,7 @@ function verse.plugins.jingle(stream)
 	end
 
 	function jingle_mt:send_command(command, element, callback)
-		local stanza = st.iq({ to = self.peer, type = "set" })
+		local stanza = verse.iq({ to = self.peer, type = "set" })
 			:tag("jingle", {
 				xmlns = xmlns_jingle,
 				sid = self.sid,
@@ -168,7 +167,7 @@ function verse.plugins.jingle(stream)
 	end
 		
 	function jingle_mt:accept(options)
-		local accept_stanza = st.iq({ to = self.peer, type = "set" })
+		local accept_stanza = verse.iq({ to = self.peer, type = "set" })
 			:tag("jingle", {
 				xmlns = xmlns_jingle,
 				sid = self.sid,
@@ -204,7 +203,7 @@ function verse.plugins.jingle(stream)
 end
 
 function jingle_mt:offer(name, content)
-	local session_initiate = st.iq({ to = self.peer, type = "set" })
+	local session_initiate = verse.iq({ to = self.peer, type = "set" })
 		:tag("jingle", { xmlns = xmlns_jingle, action = "session-initiate",
 			initiator = self.stream.jid, sid = self.sid });
 	

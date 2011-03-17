@@ -1,4 +1,3 @@
-local st = require "util.stanza";
 local base64 = require "mime".b64;
 local xmlns_sasl = "urn:ietf:params:xml:ns:xmpp-sasl";
 
@@ -11,7 +10,7 @@ function verse.plugins.sasl(stream)
 		--stream.sasl_state, initial_data = sasl_new({"PLAIN"}, stream.username, stream.password, stream.jid);
 		
 		stream:debug("Selecting PLAIN mechanism...");
-		local auth_stanza = st.stanza("auth", { xmlns = xmlns_sasl, mechanism = "PLAIN" });
+		local auth_stanza = verse.stanza("auth", { xmlns = xmlns_sasl, mechanism = "PLAIN" });
 		if initial_data then
 			auth_stanza:text(initial_data);
 		end

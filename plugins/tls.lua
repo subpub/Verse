@@ -1,4 +1,3 @@
-local st = require "util.stanza";
 local xmlns_tls = "urn:ietf:params:xml:ns:xmpp-tls";
 
 function verse.plugins.tls(stream)
@@ -6,7 +5,7 @@ function verse.plugins.tls(stream)
 		if stream.authenticated then return; end
 		if features_stanza:get_child("starttls", xmlns_tls) and stream.conn.starttls then
 			stream:debug("Negotiating TLS...");
-			stream:send(st.stanza("starttls", { xmlns = xmlns_tls }));
+			stream:send(verse.stanza("starttls", { xmlns = xmlns_tls }));
 			return true;
 		elseif not stream.conn.starttls and not stream.secure then
 			stream:warn("SSL libary (LuaSec) not loaded, so TLS not available");

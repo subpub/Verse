@@ -1,5 +1,4 @@
 local events = require "events";
-local st = require "util.stanza";
 
 local room_mt = {};
 room_mt.__index = room_mt;
@@ -100,7 +99,7 @@ function verse.plugins.groupchat(stream)
 				room.subject = #subject > 0 and subject or nil;
 			end
 		end);
-		local join_st = st.presence():tag("x",{xmlns = xmlns_muc}):reset();
+		local join_st = verse.presence():tag("x",{xmlns = xmlns_muc}):reset();
 		self:event("pre-groupchat/joining", join_st);
 		room:send(join_st)
 		self:event("groupchat/joining", room);
@@ -134,20 +133,20 @@ function room_mt:send(stanza)
 end
 
 function room_mt:send_message(text)
-	self:send(st.message():tag("body"):text(text));
+	self:send(verse.message():tag("body"):text(text));
 end
 
 function room_mt:set_subject(text)
-	self:send(st.message():tag("subject"):text(text));
+	self:send(verse.message():tag("subject"):text(text));
 end
 
 function room_mt:leave(message)
 	self.stream:event("groupchat/leaving", self);
-	self:send(st.presence({type="unavailable"}));
+	self:send(verse.presence({type="unavailable"}));
 end
 
 function room_mt:admin_set(nick, what, value, reason)
-	self:send(st.iq({type="set"})
+	self:send(verse.iq({type="set"})
 		:query(xmlns_muc .. "#admin")
 			:tag("item", {nick = nick, [what] = value})
 				:tag("reason"):text(reason or ""));

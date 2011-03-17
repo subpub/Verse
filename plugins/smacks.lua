@@ -1,5 +1,3 @@
-local st = require "util.stanza";
-
 local xmlns_sm = "urn:xmpp:sm:2";
 
 function verse.plugins.smacks(stream)
@@ -75,7 +73,7 @@ function verse.plugins.smacks(stream)
 	local function on_bind_success()
 		if not stream.smacks then
 			--stream:unhook("bind-success", on_bind_success);
-			stream:send(st.stanza("enable", { xmlns = xmlns_sm, resume = "true" }));
+			stream:send(verse.stanza("enable", { xmlns = xmlns_sm, resume = "true" }));
 		end
 	end
 
@@ -83,7 +81,7 @@ function verse.plugins.smacks(stream)
 		if features:get_child("sm", xmlns_sm) then
 			stream.stream_management_supported = true;
 			if stream.smacks and stream.bound then -- Already enabled in a previous session - resume
-				stream:send(st.stanza("resume", { xmlns = xmlns_sm,
+				stream:send(verse.stanza("resume", { xmlns = xmlns_sm,
 					h = handled_stanza_count, previd = stream.resumption_token }));
 			else
 				stream:hook("bind-success", on_bind_success);

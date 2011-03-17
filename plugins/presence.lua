@@ -1,4 +1,3 @@
-local st = require "util.stanza"
 function verse.plugins.presence(stream)
 	stream.last_presence = nil;
 
@@ -14,11 +13,8 @@ function verse.plugins.presence(stream)
 		end
 	end
 
-	-- Becase I didn't find util.stanza in the client code.
-	-- And, then the name fits better :)
-	-- // Zash
 	function stream:set_status(opts)
-		local p = st.presence();
+		local p = verse.presence();
 		if type(opts) == "table" then
 			if opts.show then
 				p:tag("show"):text(opts.show):up();

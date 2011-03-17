@@ -5,7 +5,6 @@
 -- COPYING file in the source package for more information.
 --
 
-local st = require "util.stanza";
 local zlib = require "zlib";
 
 local xmlns_compression_feature = "http://jabber.org/features/compress"
@@ -18,7 +17,7 @@ local compression_level = 9;
 local function get_deflate_stream(session)
 	local status, deflate_stream = pcall(zlib.deflate, compression_level);
 	if status == false then
-		local error_st = st.stanza("failure", {xmlns=xmlns_compression_protocol}):tag("setup-failed");
+		local error_st = verse.stanza("failure", {xmlns=xmlns_compression_protocol}):tag("setup-failed");
 		session:send(error_st);
 		session:error("Failed to create zlib.deflate filter: %s", tostring(deflate_stream));
 		return
@@ -30,7 +29,7 @@ end
 local function get_inflate_stream(session)
 	local status, inflate_stream = pcall(zlib.inflate);
 	if status == false then
-		local error_st = st.stanza("failure", {xmlns=xmlns_compression_protocol}):tag("setup-failed");
+		local error_st = verse.stanza("failure", {xmlns=xmlns_compression_protocol}):tag("setup-failed");
 		session:send(error_st);
 		session:error("Failed to create zlib.inflate filter: %s", tostring(inflate_stream));
 		return
@@ -47,7 +46,7 @@ local function setup_compression(session, deflate_stream)
 				session:close({
 					condition = "undefined-condition";
 					text = compressed;
-					extra = st.stanza("failure", {xmlns=xmlns_compression_protocol}):tag("processing-failed");
+					extra = verse.stanza("failure", {xmlns=xmlns_compression_protocol}):tag("processing-failed");
 				});
 				session:warn("Compressed send failed: %s", tostring(compressed));
 				return;
@@ -66,7 +65,7 @@ local function setup_decompression(session, inflate_stream)
 				session:close({
 					condition = "undefined-condition";
 					text = decompressed;
-					extra = st.stanza("failure", {xmlns=xmlns_compression_protocol}):tag("processing-failed");
+					extra = verse.stanza("failure", {xmlns=xmlns_compression_protocol}):tag("processing-failed");
 				});
 				stream:warn("%s", tostring(decompressed));
 				return;
@@ -85,7 +84,7 @@ function verse.plugins.compression(stream)
 				for a in comp_st:children() do
 					local algorithm = a[1]
 					if algorithm == "zlib" then
-						stream:send(st.stanza("compress", {xmlns=xmlns_compression_protocol}):tag("method"):text("zlib"))
+						stream:send(verse.stanza("compress", {xmlns=xmlns_compression_protocol}):tag("method"):text("zlib"))
 						stream:debug("Enabled compression using zlib.")
 						return true;
 					end
