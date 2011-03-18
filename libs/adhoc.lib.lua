@@ -46,7 +46,7 @@ function _M.handle_cmd(command, origin, stanza)
 		stanza = st.error_reply(stanza, data.error.type, data.error.condition, data.error.message);
 		origin.send(stanza);
 		return true;
-	else 
+	else
 		cmdtag = command:cmdtag("executing", sessionid);
 	end
 
@@ -69,9 +69,9 @@ function _M.handle_cmd(command, origin, stanza)
 			end
 			cmdtag:add_child(actions);
 		elseif name == "form" then
-			cmdtag:add_child((content.layout or content):form(content.data));
+			cmdtag:add_child((content.layout or content):form(content.values));
 		elseif name == "result" then
-			cmdtag:add_child((content.layout or content):form(content.data, "result"));
+			cmdtag:add_child((content.layout or content):form(content.values, "result"));
 		elseif name == "other" then
 			cmdtag:add_child(content);
 		end
