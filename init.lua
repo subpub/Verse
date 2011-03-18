@@ -10,6 +10,7 @@ local events = require "util.events";
 
 module("verse", package.seeall);
 local verse = _M;
+_M.server = server;
 
 local stream = {};
 stream.__index = stream;
