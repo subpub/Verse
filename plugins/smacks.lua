@@ -20,8 +20,9 @@ function verse.plugins.smacks(stream)
 		stream.stream_management_supported = nil;
 		if stream.resumption_token then
 			stream.authenticated = nil;
-			stream:connect(stream.connect_host or stream.host, stream.connect_port or 5222);
-			stream:reopen();
+			verse.add_task(1, function ()
+				stream:connect(stream.connect_host or stream.host, stream.connect_port or 5222);
+			end);
 			return true;
 		end
 	end	
