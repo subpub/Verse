@@ -72,6 +72,7 @@ function stream:connect_client(jid, pass)
 		self:close("xml-not-well-formed");
 	end
 	
+	self:hook("connected", function () self:reopen(); end);
 	self:hook("incoming-raw", function (data) return self.data(self.conn, data); end);
 	
 	self.curr_id = 0;
@@ -136,7 +137,6 @@ function stream:connect_client(jid, pass)
 	local function start_connect()
 		-- Initialise connection
 		self:connect(self.connect_host or self.host, self.connect_port or 5222);
-		self:reopen();
 	end
 	
 	if not (self.connect_host or self.connect_port) then
