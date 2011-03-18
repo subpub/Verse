@@ -84,14 +84,14 @@ function verse.plugins.smacks(stream)
 			if stream.smacks and stream.bound then -- Already enabled in a previous session - resume
 				stream:send(verse.stanza("resume", { xmlns = xmlns_sm,
 					h = handled_stanza_count, previd = stream.resumption_token }));
+				return true;
 			else
-				stream:hook("bind-success", on_bind_success);
+				stream:hook("bind-success", on_bind_success, 1);
 			end
-			return true;
 		end
 	end
 
-	stream:hook("stream-features", on_features, 150);
+	stream:hook("stream-features", on_features, 250);
 	stream:hook("stream/"..xmlns_sm, handle_sm_command);
 	--stream:hook("ready", on_stream_ready, 500);
 end
