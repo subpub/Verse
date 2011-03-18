@@ -17,8 +17,10 @@ function verse.plugins.smacks(stream)
 	end
 	
 	local function on_disconnect()
+		stream:debug("smacks: connection lost");
 		stream.stream_management_supported = nil;
 		if stream.resumption_token then
+			stream:debug("smacks: have resumption token, reconnecting in 1s...");
 			stream.authenticated = nil;
 			verse.add_task(1, function ()
 				stream:connect(stream.connect_host or stream.host, stream.connect_port or 5222);
@@ -29,6 +31,7 @@ function verse.plugins.smacks(stream)
 	
 	local function handle_sm_command(stanza)
 		if stanza.name == "r" then -- Request for acks for stanzas we received
+			stream:debug("Ack requested... acking %d handled stanzas", handled_stanza_count);
 			stream:send(verse.stanza("a", { xmlns = xmlns_sm, h = tostring(handled_stanza_count) }));
 		elseif stanza.name == "a" then -- Ack for stanzas we sent
 			local new_ack = tonumber(stanza.attr.h);
@@ -64,6 +67,8 @@ function verse.plugins.smacks(stream)
 				stream:hook("disconnected", on_disconnect, 100);
 			end
 		elseif stanza.name == "resumed" then
+			--TODO: Check h of the resumed element, discard any acked stanzas from
+			--      our queue (to prevent duplicates), then re-send any lost stanzas.
 			stream:debug("Resumed successfully");
 			stream:event("resumed");
 		else
@@ -74,6 +79,7 @@ function verse.plugins.smacks(stream)
 	local function on_bind_success()
 		if not stream.smacks then
 			--stream:unhook("bind-success", on_bind_success);
+			stream:debug("smacks: sending enable");
 			stream:send(verse.stanza("enable", { xmlns = xmlns_sm, resume = "true" }));
 		end
 	end
@@ -82,6 +88,7 @@ function verse.plugins.smacks(stream)
 		if features:get_child("sm", xmlns_sm) then
 			stream.stream_management_supported = true;
 			if stream.smacks and stream.bound then -- Already enabled in a previous session - resume
+				stream:debug("Resuming stream with %d handled stanzas", handled_stanza_count);
 				stream:send(verse.stanza("resume", { xmlns = xmlns_sm,
 					h = handled_stanza_count, previd = stream.resumption_token }));
 				return true;
