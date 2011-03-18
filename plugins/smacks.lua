@@ -65,7 +65,7 @@ function verse.plugins.smacks(stream)
 			end
 		elseif stanza.name == "resumed" then
 			stream:debug("Resumed successfully");
-			stream:send(verse.message{to="me@matthewwild.co.uk", type="chat"}:tag("body"):text("Hi again!"));
+			stream:event("resumed");
 		else
 			stream:warn("Don't know how to handle "..xmlns_sm.."/"..stanza.name);
 		end
