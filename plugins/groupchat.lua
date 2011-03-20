@@ -98,7 +98,7 @@ function verse.plugins.groupchat(stream)
 			if subject then
 				room.subject = #subject > 0 and subject or nil;
 			end
-		end);
+		end, 2000);
 		local join_st = verse.presence():tag("x",{xmlns = xmlns_muc}):reset();
 		self:event("pre-groupchat/joining", join_st);
 		room:send(join_st)
