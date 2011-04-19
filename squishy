@@ -50,6 +50,7 @@ Module "verse.plugins.groupchat"   "plugins/groupchat.lua"
 Module "verse.plugins.uptime"      "plugins/uptime.lua"
 Module "verse.plugins.smacks"      "plugins/smacks.lua"
 Module "verse.plugins.keepalive"   "plugins/keepalive.lua"
+Module "verse.plugins.roster"      "plugins/roster.lua"
 
 Module "net.httpclient_listener" "net/httpclient_listener.lua"
 Module "net.connlisteners" "net/connlisteners.lua"
