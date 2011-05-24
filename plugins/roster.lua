@@ -123,7 +123,9 @@ function verse.plugins.roster(stream)
 					add_item(item)
 					target = roster.items[jid];
 				end
-				stream:event("roster/item-"..event, target);
+				if target then
+					stream:event("roster/item-"..event, target);
+				end
 			-- TODO else return error? Events?
 			end
 			stream:send(verse.reply(stanza))
