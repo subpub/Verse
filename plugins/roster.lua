@@ -5,9 +5,9 @@ local t_insert = table.insert;
 function verse.plugins.roster(stream)
 	local roster = {
 		items = {};
+		ver = "";
 		-- TODO:
 		-- groups = {};
-		-- ver = nil;
 	};
 	stream.roster = roster;
 
@@ -41,6 +41,17 @@ function verse.plugins.roster(stream)
 			t_insert(groups, group:get_text())
 		end
 		return item_table;
+	end
+
+	function roster:load(r)
+		roster.ver, roster.items = r.ver, r.items;
+	end
+
+	function roster:dump()
+		return {
+			ver = roster.ver,
+			items = roster.items,
+		};
 	end
 
 	-- should this be add_contact(item, callback) instead?
@@ -92,12 +103,16 @@ function verse.plugins.roster(stream)
 	end
 
 	function roster:fetch(callback)
-		stream:send_iq(verse.iq({type="get"}):tag("query", { xmlns = xmlns_roster }),
+		stream:send_iq(verse.iq({type="get"}):tag("query", { xmlns = xmlns_roster, ver = roster.ver }),
 			function (result)
 				if result.attr.type == "result" then
 					local query = result:get_child("query", xmlns_roster);
-					for item in query:childtags("item") do
-						add_item(item)
+					if query then
+						roster.items = {};
+						for item in query:childtags("item") do
+							add_item(item)
+						end
+						roster.ver = query.attr.ver or "";
 					end
 					callback(roster);
 				else
@@ -123,6 +138,7 @@ function verse.plugins.roster(stream)
 					add_item(item)
 					target = roster.items[jid];
 				end
+				roster.ver = query.attr.ver;
 				if target then
 					stream:event("roster/item-"..event, target);
 				end
