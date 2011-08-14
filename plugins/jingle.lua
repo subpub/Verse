@@ -263,7 +263,7 @@ function jingle_mt:handle_accepted(jingle_tag)
 	local transport_tag = jingle_tag:child_with_name("transport");
 	self.transport:handle_accepted(transport_tag);
 	self.transport:connect(function (conn)
-		print("CONNECTED (initiator)!")
+		self.stream:debug("CONNECTED (initiator)!")
 		-- Connected, send file
 		self.state = "active";
 		self:event("connected", conn);
