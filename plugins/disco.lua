@@ -375,7 +375,7 @@ function verse.plugins.disco(stream)
 			stream:event("ready");
 		end);
 		return true;
-	end, 5);
+	end, 50);
 	
 	stream:hook("presence-out", function (presence)
 		if not presence:get_child("c", xmlns_caps) then
