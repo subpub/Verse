@@ -81,7 +81,7 @@ function verse.plugins.roster(stream)
 				:add_child(item_lua2xml(item)),
 			function (reply)
 				if not callback then return end
-				if result.attr.type == "result" then
+				if reply.attr.type == "result" then
 					callback(true);
 				else
 					type, condition, text = reply:get_error();
