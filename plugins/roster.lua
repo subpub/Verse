@@ -1,8 +1,10 @@
 local xmlns_roster = "jabber:iq:roster";
+local xmlns_rosterver = "urn:xmpp:features:rosterver";
 local bare_jid = require "util.jid".bare;
 local t_insert = table.insert;
 
 function verse.plugins.roster(stream)
+	local ver_supported = false;
 	local roster = {
 		items = {};
 		ver = "";
@@ -10,6 +12,12 @@ function verse.plugins.roster(stream)
 		-- groups = {};
 	};
 	stream.roster = roster;
+
+	stream:hook("stream-features", function(features_stanza)
+		if features_stanza:get_child("ver", xmlns_rosterver) then
+			ver_supported = true;
+		end
+	end);
 
 	local function item_lua2xml(item_table)
 		local xml_item = verse.stanza("item", { xmlns = xmlns_roster });
@@ -103,7 +111,7 @@ function verse.plugins.roster(stream)
 	end
 
 	function roster:fetch(callback)
-		stream:send_iq(verse.iq({type="get"}):tag("query", { xmlns = xmlns_roster, ver = roster.ver }),
+		stream:send_iq(verse.iq({type="get"}):tag("query", { xmlns = xmlns_roster, ver = ver_supported and roster.ver or nil }),
 			function (result)
 				if result.attr.type == "result" then
 					local query = result:get_child("query", xmlns_roster);
