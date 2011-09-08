@@ -3,22 +3,11 @@ local xmlns_pubsub = "http://jabber.org/protocol/pubsub";
 local xmlns_pubsub_event = xmlns_pubsub.."#event";
 
 function verse.plugins.pep(stream)
+	stream:add_plugin("pubsub");
 	stream.pep = {};
 	
-	stream:hook("message", function (message)
-		local event = message:get_child("event", xmlns_pubsub_event);
-		if not event then return; end
-		local items = event:get_child("items");
-		if not items then return; end
-		local node = items.attr.node;
-		for item in items:childtags() do
-			if item.name == "item" and item.attr.xmlns == xmlns_pubsub_event then
-				stream:event("pep/"..node, {
-					from = message.attr.from,
-					item = item.tags[1],
-				});
-			end
-		end
+	stream:hook("pubsub/event", function(event)
+		return stream:event("pep/"..event.node, { from = event.from, item = event.item[1] } );
 	end);
 	
 	function stream:hook_pep(node, callback, priority)
@@ -38,11 +27,6 @@ function verse.plugins.pep(stream)
 	end
 	
 	function stream:publish_pep(item, node)
-		local publish = verse.iq({ type = "set" })
-			:tag("pubsub", { xmlns = xmlns_pubsub })
-				:tag("publish", { node = node or item.attr.xmlns })
-					:tag("item")
-						:add_child(item);
-		return stream:send_iq(publish);
+		return stream.pubsub:publish(nil, node or item.attr.xmlns, nil, item)
 	end
 end
