@@ -92,11 +92,14 @@ function verse.plugins.groupchat(stream)
 				end
 			end
 		end);
-		room:hook("message", function(msg)
-			local subject = msg.stanza:get_child("subject");
-			subject = subject and subject:get_text();
-			if subject then
-				room.subject = #subject > 0 and subject or nil;
+		room:hook("message", function(event)
+			local subject = event.stanza:get_child_text("subject");
+			if not subject then return end
+			subject = #subject > 0 and subject or nil;
+			if subject ~= room.subject then
+				local old_subject = room.subject;
+				room.subject = subject;
+				return room:event("subject-changed", { from = old_subject, to = subject, by = event.sender, event = event });
 			end
 		end, 2000);
 		local join_st = verse.presence():tag("x",{xmlns = xmlns_muc}):reset();
