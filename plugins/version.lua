@@ -30,15 +30,15 @@ function verse.plugins.version(stream)
 		stream:send_iq(verse.iq({ type = "get", to = target_jid })
 			:tag("query", { xmlns = xmlns_version }), 
 			function (reply)
-				local query = reply:get_child("query", xmlns_version);
 				if reply.attr.type == "result" then
-					local name = query:get_child("name");
-					local version = query:get_child("version");
-					local os = query:get_child("os");
+					local query = reply:get_child("query", xmlns_version);
+					local name = query and query:get_child_text("name");
+					local version = query and query:get_child_text("version");
+					local os = query and query:get_child_text("os");
 					callback({
-						name = name and name:get_text() or nil;
-						version = version and version:get_text() or nil;
-						platform = os and os:get_text() or nil;
+						name = name;
+						version = version;
+						platform = os;
 						});
 				else
 					local type, condition, text = reply:get_error();
