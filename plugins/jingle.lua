@@ -97,13 +97,13 @@ function verse.plugins.jingle(stream)
 		if not content then
 			-- FIXME: Fail, no content
 			stream:send(verse.error_reply(stanza, "cancel", "feature-not-implemented", "The specified content is not supported"));
-			return;
+			return true;
 		end
 		
 		if not transport then
 			-- FIXME: Refuse session, no transport
 			stream:send(verse.error_reply(stanza, "cancel", "feature-not-implemented", "The specified transport is not supported"));
-			return;
+			return true;
 		end
 		
 		stream:send(verse.reply(stanza));
