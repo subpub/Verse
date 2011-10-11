@@ -27,6 +27,22 @@ function verse.plugins.pubsub(stream)
 	return true;
 end
 
+function pubsub:create(server, node, callback)
+	local create = verse.iq({ to = server, type = "set" })
+		:tag("pubsub", { xmlns = xmlns_pubsub })
+			:tag("create", { node = node }):up()
+	self.stream:send_iq(create, function (result)
+		if callback then
+			if result.attr.type == "result" then
+				callback(true);
+			else
+				callback(false, result:get_error());
+			end
+		end
+	  end
+	);
+end
+
 function pubsub:subscribe(server, node, jid, callback)
 	self.stream:send_iq(verse.iq({ to = server, type = "set" })
 		:tag("pubsub", { xmlns = xmlns_pubsub })
