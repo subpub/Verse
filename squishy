@@ -58,6 +58,7 @@ Plugin "keepalive"
 Plugin "roster"
 Plugin "vcard"
 Plugin "vcard_update"
+Plugin "carbons"
 
 Module "net.httpclient_listener" "net/httpclient_listener.lua"
 Module "net.connlisteners" "net/connlisteners.lua"
