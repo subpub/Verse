@@ -31,13 +31,17 @@ function verse.plugins.vcard_update(stream)
 	local x_vcard_update;
 
 	function update_vcard_photo(vCard) 
-		local photo = vCard and vCard:get_child("PHOTO");
-		local binval = photo and photo:get_child("BINVAL");
-		local data = binval and binval:get_text();
+		local data;
+		for i=1,#vCard do
+			if vCard[i].name == "PHOTO" then
+				data = vCard[i][1];
+				break
+			end
+		end
 		if data then
 			local hash = sha1(unb64(data), true);
 			x_vcard_update = verse.stanza("x", { xmlns = xmlns_vcard_update })
-				:tag("photo"):text(hash);
+			:tag("photo"):text(hash);
 
 			stream:resend_presence()
 		else
@@ -70,12 +74,8 @@ function verse.plugins.vcard_update(stream)
 		initial_vcard_fetch_started = true;
 		-- if stream:jid_supports(nil, xmlns_vcard) then TODO this, correctly
 		stream:get_vcard(nil, function(response)
-			-- FIXME Picking out the vCard element should be done in get_vcard()
-			if response.attr.type == "result" then
-				local vCard = response:get_child("vCard", xmlns_vcard);
-				if vCard then
-					update_vcard_photo(vCard);
-				end
+			if response then
+				update_vcard_photo(response)
 			end
 			stream:event("ready");
 		end);
