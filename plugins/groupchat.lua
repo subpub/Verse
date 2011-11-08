@@ -20,14 +20,14 @@ function verse.plugins.groupchat(stream)
 		if room and room.opts.source and stanza.attr.to ~= room.opts.source then return end
 		if room then
 			local nick = select(3, jid.split(stanza.attr.from));
-			local body = stanza:get_child("body");
+			local body = stanza:get_child_text("body");
 			local delay = stanza:get_child("delay", xmlns_delay);
 			local event = {
 				room_jid = room_jid;
 				room = room;
 				sender = room.occupants[nick];
 				nick = nick;
-				body = (body and body:get_text()) or nil;
+				body = body;
 				stanza = stanza;
 				delay = (delay and delay.attr.stamp);
 			};
