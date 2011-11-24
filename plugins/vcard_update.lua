@@ -92,7 +92,7 @@ function verse.plugins.vcard_update(stream)
 	stream:hook("presence", function(presence)
 			local x_vcard_update = presence:get_child("x", xmlns_vcard_update);
 			local photo_hash = x_vcard_update and x_vcard_update:get_child("photo");
-				:get_child("photo"):get_text(hash);
+				:get_child_text("photo");
 			if x_vcard_update then
 				-- TODO Cache peoples avatars here
 			end
