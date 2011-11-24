@@ -7,7 +7,7 @@ function verse.plugins.pep(stream)
 	stream.pep = {};
 	
 	stream:hook("pubsub/event", function(event)
-		return stream:event("pep/"..event.node, { from = event.from, item = event.item[1] } );
+		return stream:event("pep/"..event.node, { from = event.from, item = event.item.tags[1] } );
 	end);
 	
 	function stream:hook_pep(node, callback, priority)
