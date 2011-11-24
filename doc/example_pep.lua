@@ -48,7 +48,7 @@ c:hook("ready", function ()
 	end);
 	
 	c:hook_pep("http://jabber.org/protocol/tune", function (event)
-		print(event.from.." is listening to "..event.item:get_child("title"):get_text());
+		print(event.from.." is listening to "..event.item:get_child_text("title"));
 	end);
 end);
 
