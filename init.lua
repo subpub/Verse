@@ -22,7 +22,7 @@ verse.plugins = {};
 function verse.new(logger, base)
 	local t = setmetatable(base or {}, stream);
 	t.id = tostring(t):match("%x*$");
-	t:set_logger(logger or verse.log, true);
+	t.logger = logger or verse.new_logger("stream"..t.id);
 	t.events = events.new();
 	t.plugins = {};
 	return t;
@@ -30,25 +30,16 @@ end
 
 verse.add_task = require "util.timer".add_task;
 
-verse.logger = logger.init; -- Deprecated
+verse.logger = logger.init; -- COMPAT: Deprecated
 verse.new_logger = logger.init;
 verse.log = verse.logger("verse");
 
-function verse.set_logger(logger)
-	verse.log = logger;
-	server.setlogger(logger);
-end
-
-function verse.filter_log(levels, logger)
-	local level_set = {};
-	for _, level in ipairs(levels) do
-		level_set[level] = true;
+function verse.set_log_handler(log_handler, levels)
+	levels = levels or { "debug", "info", "warn", "error" };
+	logger.reset();
+	for i, level in ipairs(levels) do
+		logger.add_level_sink(level, log_handler);
 	end
-	return function (level, name, ...)
-		if level_set[level] then
-			return logger(level, name, ...);
-		end
-	end;
 end
 
 local function error_handler(err)
@@ -114,42 +105,15 @@ end
 
 -- Logging functions
 function stream:debug(...)
-	if self.logger and self.log.debug then
-		return self.logger("debug", ...);
-	end
+	return self.logger("debug", ...);
 end
 
 function stream:warn(...)
-	if self.logger and self.log.warn then
-		return self.logger("warn", ...);
-	end
+	return self.logger("warn", ...);
 end
 
 function stream:error(...)
-	if self.logger and self.log.error then
-		return self.logger("error", ...);
-	end
-end
-
-function stream:set_logger(logger, levels)
-	local old_logger = self.logger;
-	if logger then
-		self.logger = logger;
-	end
-	if levels then
-		if levels == true then
-			levels = { "debug", "info", "warn", "error" };
-		end
-		self.log = {};
-		for _, level in ipairs(levels) do
-			self.log[level] = true;
-		end
-	end
-	return old_logger;
-end
-
-function stream_mt:set_log_levels(levels)
-	self:set_logger(nil, levels);
+	return self.logger("error", ...);
 end
 
 -- Event handling
