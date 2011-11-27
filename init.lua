@@ -19,9 +19,12 @@ stream_mt = stream;
 
 verse.plugins = {};
 
+local max_id = 0;
+
 function verse.new(logger, base)
 	local t = setmetatable(base or {}, stream);
-	t.id = tostring(t):match("%x*$");
+	max_id = max_id + 1;
+	t.id = tostring(max_id);
 	t.logger = logger or verse.new_logger("stream"..t.id);
 	t.events = events.new();
 	t.plugins = {};
