@@ -55,6 +55,11 @@ function verse.set_log_handler(log_handler, levels)
 	end
 end
 
+function _default_log_handler(name, level, message)
+	return io.stderr:write(name, "\t", level, "\t", message, "\n");
+end
+verse.set_log_handler(_default_log_handler, { "error" });
+
 local function error_handler(err)
 	verse.log("error", "Error: %s", err);
 	verse.log("error", "Traceback: %s", debug.traceback());
