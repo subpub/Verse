@@ -29,38 +29,35 @@ Module "util.caps"		"util/caps.lua"
 Module "util.vcard"		"util/vcard.lua"
 
 -- Verse plugins
-local function Plugin(name)
-	Module("verse.plugins."..name)("plugins/"..name..".lua")
-end
-Plugin "tls"
-Plugin "sasl"
-Plugin "bind"
-Plugin "legacy"
-Plugin "pubsub"
-Plugin "version"
-Plugin "ping"
-Plugin "session"
-Plugin "compression"
-Plugin "blocking"
-Plugin "proxy65"
-Plugin "jingle"
-Plugin "jingle_ft"
-Plugin "jingle_s5b"
-Plugin "jingle_ibb"
-Plugin "presence"
-Plugin "disco"
-Plugin "pep"
-Plugin "adhoc"
-Plugin "private"
-Plugin "groupchat"
-Plugin "uptime"
-Plugin "smacks"
-Plugin "keepalive"
-Plugin "roster"
-Plugin "vcard"
-Plugin "vcard_update"
-Plugin "carbons"
+plugins = {
+	-- Login
+	"tls", "sasl", "bind", "session", "legacy", "compression";
+	-- Reliability
+	"smacks", "keepalive";
+	-- Queries
+	"disco", "version", "ping", "uptime";
+	-- Privacy control
+	"blocking";
+	-- Jingle / file transfer
+	"jingle", "jingle_ft", "jingle_s5b", "proxy65", "jingle_ibb";
+	-- Pubsub
+	"pubsub", "pep";
+	-- Command and control
+	"adhoc";
+	-- Basics
+	"presence", "private", "roster", "register";
+	-- MUC
+	"groupchat";
+	-- vCard
+	"vcard", "vcard_update";
+	-- Carbons
+	"carbons";
+}
 
+for _, plugin in ipairs(plugins) do
+	Module("verse.plugins."..plugin)("plugins/"..plugin..".lua")
+end
+	
 Module "net.httpclient_listener" "net/httpclient_listener.lua"
 Module "net.connlisteners" "net/connlisteners.lua"
 Module "util.httpstream" "util/httpstream.lua"
