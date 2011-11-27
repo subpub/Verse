@@ -21,7 +21,7 @@ verse.plugins = {};
 function verse.new(logger, base)
 	local t = setmetatable(base or {}, stream);
 	t.id = tostring(t):match("%x*$");
-	t:set_logger(logger, true);
+	t:set_logger(logger or verse.log, true);
 	t.events = events.new();
 	t.plugins = {};
 	return t;
