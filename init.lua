@@ -29,7 +29,8 @@ end
 
 verse.add_task = require "util.timer".add_task;
 
-verse.logger = logger.init;
+verse.logger = logger.init; -- Deprecated
+verse.new_logger = logger.init;
 verse.log = verse.logger("verse");
 
 function verse.set_logger(logger)
