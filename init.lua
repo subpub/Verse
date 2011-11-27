@@ -37,12 +37,20 @@ verse.logger = logger.init; -- COMPAT: Deprecated
 verse.new_logger = logger.init;
 verse.log = verse.logger("verse");
 
+local function format(format, ...)
+	local n, arg, maxn = 0, { ... }, select('#', ...);
+	return (format:gsub("%%(.)", function (c) if n <= maxn then n = n + 1; return tostring(arg[n]); end end));
+end
+
 function verse.set_log_handler(log_handler, levels)
 	levels = levels or { "debug", "info", "warn", "error" };
 	logger.reset();
+	local function _log_handler(name, level, message, ...)
+		return log_handler(name, level, format(message, ...));
+	end
 	if log_handler then
 		for i, level in ipairs(levels) do
-			logger.add_level_sink(level, log_handler);
+			logger.add_level_sink(level, _log_handler);
 		end
 	end
 end
