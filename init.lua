@@ -7,6 +7,7 @@ pcall(require, "ssl");
 
 local server = require "net.server";
 local events = require "util.events";
+local logger = require "util.logger";
 
 module("verse", package.seeall);
 local verse = _M;
