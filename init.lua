@@ -40,8 +40,10 @@ verse.log = verse.logger("verse");
 function verse.set_log_handler(log_handler, levels)
 	levels = levels or { "debug", "info", "warn", "error" };
 	logger.reset();
-	for i, level in ipairs(levels) do
-		logger.add_level_sink(level, log_handler);
+	if log_handler then
+		for i, level in ipairs(levels) do
+			logger.add_level_sink(level, log_handler);
+		end
 	end
 end
 
