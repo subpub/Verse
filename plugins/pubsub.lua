@@ -29,60 +29,17 @@ function verse.plugins.pubsub(stream)
 	return true;
 end
 
+-- COMPAT
 function pubsub:create(server, node, callback)
-	self.stream:warn("pubsub:create() is deprecated, "
-		.."you should use pubsub:service(%q):node(%q):create() instead\n%s", server or "", node, debug.traceback());
-	local create = verse.iq({ to = server, type = "set" })
-		:tag("pubsub", { xmlns = xmlns_pubsub })
-			:tag("create", { node = node }):up()
-	self.stream:send_iq(create, function (result)
-		if callback then
-			if result.attr.type == "result" then
-				callback(true);
-			else
-				callback(false, result:get_error());
-			end
-		end
-	  end
-	);
+	return self:server(server):node(node):create(nil, callback);
 end
 
 function pubsub:subscribe(server, node, jid, callback)
-	self.stream:warn("pubsub:subscribe() is deprecated, "
-		.."you should use pubsub:service(%q):node(%q):subscribe(jid) instead\n%s", server or "", node, debug.traceback());
-	self.stream:send_iq(verse.iq({ to = server, type = "set" })
-		:tag("pubsub", { xmlns = xmlns_pubsub })
-			:tag("subscribe", { node = node, jid = jid or jid_bare(self.stream.jid) })
-	, function (result)
-		if callback then
-			if result.attr.type == "result" then
-				callback(true);
-			else
-				callback(false, result:get_error());
-			end
-		end
-	  end
-	);
+	return self:server(server):node(node):subscribe(jid, nil, callback);
 end
 
 function pubsub:publish(server, node, id, item, callback)
-	self.stream:warn("pubsub:publish() is deprecated, "
-		.."you should use pubsub:service(%q):node(%q):publish() instead\n%s", server or "", node, debug.traceback());
-	self.stream:send_iq(verse.iq({ to = server, type = "set" })
-		:tag("pubsub", { xmlns = xmlns_pubsub })
-			:tag("publish", { node = node })
-				:tag("item", { id = id })
-					:add_child(item)
-	, function (result)
-		if callback then
-			if result.attr.type == "result" then
-				callback(true);
-			else
-				callback(false, result:get_error());
-			end
-		end
-	  end
-	);
+	return self:server(server):node(node):publish(id, nil, item, callback);
 end
 
 --------------------------------------------------------------------------
