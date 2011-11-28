@@ -27,6 +27,6 @@ function verse.plugins.pep(stream)
 	end
 	
 	function stream:publish_pep(item, node)
-		return stream.pubsub:publish(nil, node or item.attr.xmlns, nil, item)
+		return stream.pubsub:service(nil):node(node or item.attr.xmlns):publish(nil, nil, item)
 	end
 end
