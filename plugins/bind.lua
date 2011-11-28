@@ -9,8 +9,7 @@ function verse.plugins.bind(stream)
 				if reply.attr.type == "result" then
 					local result_jid = reply
 						:get_child("bind", xmlns_bind)
-							:get_child("jid")
-								:get_text();
+							:get_child_text("jid");
 					stream.username, stream.host, stream.resource = jid.split(result_jid);
 					stream.jid, stream.bound = result_jid, true;
 					stream:event("bind-success", { jid = result_jid });
