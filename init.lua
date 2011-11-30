@@ -28,6 +28,7 @@ function verse.new(logger, base)
 	t.logger = logger or verse.new_logger("stream"..t.id);
 	t.events = events.new();
 	t.plugins = {};
+	t.verse = verse;
 	return t;
 end
 
@@ -200,8 +201,5 @@ function new_listener(stream)
 	
 	return conn_listener;
 end
-
-
-local log = require "util.logger".init("verse");
 
 return verse;
