@@ -1,3 +1,5 @@
+local verse = require "verse";
+
 local xmlns_carbons = "urn:xmpp:carbons:1";
 local xmlns_forward = "urn:xmpp:forward:0";
 local os_date = os.date;

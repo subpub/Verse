@@ -1,3 +1,5 @@
+local verse = require "verse";
+
 local xmlns_session = "urn:ietf:params:xml:ns:xmpp-session";
 
 function verse.plugins.session(stream)

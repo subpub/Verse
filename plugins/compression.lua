@@ -5,6 +5,7 @@
 -- COPYING file in the source package for more information.
 --
 
+local verse = require "verse";
 local zlib = require "zlib";
 
 local xmlns_compression_feature = "http://jabber.org/features/compress"

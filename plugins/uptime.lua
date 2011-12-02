@@ -1,3 +1,5 @@
+local verse = require "verse";
+
 local xmlns_last = "jabber:iq:last";
 
 local function set_uptime(self, uptime_info)

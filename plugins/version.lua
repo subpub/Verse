@@ -1,3 +1,5 @@
+local verse = require "verse";
+
 local xmlns_version = "jabber:iq:version";
 
 local function set_version(self, version_info)

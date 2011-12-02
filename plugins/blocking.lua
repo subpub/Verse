@@ -1,3 +1,5 @@
+local verse = require "verse";
+
 local xmlns_blocking = "urn:xmpp:blocking";
 
 function verse.plugins.blocking(stream)

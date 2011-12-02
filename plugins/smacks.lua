@@ -1,3 +1,5 @@
+local verse = require "verse";
+
 local xmlns_sm = "urn:xmpp:sm:2";
 
 function verse.plugins.smacks(stream)

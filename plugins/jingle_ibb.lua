@@ -1,10 +1,12 @@
+local verse = require "verse";
+local base64 = require "util.encodings".base64;
+local uuid_generate = require "util.uuid".generate;
+
 local xmlns_jingle_ibb = "urn:xmpp:jingle:transports:ibb:1";
 local xmlns_ibb = "http://jabber.org/protocol/ibb";
-local base64 = require "util.encodings".base64;
 assert(base64.encode("This is a test.") == "VGhpcyBpcyBhIHRlc3Qu", "Base64 encoding failed");
 assert(base64.decode("VGhpcyBpcyBhIHRlc3Qu") == "This is a test.", "Base64 decoding failed");
 local t_concat = table.concat
-local uuid_generate = require "util.uuid".generate;
 
 local ibb_conn = {};
 local ibb_conn_mt = { __index = ibb_conn };

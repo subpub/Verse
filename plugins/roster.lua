@@ -1,6 +1,8 @@
+local verse = require "verse";
+local bare_jid = require "util.jid".bare;
+
 local xmlns_roster = "jabber:iq:roster";
 local xmlns_rosterver = "urn:xmpp:features:rosterver";
-local bare_jid = require "util.jid".bare;
 local t_insert = table.insert;
 
 function verse.plugins.roster(stream)

@@ -1,3 +1,4 @@
+local verse = require "verse";
 local ltn12 = require "ltn12";
 
 local dirsep = package.config:sub(1,1);

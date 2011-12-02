@@ -1,3 +1,5 @@
+local verse = require "verse";
+
 local xmlns_tls = "urn:ietf:params:xml:ns:xmpp-tls";
 
 function verse.plugins.tls(stream)

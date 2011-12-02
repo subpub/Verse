@@ -1,4 +1,6 @@
+local verse = require "verse";
 local jid_bare = require "util.jid".bare;
+
 local t_insert = table.insert;
 
 local xmlns_pubsub = "http://jabber.org/protocol/pubsub";
@@ -227,4 +229,3 @@ end
 function pubsub_node:delete(callback)
 	error("Not implemented yet.");
 end
-

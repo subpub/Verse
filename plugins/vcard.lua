@@ -1,5 +1,7 @@
-local xmlns_vcard = "vcard-temp";
+local verse = require "verse";
 local vcard = require "util.vcard";
+
+local xmlns_vcard = "vcard-temp";
 
 function verse.plugins.vcard(stream)
 	function stream:get_vcard(jid, callback) --jid = nil for self

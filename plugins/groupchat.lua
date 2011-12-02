@@ -1,3 +1,4 @@
+local verse = require "verse";
 local events = require "events";
 
 local room_mt = {};

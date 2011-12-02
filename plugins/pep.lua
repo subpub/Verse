@@ -1,3 +1,4 @@
+local verse = require "verse";
 
 local xmlns_pubsub = "http://jabber.org/protocol/pubsub";
 local xmlns_pubsub_event = xmlns_pubsub.."#event";
