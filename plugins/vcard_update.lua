@@ -1,3 +1,5 @@
+local verse = require "verse";
+
 local xmlns_vcard, xmlns_vcard_update = "vcard-temp", "vcard-temp:x:update";
 
 -- MMMmmmm.. hacky

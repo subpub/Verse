@@ -1,3 +1,5 @@
+local verse = require "verse";
+
 local xmlns_bind = "urn:ietf:params:xml:ns:xmpp-bind";
 
 function verse.plugins.bind(stream)
@@ -23,4 +25,3 @@ function verse.plugins.bind(stream)
 	stream:hook("stream-features", handle_features, 200);
 	return true;
 end
-

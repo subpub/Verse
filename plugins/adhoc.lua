@@ -1,3 +1,4 @@
+local verse = require "verse";
 local adhoc = require "lib.adhoc";
 
 local xmlns_commands = "http://jabber.org/protocol/commands";

@@ -1,3 +1,5 @@
+local verse = require "verse";
+
 -- Implements XEP-0049: Private XML Storage
 
 local xmlns_private = "jabber:iq:private";

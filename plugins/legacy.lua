@@ -1,3 +1,4 @@
+local verse = require "verse";
 local uuid = require "util.uuid".generate;
 
 local xmlns_auth = "jabber:iq:auth";

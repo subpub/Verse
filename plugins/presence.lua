@@ -1,3 +1,5 @@
+local verse = require "verse";
+
 function verse.plugins.presence(stream)
 	stream.last_presence = nil;
 

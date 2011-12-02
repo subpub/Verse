@@ -1,3 +1,5 @@
+local verse = require "verse";
+
 local xmlns_register = "jabber:iq:register";
 
 function verse.plugins.register(stream)
