@@ -145,13 +145,10 @@ function room_mt:set_subject(text)
 end
 
 function room_mt:leave(message)
-	local presence = nil;
 	self.stream:event("groupchat/leaving", self);
+	local presence = verse.presence({type="unavailable"});
 	if message then
-		presence = verse.presence({type="unavailable"}):tag("status"):text(message);
-	else
-		presence = verse.presence({type="unavailable"});
-	end
+		presence:tag("status"):text(message);
 	self:send(presence);
 end
 
