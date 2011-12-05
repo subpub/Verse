@@ -19,6 +19,17 @@ stream_mt = stream;
 
 verse.plugins = {};
 
+function verse.init(...)
+	for i=1,select("#", ...) do
+		local ok = pcall(require, "verse."..select(i,...));
+		if not ok then
+			error("Verse connection module not found: verse."..select(i,...));
+		end
+	end
+	return verse;
+end
+
+
 local max_id = 0;
 
 function verse.new(logger, base)
