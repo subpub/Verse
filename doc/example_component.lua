@@ -1,9 +1,9 @@
 local jid, password = "echo.localhost", "hellohello";
 
 --os.execute("squish --minify-level=none verse");
-require "verse"
-require "verse.component"
-require "socket"
+
+require "verse".init("component");
+
 c = verse.new(verse.logger())
 c:add_plugin("version");
 c:add_plugin("ping");

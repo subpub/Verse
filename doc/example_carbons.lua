@@ -5,8 +5,7 @@ local xmlns_forward = "urn:xmpp:forward:0";
 -- handy if you're hacking on Verse itself
 --os.execute("squish --minify-level=none verse");
 
-require "verse" -- Verse main library
-require "verse.client" -- XMPP client library
+require "verse".init("client");
 
 c = verse.new();--verse.logger());
 c:add_plugin "carbons"
