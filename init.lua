@@ -127,6 +127,10 @@ function stream:debug(...)
 	return self.logger("debug", ...);
 end
 
+function stream:info(...)
+	return self.logger("info", ...);
+end
+
 function stream:warn(...)
 	return self.logger("warn", ...);
 end
