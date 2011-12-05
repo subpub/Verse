@@ -5,8 +5,7 @@ local jid, password = "user@example.com/receiver", "secret";
 -- handy if you're hacking on Verse itself
 --os.execute("squish --minify-level=none");
 
-require "verse" -- Verse main library
-require "verse.client" -- XMPP client library
+require "verse".init("client");
 
 c = verse.new(verse.logger())
 c:add_plugin("version");

@@ -6,9 +6,7 @@ local url = "http://example.com:80/http-bind";
 -- handy if you're hacking on Verse itself
 --os.execute("squish --minify-level=none verse");
 
-require "verse" -- Verse main library
-require "verse.bosh" -- Verse BOSH support
-require "verse.client" -- XMPP client library
+require "verse".init("client", "bosh");
 
 c = verse.new_bosh(nil, url);
 c:add_plugin("version");
