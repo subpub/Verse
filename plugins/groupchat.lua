@@ -149,6 +149,7 @@ function room_mt:leave(message)
 	local presence = verse.presence({type="unavailable"});
 	if message then
 		presence:tag("status"):text(message);
+	end
 	self:send(presence);
 end
 
