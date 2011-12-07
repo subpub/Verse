@@ -158,7 +158,9 @@ function stream_mt:_handle_response(response, code, request)
 end
 
 function stream_mt:_handle_response_payload(payload)
-	for stanza in payload:childtags() do
+	local stanzas = payload.tags;
+	for i = 1, #stanzas do
+		local stanza = stanzas[i];
 		if stanza.attr.xmlns == xmlns_stream then
 			self:event("stream-"..stanza.name, stanza);
 		elseif stanza.attr.xmlns then
