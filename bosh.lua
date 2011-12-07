@@ -187,7 +187,7 @@ function stream_mt:_parse_response(response)
 		self:_disconnected();
 		return;
 	end
-	local session = { notopen = true, log = self.log };
+	local session = { notopen = true, stream = self };
 	local stream = new_xmpp_stream(session, stream_callbacks);
 	stream:feed(response);
 	return session.payload;
