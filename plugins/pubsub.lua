@@ -181,7 +181,7 @@ function pubsub_node:publish(id, options, node, callback)
 	if options ~= nil then
 		error("Node configuration is not implemented yet.");
 	end
-	self.stream:send_iq(pubsub_iq("set", self.service, nil, "publish", self.node, nil, id)
+	self.stream:send_iq(pubsub_iq("set", self.service, nil, "publish", self.node, nil, id or true)
 	:add_child(node)
 	, callback);
 end
