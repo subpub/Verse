@@ -62,7 +62,7 @@ local function pubsub_iq(iq_type, to, ns, op, node, jid, item_id)
 	local st = verse.iq{ type = iq_type or "get", to = to }
 		:tag("pubsub", { xmlns = ns or xmlns_pubsub }) -- ns would be ..#owner
 			if op then st:tag(op, { node = node, jid = jid }); end
-				if id then st:tag("item", { id = item_id ~= true and item_id or nil }); end
+				if item_id then st:tag("item", { id = item_id ~= true and item_id or nil }); end
 	return st;
 end
 
