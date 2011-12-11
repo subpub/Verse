@@ -33,15 +33,15 @@ end
 
 -- COMPAT
 function pubsub:create(server, node, callback)
-	return self:server(server):node(node):create(nil, callback);
+	return self:service(server):node(node):create(nil, callback);
 end
 
 function pubsub:subscribe(server, node, jid, callback)
-	return self:server(server):node(node):subscribe(jid, nil, callback);
+	return self:service(server):node(node):subscribe(jid, nil, callback);
 end
 
 function pubsub:publish(server, node, id, item, callback)
-	return self:server(server):node(node):publish(id, nil, item, callback);
+	return self:service(server):node(node):publish(id, nil, item, callback);
 end
 
 --------------------------------------------------------------------------
