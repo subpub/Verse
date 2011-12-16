@@ -119,6 +119,17 @@ function verse.plugins.disco(stream)
 		end
 	})
 	
+	function stream:set_identity(identity, node)
+		self.disco.info[node or false].identities = { identity };
+		stream:resend_presence();
+	end
+
+	function stream:add_identity(identity, node)
+		local identities = self.disco.info[node or false].identities;
+		identities[#identities + 1] = identity;
+		stream:resend_presence();
+	end
+
 	function stream:add_disco_feature(feature, node)
 		local feature = feature.var or feature;
 		self.disco.info[node or false].features[feature] = true;
