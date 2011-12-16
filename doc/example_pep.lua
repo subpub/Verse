@@ -9,7 +9,6 @@ require "verse".init("client");
 
 c = verse.new();
 c:add_plugin("version");
-c:add_plugin("disco");
 c:add_plugin("pep");
 
 -- Add some hooks for debugging
@@ -33,15 +32,7 @@ c:connect_client(jid, password);
 -- Catch the "ready" event to know when the stream is ready to use
 c:hook("ready", function ()
 	print("Stream ready!");
-	c:send(verse.presence());
 	c.version:set{ name = "verse example client" };
-	c:publish_pep(verse.stanza("tune", { xmlns = "http://jabber.org/protocol/tune" })
-		:tag("title"):text("Beautiful Cedars"):up()
-		:tag("artist"):text("The Spinners"):up()
-		:tag("source"):text("Not Quite Folk"):up()
-		:tag("track"):text("4"):up()
-	);
-	
 	c:hook_pep("http://jabber.org/protocol/mood", function (event)
 		print(event.from.." is "..event.item.tags[1].name);
 	end);
@@ -49,6 +40,16 @@ c:hook("ready", function ()
 	c:hook_pep("http://jabber.org/protocol/tune", function (event)
 		print(event.from.." is listening to "..event.item:get_child_text("title"));
 	end);
+
+	c:send(verse.presence());
+
+	c:publish_pep(verse.stanza("tune", { xmlns = "http://jabber.org/protocol/tune" })
+		:tag("title"):text("Beautiful Cedars"):up()
+		:tag("artist"):text("The Spinners"):up()
+		:tag("source"):text("Not Quite Folk"):up()
+		:tag("track"):text("4"):up()
+	);
+	
 end);
 
 print("Starting loop...")
