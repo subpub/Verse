@@ -4,6 +4,7 @@ local xmlns_pubsub = "http://jabber.org/protocol/pubsub";
 local xmlns_pubsub_event = xmlns_pubsub.."#event";
 
 function verse.plugins.pep(stream)
+	stream:add_plugin("disco");
 	stream:add_plugin("pubsub");
 	stream.pep = {};
 	
