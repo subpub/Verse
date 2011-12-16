@@ -17,17 +17,39 @@ local xmlns_disco_items = xmlns_disco.."#items";
 
 function verse.plugins.disco(stream)
 	stream:add_plugin("presence");
-	stream.disco = { cache = {}, info = {} }
-	stream.disco.info.identities = {
-		{category = 'client', type='pc', name='Verse'},
-	}
-	stream.disco.info.features = {
-		{var = xmlns_caps},
-		{var = xmlns_disco_info},
-		{var = xmlns_disco_items},
-	}
-	stream.disco.items = {}
-	stream.disco.nodes = {}
+	local disco_info_mt = {
+		__index = function(t, k)
+			local node = { identities = {}, features = {} };
+			if k == "identities" or k == "features" then
+				return t[false][k]
+			end
+			t[k] = node;
+			return node;
+		end,
+	};
+	local disco_items_mt = {
+		__index = function(t, k)
+			local node = { };
+			t[k] = node;
+			return node;
+		end,
+	};
+	stream.disco = {
+		cache = {},
+		info = setmetatable({
+			[false] = {
+				identities = {
+					{category = 'client', type='pc', name='Verse'},
+				},
+				features = {
+					[xmlns_caps] = true,
+					[xmlns_disco_info] = true,
+					[xmlns_disco_items] = true,
+				},
+			},
+		}, disco_info_mt);
+		items = setmetatable({[false]={}}, disco_items_mt);
+	};
 
 	stream.caps = {}
 	stream.caps.node = 'http://code.matthewwild.co.uk/verse/'
@@ -54,19 +76,26 @@ function verse.plugins.disco(stream)
 		return item1.var < item2.var
 	end
 
-	local function calculate_hash()
-		table.sort(stream.disco.info.identities, cmp_identity)
-		table.sort(stream.disco.info.features, cmp_feature)
-		local S = ''
-		for key,identity in pairs(stream.disco.info.identities) do
-			S = S .. string.format(
-				'%s/%s/%s/%s', identity.category, identity.type,
+	local function calculate_hash(node)
+		local identities = stream.disco.info[node or false].identities;
+		table.sort(identities, cmp_identity)
+		local features = {};
+		for var in pairs(stream.disco.info[node or false].features) do
+			features[#features+1] = { var = var };
+		end
+		table.sort(features, cmp_feature)
+		local S = {};
+		for key,identity in pairs(identities) do
+			S[#S+1] = table.concat({
+				identity.category, identity.type or '',
 				identity['xml:lang'] or '', identity.name or ''
-			) .. '<'
+			}, '/');
 		end
-		for key,feature in pairs(stream.disco.info.features) do
-			S = S .. feature.var .. '<'
+		for key,feature in pairs(features) do
+			S[#S+1] = feature.var
 		end
+		S[#S+1] = '';
+		S = table.concat(S,'<');
 		-- FIXME: make sure S is utf8-encoded
 		--stream:debug("Computed hash string: "..S);
 		--stream:debug("Computed hash string (sha1): "..sha1(S, true));
@@ -79,6 +108,8 @@ function verse.plugins.disco(stream)
 			-- retrieve the c stanza to insert into the
 			-- presence stanza
 			local hash = calculate_hash()
+			stream.caps.hash = hash;
+			-- TODO proper caching.... some day
 			return verse.stanza('c', {
 				xmlns = xmlns_caps,
 				hash = 'sha-1',
@@ -88,36 +119,33 @@ function verse.plugins.disco(stream)
 		end
 	})
 	
-	function stream:add_disco_feature(feature)
-		table.insert(self.disco.info.features, {var=feature});
+	function stream:add_disco_feature(feature, node)
+		local feature = feature.var or feature;
+		self.disco.info[node or false].features[feature] = true;
 		stream:resend_presence();
 	end
 	
-	function stream:remove_disco_feature(feature)
-		for idx, disco_feature in ipairs(self.disco.info.features) do
-			if disco_feature.var == feature then
-				table.remove(self.disco.info.features, idx);
-				stream:resend_presence();
-				return true;
-			end
-		end
+	function stream:remove_disco_feature(feature, node)
+		local feature = feature.var or feature;
+		self.disco.info[node or false].features[feature] = nil;
+		stream:resend_presence();
 	end
 
 	function stream:add_disco_item(item, node)
-		local disco_items = self.disco.items;
-		if node then
-			disco_items = self.disco.nodes[node];
-			if not disco_items then
-				disco_items = { features = {}, items = {} };
-				self.disco.nodes[node] = disco_items;
-				disco_items = disco_items.items;
-			else
-				disco_items = disco_items.items;
-			end
-		end
-		table.insert(disco_items, item);
+		local items = self.disco.items[node or false];
+		items[#items +1] = item;
 	end
 
+	function stream:remove_disco_item(item, node)
+		local items = self.disco.items[node or false];
+		for i=#items,1,-1 do
+			if items[i] == item then
+				table.remove(items, i);
+			end
+		end
+	end
+
+	-- TODO Node?
 	function stream:jid_has_identity(jid, category, type)
 		local cached_disco = self.disco.cache[jid];
 		if not cached_disco then
@@ -255,104 +283,46 @@ function verse.plugins.disco(stream)
 	end
 	
 	stream:hook("iq/"..xmlns_disco_info, function (stanza)
-		if stanza.attr.type == 'get' then
-			local query = stanza:child_with_name('query')
-			if not query then return; end
-			-- figure out what identities/features to send
-			local identities
-			local features
-			if query.attr.node then
-				local hash = calculate_hash()
-				local node = stream.disco.nodes[query.attr.node]
-				if node and node.info then
-					identities = node.info.identities or {}
-					features = node.info.identities or {}
-				elseif query.attr.node == stream.caps.node..'#'..hash then
-					-- matches caps hash, so use the main info
-					identities = stream.disco.info.identities
-					features = stream.disco.info.features
-				else
-					-- unknown node: give an error
-					local response = verse.stanza('iq',{
-						to = stanza.attr.from,
-						from = stanza.attr.to,
-						id = stanza.attr.id,
-						type = 'error'
-					})
-					response:tag('query',{xmlns = xmlns_disco_info}):reset()
-					response:tag('error',{type = 'cancel'}):tag(
-						'item-not-found',{xmlns = 'urn:ietf:params:xml:ns:xmpp-stanzas'}
-					)
-					stream:send(response)
-					return true
-				end
-			else
-				identities = stream.disco.info.identities
-				features = stream.disco.info.features
+		local query = stanza.tags[1];
+		if stanza.attr.type == 'get' and query.name == "query" then
+			local query_node = query.attr.node;
+			local node = stream.disco.info[query_node or false];
+			if query_node and query_node == stream.caps.node .. "#" .. stream.caps.hash then
+				node = stream.disco.info[false];
 			end
+			local identities, features = node.identities, node.features
+
 			-- construct the response
-			local result = verse.stanza('query',{
+			local result = verse.reply(stanza):tag("query", {
 				xmlns = xmlns_disco_info,
-				node = query.attr.node
-			})
-			for key,identity in pairs(identities) do
-				result:tag('identity', identity):reset()
+				node = query_node,
+			});
+			for _,identity in pairs(identities) do
+				result:tag('identity', identity):up()
 			end
-			for key,feature in pairs(features) do
-				result:tag('feature', feature):reset()
+			for feature in pairs(features) do
+				result:tag('feature', { var = feature }):up()
 			end
-			stream:send(verse.stanza('iq',{
-				to = stanza.attr.from,
-				from = stanza.attr.to,
-				id = stanza.attr.id,
-				type = 'result'
-			}):add_child(result))
+			stream:send(result);
 			return true
 		end
 	end);
 
 	stream:hook("iq/"..xmlns_disco_items, function (stanza)
-		if stanza.attr.type == 'get' then
-			local query = stanza:child_with_name('query')
-			if not query then return; end
+		local query = stanza.tags[1];
+		if stanza.attr.type == 'get' and query.name == "query" then
 			-- figure out what items to send
-			local items
-			if query.attr.node then
-				local node = stream.disco.nodes[query.attr.node]
-				if node then
-					items = node.items or {}
-				else
-					-- unknown node: give an error
-					local response = verse.stanza('iq',{
-						to = stanza.attr.from,
-						from = stanza.attr.to,
-						id = stanza.attr.id,
-						type = 'error'
-					})
-					response:tag('query',{xmlns = xmlns_disco_items}):reset()
-					response:tag('error',{type = 'cancel'}):tag(
-						'item-not-found',{xmlns = 'urn:ietf:params:xml:ns:xmpp-stanzas'}
-					)
-					stream:send(response)
-					return true
-				end
-			else
-				items = stream.disco.items
-			end
+			local items = stream.disco.items[query.attr.node or false];
+
 			-- construct the response
-			local result = verse.stanza('query',{
+			local result = verse.reply(stanza):tag('query',{
 				xmlns = xmlns_disco_items,
 				node = query.attr.node
 			})
-			for key,item in pairs(items) do
-				result:tag('item', item):reset()
+			for i=1,#items do
+				result:tag('item', items[i]):up()
 			end
-			stream:send(verse.stanza('iq',{
-				to = stanza.attr.from,
-				from = stanza.attr.to,
-				id = stanza.attr.id,
-				type = 'result'
-			}):add_child(result))
+			stream:send(result);
 			return true
 		end
 	end);
