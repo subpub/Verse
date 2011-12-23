@@ -33,7 +33,7 @@ c:hook("ready", function ()
 	print("Stream ready!");
 
 	-- Create a reference to a node
-	local node = c:pubsub("pubsub.shakespeare.lit", "princely_musings");
+	local node = c.pubsub("pubsub.shakespeare.lit", "princely_musings");
 
 	-- Callback for when something is published to the node
 	node:hook(function(event)
