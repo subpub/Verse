@@ -65,8 +65,8 @@ function verse.plugins.roster(stream)
 	end
 
 	-- should this be add_contact(item, callback) instead?
-	function roster:add_contact(jid, nick, groups, callback)
-		local item = { jid = jid, name = nick, groups = groups };
+	function roster:add_contact(jid, name, groups, callback)
+		local item = { jid = jid, name = name, groups = groups };
 		local stanza = verse.iq({ type = "set" })
 			:tag("query", { xmlns = xmlns_roster })
 				:add_child(item_lua2xml(item));
