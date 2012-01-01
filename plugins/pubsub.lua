@@ -202,8 +202,9 @@ function pubsub_node:affiliation(callback)
 	error("Not implemented yet.");
 end
 
-function pubsub_node:unsubscribe(callback)
-	error("Not implemented yet.");
+function pubsub_node:unsubscribe(jid, callback)
+	self.stream:send_iq(pubsub_iq("set", self.service, nil, "unsubscribe", self.node, jid)
+	, callback);
 end
 
 function pubsub_node:configure_subscription(options, callback)
