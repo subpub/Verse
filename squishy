@@ -52,6 +52,8 @@ plugins = {
 	"vcard", "vcard_update";
 	-- Carbons
 	"carbons";
+
+	"archive";
 }
 
 for _, plugin in ipairs(plugins) do
