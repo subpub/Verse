@@ -12,7 +12,7 @@ function verse.plugins.archive(stream)
 		for i=1,#params do
 			local k = params[i];
 			if query_params[k] then
-				query_st:tag(k):text(query_params[k]);
+				query_st:tag(k):text(query_params[k]):up();
 			end
 		end
 
