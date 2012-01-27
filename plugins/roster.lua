@@ -75,7 +75,7 @@ function verse.plugins.roster(stream)
 			if reply.attr.type == "result" then
 				callback(true);
 			else
-				type, condition, text = reply:get_error();
+				local type, condition, text = reply:get_error();
 				callback(nil, { type, condition, text });
 			end
 		end);
@@ -94,7 +94,7 @@ function verse.plugins.roster(stream)
 				if reply.attr.type == "result" then
 					callback(true);
 				else
-					type, condition, text = reply:get_error();
+					local type, condition, text = reply:get_error();
 					callback(nil, { type, condition, text });
 				end
 			end);
@@ -126,7 +126,7 @@ function verse.plugins.roster(stream)
 					end
 					callback(roster);
 				else
-					type, condition, text = stanza:get_error();
+					local type, condition, text = stanza:get_error();
 					callback(nil, { type, condition, text }); --FIXME
 				end
 			end);
