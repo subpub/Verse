@@ -47,7 +47,7 @@ function verse.plugins.carbons(stream)
 	end);
 
 	stream:hook("message", function(stanza)
-		local carbon_dir = fwd:get_child(nil, xmlns_carbons);
+		local carbon_dir = stanza:get_child(nil, xmlns_carbons);
 		if stanza.attr.from == my_bare and carbon_dir then
 			carbon_dir = carbon_dir and carbon_dir.name;
 			local fwd = stanza:get_child("forwarded", xmlns_forward);
