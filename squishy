@@ -27,6 +27,7 @@ Module "util.dataforms"		"util/dataforms.lua"
 Module "util.caps"		"util/caps.lua"
 Module "util.vcard"		"util/vcard.lua"
 Module "util.logger"		"util/logger.lua"
+Module "util.datetime"		"util/datetime.lua"
 
 -- Verse plugins
 plugins = {
