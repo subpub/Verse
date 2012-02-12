@@ -57,10 +57,16 @@ end
 function verse.set_log_handler(log_handler, levels)
 	levels = levels or { "debug", "info", "warn", "error" };
 	logger.reset();
-	local function _log_handler(name, level, message, ...)
-		return log_handler(name, level, format(message, ...));
+	if io.type(log_handler) == "file" then
+		local f = log_handler;
+		function log_handler(name, level, message)
+			f:write(name, "\t", level, "\t", message, "\n");
+		end
 	end
 	if log_handler then
+		local function _log_handler(name, level, message, ...)
+			return log_handler(name, level, format(message, ...));
+		end
 		for i, level in ipairs(levels) do
 			logger.add_level_sink(level, _log_handler);
 		end
