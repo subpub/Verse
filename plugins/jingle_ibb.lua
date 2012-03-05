@@ -11,7 +11,7 @@ local t_concat = table.concat
 local ibb_conn = {};
 local ibb_conn_mt = { __index = ibb_conn };
 
-function new_ibb(stream)
+local function new_ibb(stream)
 	local conn = setmetatable({ stream = stream }, ibb_conn_mt)
 	conn = verse.eventable(conn);
 	return conn;
