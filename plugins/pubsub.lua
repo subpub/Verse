@@ -14,13 +14,14 @@ local pubsub_mt = { __index = pubsub };
 function verse.plugins.pubsub(stream)
 	stream.pubsub = setmetatable({ stream = stream }, pubsub_mt);
 	stream:hook("message", function (message)
+		local m_from = message.attr.from;
 		for pubsub_event in message:childtags("event", xmlns_pubsub_event) do
 			local items = pubsub_event:get_child("items");
 			if items then
 				local node = items.attr.node;
 				for item in items:childtags("item") do
 					stream:event("pubsub/event", {
-						from = message.attr.from;
+						from = m_from;
 						node = node;
 						item = item;
 					});
@@ -165,7 +166,16 @@ end
 function pubsub_node:configure(config, callback)
 	if config ~= nil then
 		error("Not implemented yet.");
-		-- if config == true then
+		--[[
+		if config == true then
+			self.stream:send_iq(pubsub_iq("get", self.service, nil, "configure", self.node)
+			, function(reply)
+				local form = reply:get_child("pubsub"):get_child("configure"):get_cild("x");
+				local config = callback(require"util.dataforms".something(form))
+				self.stream:send_iq(pubsub_iq("set", config, ...))
+			end);
+		end
+		--]]
 		-- fetch form and pass it to the callback
 		-- which would process it and pass it back
 		-- and then we submit it
