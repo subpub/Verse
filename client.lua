@@ -88,6 +88,7 @@ function stream:connect_client(jid, pass)
 	end);
 	
 	self:hook("stanza", function (stanza)
+		local ret;
 		if stanza.attr.xmlns == nil or stanza.attr.xmlns == "jabber:client" then
 			if stanza.name == "iq" and (stanza.attr.type == "get" or stanza.attr.type == "set") then
 				local xmlns = stanza.tags[1] and stanza.tags[1].attr.xmlns;
