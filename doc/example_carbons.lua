@@ -1,6 +1,8 @@
 local xmlns_carbons = "urn:xmpp:carbons:1";
 local xmlns_forward = "urn:xmpp:forward:0";
 
+local function datetime(t) return os_date("!%Y-%m-%dT%H:%M:%SZ", t); end
+
 -- This line squishes verse each time you run,
 -- handy if you're hacking on Verse itself
 --os.execute("squish --minify-level=none verse");
@@ -24,7 +26,7 @@ end);
 
 c:hook("carbon", function(carbon)
 	local dir, ts, st = carbon.dir, carbon.timestamp, carbon.stanza;
-	print("", ts, dir:upper());
+	print("", datetime(ts), dir:upper());
 	print(st);
 end);
 
