@@ -2,8 +2,8 @@ local verse = require "verse";
 
 local xmlns_carbons = "urn:xmpp:carbons:1";
 local xmlns_forward = "urn:xmpp:forward:0";
-local os_date = os.date;
-local datetime = function(t) return os_date("!%Y-%m-%dT%H:%M:%SZ", t); end
+local os_time = os.time;
+local parse_datetime = require "util.datetime".parse;
 local bare_jid = require "util.jid".bare;
 
 -- TODO Check disco for support
@@ -52,11 +52,14 @@ function verse.plugins.carbons(stream)
 			carbon_dir = carbon_dir.name;
 			local fwd = stanza:get_child("forwarded", xmlns_forward);
 			local fwd_stanza = fwd and fwd:get_child("message", "jabber:client");
+			local delay = fwd:get_child("delay", "urn:xmpp:delay");
+			local stamp = delay and delay.attr.stamp;
+			stamp = stamp and parse_datetime(stamp);
 			if fwd_stanza then
 				return stream:event("carbon", {
 					dir = carbon_dir,
 					stanza = fwd_stanza,
-					timestamp = nil or datetime(), -- TODO check for delay tag
+					timestamp = stamp or os_time(),
 				});
 			end
 		end
