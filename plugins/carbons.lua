@@ -49,7 +49,7 @@ function verse.plugins.carbons(stream)
 	stream:hook("message", function(stanza)
 		local carbon_dir = stanza:get_child(nil, xmlns_carbons);
 		if stanza.attr.from == my_bare and carbon_dir then
-			carbon_dir = carbon_dir and carbon_dir.name;
+			carbon_dir = carbon_dir.name;
 			local fwd = stanza:get_child("forwarded", xmlns_forward);
 			local fwd_stanza = fwd and fwd:get_child("message", "jabber:client");
 			if fwd_stanza then
