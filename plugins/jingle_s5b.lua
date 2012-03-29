@@ -1,3 +1,4 @@
+local verse = require "verse";
 
 local xmlns_s5b = "urn:xmpp:jingle:transports:s5b:1";
 local sha1 = require "util.sha1".sha1;
