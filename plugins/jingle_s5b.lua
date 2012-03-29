@@ -1,6 +1,7 @@
 local verse = require "verse";
 
 local xmlns_s5b = "urn:xmpp:jingle:transports:s5b:1";
+local xmlns_bytestreams = "http://jabber.org/protocol/bytestreams";
 local sha1 = require "util.sha1".sha1;
 local uuid_generate = require "util.uuid".generate;
 
