@@ -99,6 +99,17 @@ function verse.quit()
 	return server.setquitting(true);
 end
 
+function stream:listen(host, port)
+	host = host or "localhost";
+	port = port or 0;
+	local conn, err = server.addserver(host, port, new_listener(self, "server"), "*a");
+	if conn then
+		self:debug("Bound to %s:%s", host, port);
+		self.server = conn;
+	end
+	return conn, err;
+end
+
 function stream:connect(connect_host, connect_port)
 	connect_host = connect_host or "localhost";
 	connect_port = tonumber(connect_port) or 5222;
@@ -118,7 +129,11 @@ function stream:connect(connect_host, connect_port)
 		self:warn("connection initialisation failed: %s", err);
 		return self:event("disconnected", { reason = err }) or false, err;
 	end
-	
+	self:set_conn(conn);
+	return true;
+end
+
+function stream:set_conn(conn)
 	self.conn = conn;
 	self.send = function (stream, data)
 		self:event("outgoing", data);
@@ -126,7 +141,6 @@ function stream:connect(connect_host, connect_port)
 		self:event("outgoing-raw", data);
 		return conn:write(data);
 	end;
-	return true;
 end
 
 function stream:close()
@@ -199,8 +213,16 @@ function new_listener(stream)
 	local conn_listener = {};
 	
 	function conn_listener.onconnect(conn)
-		stream.connected = true;
-		stream:event("connected");
+		if stream.server then
+			stream:debug("foo");
+			local client = verse.new();
+			conn:setlistener(new_listener(client));
+			client:set_conn(conn);
+			stream:event("connected", { client = client });
+		else
+			stream.connected = true;
+			stream:event("connected");
+		end
 	end
 	
 	function conn_listener.onincoming(conn, data)
