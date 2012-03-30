@@ -214,7 +214,6 @@ function new_listener(stream)
 	
 	function conn_listener.onconnect(conn)
 		if stream.server then
-			stream:debug("foo");
 			local client = verse.new();
 			conn:setlistener(new_listener(client));
 			client:set_conn(conn);
