@@ -3,13 +3,14 @@
 -- (ie not XEP-0136)
 
 local verse = require "verse";
+local st = require "util.stanza";
 local xmlns_mam = "urn:xmpp:mam:tmp"
 local uuid = require "util.uuid".generate;
 
 function verse.plugins.archive(stream)
 	function stream:query_archive(where, query_params, callback)
 		local queryid = uuid();
-		local query_st = verse.iq{ type="get", to=where }
+		local query_st = st.iq{ type="get", to = where }
 			:tag("query", { xmlns = xmlns_mam, queryid = queryid });
 
 		local params = { "with", "start", "end" };
