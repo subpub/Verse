@@ -1,3 +1,7 @@
+-- This implements XEP-0313: Message Archive Management
+-- http://xmpp.org/extensions/xep-0313.html
+-- (ie not XEP-0136)
+
 local xmlns_mam = "urn:xmpp:mam:tmp"
 local uuid = require "util.uuid".generate;
 
