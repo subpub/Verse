@@ -46,5 +46,66 @@ function verse.plugins.archive(stream)
 		end);
 	end
 
-	--TODO Settings
+	local default_attrs = {
+		always = true, [true] = "always",
+		never = false, [false] = "never",
+		roster = "roster",
+	}
+
+	local function prefs_decode(stanza) -- from XML
+		local prefs = {};
+		local default = stanza.attr.default;
+
+		if default then
+			prefs[false] = default_attrs[default];
+		end
+
+		local always = stanza:get_child("always");
+		if always then
+			for rule in always:childtags("jid") do
+				local jid = rule:get_text();
+				prefs[jid] = true;
+			end
+		end
+
+		local never = stanza:get_child("never");
+		if never then
+			for rule in never:childtags("jid") do
+				local jid = rule:get_text();
+				prefs[jid] = false;
+			end
+		end
+		return prefs;
+	end
+
+	local function prefs_encode(prefs) -- into XML
+		local default
+		default, prefs[false] = prefs[false], nil;
+		if default ~= nil then
+			default = default_attrs[default];
+		end
+		local reply = st.stanza("prefs", { xmlns = xmlns_mam, default = default })
+		local always = st.stanza("always");
+		local never = st.stanza("never");
+		for k,v in pairs(prefs) do
+			(v and always or never):tag("jid"):text(k):up();
+		end
+		return reply:add_child(always):add_child(never);
+	end
+
+	function stream:archive_prefs_get(callback)
+		self:send_iq(st.iq{ type="get" }:tag("prefs", { xmlns = xmlns_mam }),
+		function(result)
+			if result and result.attr.type == "result" and result.tags[1] then
+				local prefs = prefs_decode(result.tags[1]);
+				callback(prefs, result);
+			else
+				callback(nil, result);
+			end
+		end);
+	end
+
+	function stream:archive_prefs_set(prefs, callback)
+		self:send_iq(st.iq{ type="set" }:add_child(prefs_encode(prefs)), callback);
+	end
 end
