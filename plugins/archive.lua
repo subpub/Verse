@@ -2,6 +2,7 @@
 -- http://xmpp.org/extensions/xep-0313.html
 -- (ie not XEP-0136)
 
+local verse = require "verse";
 local xmlns_mam = "urn:xmpp:mam:tmp"
 local uuid = require "util.uuid".generate;
 
