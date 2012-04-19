@@ -5,6 +5,8 @@
 local verse = require "verse";
 local st = require "util.stanza";
 local xmlns_mam = "urn:xmpp:mam:tmp"
+local xmlns_forward = "urn:xmpp:forward:0";
+local xmlns_delay = "urn:xmpp:delay";
 local uuid = require "util.uuid".generate;
 
 function verse.plugins.archive(stream)
@@ -26,9 +28,9 @@ function verse.plugins.archive(stream)
 		local function handle_archived_message(message)
 			local result_tag = message:get_child("result", xmlns_mam);
 			if result_tag and result_tag.attr.queryid == queryid then
-				local forwarded = message:get_child("forwarded", "urn:xmpp:forward:0");
+				local forwarded = message:get_child("forwarded", xmlns_forward);
 
-				local delay = forwarded:get_child("delay", "urn:xmpp:delay");
+				local delay = forwarded:get_child("delay", xmlns_delay);
 				local stamp = delay and delay.attr.stamp or nil;
 
 				local message = forwarded:get_child("message", "jabber:client")
