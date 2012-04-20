@@ -8,6 +8,7 @@ local xmlns_mam = "urn:xmpp:mam:tmp"
 local xmlns_forward = "urn:xmpp:forward:0";
 local xmlns_delay = "urn:xmpp:delay";
 local uuid = require "util.uuid".generate;
+local parse_datetime = require "util.datetime".parse;
 
 function verse.plugins.archive(stream)
 	function stream:query_archive(where, query_params, callback)
@@ -32,7 +33,7 @@ function verse.plugins.archive(stream)
 
 				local id = result_tag.attr.id;
 				local delay = forwarded:get_child("delay", xmlns_delay);
-				local stamp = delay and delay.attr.stamp or nil;
+				local stamp = delay and parse_datetime(delay.attr.stamp) or nil;
 
 				local message = forwarded:get_child("message", "jabber:client")
 
