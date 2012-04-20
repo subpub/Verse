@@ -30,12 +30,13 @@ function verse.plugins.archive(stream)
 			if result_tag and result_tag.attr.queryid == queryid then
 				local forwarded = message:get_child("forwarded", xmlns_forward);
 
+				local id = result_tag.attr.id;
 				local delay = forwarded:get_child("delay", xmlns_delay);
 				local stamp = delay and delay.attr.stamp or nil;
 
 				local message = forwarded:get_child("message", "jabber:client")
 
-				results[#results+1] = { stamp = stamp, message = message };
+				results[#results+1] = { id = id, stamp = stamp, message = message };
 				return true
 			end
 		end
