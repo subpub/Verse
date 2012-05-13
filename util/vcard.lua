@@ -1,4 +1,4 @@
--- Copyright (C) 2011 Kim Alvefur
+-- Copyright (C) 2011-2012 Kim Alvefur
 -- 
 -- This project is MIT/X11 licensed. Please see the
 -- COPYING file in the source package for more information.
@@ -14,7 +14,9 @@ local t_insert, t_concat = table.insert, table.concat;
 local type = type;
 local next, pairs, ipairs = next, pairs, ipairs;
 
-module "vcard"
+local lua_to_text, lua_to_xep54, text_to_lua, text_to_xep54, xep54_to_lua, xep54_to_text;
+--[[ TODO local from_text, to_text, from_xep54, to_xep54; --]]
+
 
 local vCard_dtd;
 
@@ -36,7 +38,7 @@ local function vCard_unesc(s)
 	});
 end
 
-function text_to_xep54(data)
+local function text_to_xep54(data)
 	--[[ TODO
 	return lua_to_xep54(text_to_lua(data));
 	--]]
@@ -111,7 +113,7 @@ function text_to_xep54(data)
 	return c;
 end
 
-function text_to_lua(data) --table
+local function text_to_lua(data) --table
 	data = data
 		:gsub("\r\n","\n")
 		:gsub("\n ", "")
@@ -273,7 +275,7 @@ local function vCard_prop(item) -- single item staza object to text line
 		:gsub(("."):rep(75), "%0\r\n "):gsub("\r\n $","");
 end
 
-function xep54_to_text(vCard)
+local function xep54_to_text(vCard)
 	--[[ TODO
 	return lua_to_text(xep54_to_lua(vCard))
 	--]]
@@ -372,7 +374,7 @@ local function xep54_vCard_to_lua(vCard)
 	return t
 end
 
-function xep54_to_lua(vCard)
+local function xep54_to_lua(vCard)
 	if vCard.attr.xmlns ~= "vcard-temp" then
 		return false
 	end
@@ -515,4 +517,16 @@ vCard_dtd = {
 };
 vCard_dtd.LOGO = vCard_dtd.PHOTO;
 vCard_dtd.SOUND = vCard_dtd.PHOTO;
-return _M
+
+return {
+	text_to_xep54 = text_to_xep54;
+	text_to_lua = text_to_lua;
+	xep54_to_text = xep54_to_text;
+	xep54_to_lua = xep54_to_lua;
+	--[[ TODO
+	from_text = from_text;
+	to_text = to_text;
+	from_xep54 = from_xep54;
+	to_xep54 = to_xep54;
+	--]]
+};
