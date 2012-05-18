@@ -1,5 +1,6 @@
 local verse = require "verse";
 local events = require "events";
+local jid = require "util.jid";
 
 local room_mt = {};
 room_mt.__index = room_mt;
