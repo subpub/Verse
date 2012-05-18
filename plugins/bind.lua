@@ -1,4 +1,5 @@
 local verse = require "verse";
+local jid = require "util.jid";
 
 local xmlns_bind = "urn:ietf:params:xml:ns:xmpp-bind";
 
