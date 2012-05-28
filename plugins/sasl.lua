@@ -24,7 +24,8 @@ function verse.plugins.sasl(stream)
 			stream:event("authentication-success");
 		elseif sasl_stanza.name == "failure" then
 			local err = sasl_stanza.tags[1];
-			stream:event("authentication-failure", { condition = err.name });
+			local text = sasl_stanza:get_child_text("text");
+			stream:event("authentication-failure", { condition = err.name, text = text });
 		end
 		stream:reopen();
 		return true;
