@@ -9,6 +9,8 @@ local xmlns_forward = "urn:xmpp:forward:0";
 local xmlns_delay = "urn:xmpp:delay";
 local uuid = require "util.uuid".generate;
 local parse_datetime = require "util.datetime".parse;
+local datetime = require "util.datetime".datetime;
+local tonumber = tonumber;
 
 function verse.plugins.archive(stream)
 	function stream:query_archive(where, query_params, callback)
@@ -16,13 +18,17 @@ function verse.plugins.archive(stream)
 		local query_st = st.iq{ type="get", to = where }
 			:tag("query", { xmlns = xmlns_mam, queryid = queryid });
 
-		local params = { "with", "start", "end" };
-		local query_params = query_params or {};
-		for i=1,#params do
-			local k = params[i];
-			if query_params[k] then
-				query_st:tag(k):text(query_params[k]):up();
-			end
+		local qwith = query_params["with"];
+		if qwith then
+			query_st:tag("with"):text(qwith):up();
+		end
+
+		local qstart, qend = tonumber(query_params["start"]), tonumber(query_params["end"]);
+		if qstart then
+			query_st:tag("start"):text(datetime(qstart)):up();
+		end
+		if qend then
+			query_st:tag("end"):text(datetime(qend)):up();
 		end
 
 		local results = {};
