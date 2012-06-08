@@ -10,7 +10,9 @@ local xmlns_delay = "urn:xmpp:delay";
 local uuid = require "util.uuid".generate;
 local parse_datetime = require "util.datetime".parse;
 local datetime = require "util.datetime".datetime;
+local rsm = require "util.rsm";
 local tonumber = tonumber;
+local NULL = {};
 
 function verse.plugins.archive(stream)
 	function stream:query_archive(where, query_params, callback)
@@ -29,6 +31,11 @@ function verse.plugins.archive(stream)
 		end
 		if qend then
 			query_st:tag("end"):text(datetime(qend)):up();
+		end
+		query_params["start"], query_params["end"], query_params["with"] = nil, nil, nil;
+
+		if next(query_params) then
+			query_st:add_child(rsm.generate(query_params));
 		end
 
 		local results = {};
@@ -51,6 +58,8 @@ function verse.plugins.archive(stream)
 		self:hook("message", handle_archived_message, 1);
 		self:send_iq(query_st, function(reply)
 			self:unhook("message", handle_archived_message);
+			local rset = reply.tags[1] and rsm.get(reply.tags[1]);
+			for k,v in pairs(rset or NULL) do results[k]=v; end
 			callback(reply.attr.type == "result" and #results, results);
 			return true
 		end);
