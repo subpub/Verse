@@ -32,11 +32,8 @@ function verse.plugins.archive(stream)
 		if qend then
 			query_st:tag("end"):text(datetime(qend)):up();
 		end
-		query_params["start"], query_params["end"], query_params["with"] = nil, nil, nil;
 
-		if next(query_params) then
-			query_st:add_child(rsm.generate(query_params));
-		end
+		query_st:add_child(rsm.generate(query_params));
 
 		local results = {};
 		local function handle_archived_message(message)
