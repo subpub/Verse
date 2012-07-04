@@ -11,6 +11,7 @@ command_mt.__index = command_mt;
 local commands = {};
 
 function verse.plugins.adhoc(stream)
+	stream:add_plugin("disco");
 	stream:add_disco_feature(xmlns_commands);
 
 	function stream:query_commands(jid, callback)
