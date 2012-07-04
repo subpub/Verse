@@ -85,6 +85,7 @@ function command_mt:_process_response(result)
 	self.status = command.attr.status;
 	self.sessionid = command.attr.sessionid;
 	self.form = command:get_child("x", xmlns_data);
+	self.note = command:get_child("note"); --FIXME handle multiple <note/>s
 	self.callback(self);
 end
 
