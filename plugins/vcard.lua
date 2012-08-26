@@ -10,7 +10,7 @@ function verse.plugins.vcard(stream)
 				local lCard, xCard;
 				vCard = stanza:get_child("vCard", xmlns_vcard);
 				if stanza.attr.type == "result" and vCard then
-					vCard = vcard.from_xep54(xCard)
+					vCard = vcard.from_xep54(vCard)
 					callback(vCard)
 				else
 					callback(false) -- FIXME add error
