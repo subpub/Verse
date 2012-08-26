@@ -8,13 +8,10 @@ function verse.plugins.vcard(stream)
 		stream:send_iq(verse.iq({to = jid, type="get"})
 			:tag("vCard", {xmlns=xmlns_vcard}), callback and function(stanza)
 				local lCard, xCard;
-				xCard = stanza:get_child("vCard", xmlns_vcard);
-				if stanza.attr.type == "result" and xCard then
-					lCard = vcard.xep54_to_lua(xCard)
-					vCard = vcard.xep54_to_text(xCard)
-					-- FIXME This is only until util.vcard.lua_to_text() is implemented
-					lCard._text = vCard;
-					callback(lCard)
+				vCard = stanza:get_child("vCard", xmlns_vcard);
+				if stanza.attr.type == "result" and vCard then
+					vCard = vcard.from_xep54(xCard)
+					callback(vCard)
 				else
 					callback(false) -- FIXME add error
 				end
@@ -26,8 +23,9 @@ function verse.plugins.vcard(stream)
 		if type(aCard) == "table" and aCard.name then
 			xCard = aCard;
 		elseif type(aCard) == "string" then
-			xCard = vcard.text_to_xep54(aCard)[1];
+			xCard = vcard.from_text(aCard)[1];
 		elseif type(aCard) == "table" then
+			xCard = vcard.to_xep54(aCard);
 			error("Converting a table to vCard not implemented")
 		end
 		if not xCard then return false end
