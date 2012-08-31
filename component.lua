@@ -123,7 +123,7 @@ end
 
 function stream:reopen()
 	self:reset();
-	self:send(st.stanza("stream:stream", { to = self.host, ["xmlns:stream"]='http://etherx.jabber.org/streams',
+	self:send(st.stanza("stream:stream", { to = self.jid, ["xmlns:stream"]='http://etherx.jabber.org/streams',
 		xmlns = xmlns_component, version = "1.0" }):top_tag());
 end
 
