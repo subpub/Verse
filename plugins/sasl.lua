@@ -5,12 +5,16 @@ function verse.plugins.sasl(stream)
 	local function handle_features(features_stanza)
 		if stream.authenticated then return; end
 		stream:debug("Authenticating with SASL...");
-		local initial_data = base64("\0"..stream.username.."\0"..stream.password);
-	
 		--stream.sasl_state, initial_data = sasl_new({"PLAIN"}, stream.username, stream.password, stream.jid);
-		
-		stream:debug("Selecting PLAIN mechanism...");
-		local auth_stanza = verse.stanza("auth", { xmlns = xmlns_sasl, mechanism = "PLAIN" });
+		local mechanism , initial_data
+		if stream.username then
+			mechanism = "PLAIN"
+			initial_data = base64("\0"..stream.username.."\0"..stream.password);
+		else
+			mechanism = "ANONYMOUS"
+		end
+		stream:debug("Selecting %s mechanism...",mechanism);
+		local auth_stanza = verse.stanza("auth", { xmlns = xmlns_sasl, mechanism = mechanism });
 		if initial_data then
 			auth_stanza:text(initial_data);
 		end
