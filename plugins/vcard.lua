@@ -23,7 +23,7 @@ function verse.plugins.vcard(stream)
 		if type(aCard) == "table" and aCard.name then
 			xCard = aCard;
 		elseif type(aCard) == "string" then
-			xCard = vcard.from_text(aCard)[1];
+			xCard = vcard.to_xep54(vcard.from_text(aCard)[1]);
 		elseif type(aCard) == "table" then
 			xCard = vcard.to_xep54(aCard);
 			error("Converting a table to vCard not implemented")
