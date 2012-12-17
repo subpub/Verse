@@ -142,7 +142,7 @@ function from_text(data)
 			vCards[#vCards+1] = c;
 		elseif name == "END" and value == "VCARD" then
 			c = nil;
-		elseif vCard_dtd[name] then
+		elseif c and vCard_dtd[name] then
 			local dtd = vCard_dtd[name];
 			local p = { name = name };
 			c[#c+1]=p;
