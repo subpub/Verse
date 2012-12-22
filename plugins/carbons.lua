@@ -1,6 +1,6 @@
 local verse = require "verse";
 
-local xmlns_carbons = "urn:xmpp:carbons:1";
+local xmlns_carbons = "urn:xmpp:carbons:2";
 local xmlns_forward = "urn:xmpp:forward:0";
 local os_time = os.time;
 local parse_datetime = require "util.datetime".parse;
@@ -47,10 +47,10 @@ function verse.plugins.carbons(stream)
 	end);
 
 	stream:hook("message", function(stanza)
-		local carbon_dir = stanza:get_child(nil, xmlns_carbons);
-		if stanza.attr.from == my_bare and carbon_dir then
-			carbon_dir = carbon_dir.name;
-			local fwd = stanza:get_child("forwarded", xmlns_forward);
+		local carbon = stanza:get_child(nil, xmlns_carbons);
+		if stanza.attr.from == my_bare and carbon then
+			local carbon_dir = carbon.name;
+			local fwd = carbon:get_child("forwarded", xmlns_forward);
 			local fwd_stanza = fwd and fwd:get_child("message", "jabber:client");
 			local delay = fwd:get_child("delay", "urn:xmpp:delay");
 			local stamp = delay and delay.attr.stamp;
