@@ -53,7 +53,7 @@ function verse.plugins.smacks(stream)
 			local old_send = stream.send;
 			function stream.send(stream, stanza)
 				stream:warn("SENDING");
-				if not stanza.attr.xmlns then
+				if stanza.name and not stanza.attr.xmlns then
 					outgoing_queue[#outgoing_queue+1] = stanza;
 					local ret = old_send(stream, stanza);
 					old_send(stream, verse.stanza("r", { xmlns = xmlns_sm }));
