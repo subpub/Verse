@@ -143,7 +143,7 @@ function stream:set_conn(conn)
 	end;
 end
 
-function stream:close()
+function stream:close(reason)
 	if not self.conn then 
 		verse.log("error", "Attempt to close disconnected connection - possibly a bug");
 		return;
