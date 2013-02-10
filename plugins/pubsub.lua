@@ -231,13 +231,18 @@ function pubsub_node:item(id, callback)
 end
 
 function pubsub_node:retract(id, callback)
-	error("Not implemented yet.");
+	self.stream:send_iq(pubsub_iq("set", self.service, nil, "retract", self.node, nil, id)
+	, callback);
 end
 
-function pubsub_node:purge(callback)
-	error("Not implemented yet.");
+function pubsub_node:purge(notify, callback)
+	assert(not notify, "Not implemented yet.");
+	self.stream:send_iq(pubsub_iq("set", self.service, xmlns_pubsub_owner, "purge", self.node)
+	, callback);
 end
 
-function pubsub_node:delete(callback)
-	error("Not implemented yet.");
+function pubsub_node:delete(redirect_uri, callback)
+	assert(not redirect_uri, "Not implemented yet.");
+	self.stream:send_iq(pubsub_iq("set", self.service, xmlns_pubsub_owner, "delete", self.node)
+	, callback);
 end
