@@ -32,9 +32,10 @@ function stream_callbacks.streamopened(stream, attr)
 end
 
 function stream_callbacks.streamclosed(stream)
-	if not stream.notopen then
+	stream.notopen = true;
+	if not stream.closed then
 		stream:send("</stream:stream>");
-		stream.notopen = true;
+		stream.closed = true;
 	end
 	stream:event("closed");
 	return stream:close("stream closed")
@@ -135,9 +136,9 @@ function stream:connect_client(jid, pass)
 	local _base_close = self.close;
 	function self:close(reason)
 		self.close = _base_close;
-		if not self.notopen then
+		if not self.closed then
 			self:send("</stream:stream>");
-			self.notopen = true;
+			self.closed = true;
 		else
 			return self:close(reason);
 		end
