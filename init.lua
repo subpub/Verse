@@ -150,7 +150,7 @@ function stream:close(reason)
 	end
 	local on_disconnect = self.conn.disconnect();
 	self.conn:close();
-	on_disconnect(self, reason);
+	on_disconnect(self.conn, reason);
 end
 
 -- Logging functions
