@@ -197,6 +197,7 @@ function pubsub_node:publish(id, options, node, callback)
 end
 
 function pubsub_node:subscribe(jid, options, callback)
+	jid = jid or self.stream.jid;
 	if options ~= nil then
 		error("Subscription configuration is not implemented yet.");
 	end
