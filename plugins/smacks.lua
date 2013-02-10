@@ -44,6 +44,12 @@ function verse.plugins.smacks(stream)
 			return true;
 		end
 	end	
+
+	-- Graceful shutdown
+	local function on_close()
+		stream.resumption_token = nil;
+		stream:unhook("disconnected", on_disconnect);
+	end
 	
 	local function handle_sm_command(stanza)
 		if stanza.name == "r" then -- Request for acks for stanzas we received
@@ -67,9 +73,10 @@ function verse.plugins.smacks(stream)
 			-- Catch stanzas
 			stream:hook("stanza", incoming_stanza);
 			stream:hook("outgoing", outgoing_stanza);
-			
+
 			if stanza.attr.id then
 				stream.resumption_token = stanza.attr.id;
+				stream:hook("closed", on_close, 100);
 				stream:hook("disconnected", on_disconnect, 100);
 			end
 		elseif stanza.name == "resumed" then
