@@ -68,11 +68,6 @@ function verse.plugins.smacks(stream)
 				stream:warn("Received bad ack for "..new_ack.." when last ack was "..last_ack);
 			end
 		elseif stanza.name == "enabled" then
-			stream.smacks = true;
-
-			-- Catch stanzas
-			stream:hook("stanza", incoming_stanza);
-			stream:hook("outgoing", outgoing_stanza);
 
 			if stanza.attr.id then
 				stream.resumption_token = stanza.attr.id;
@@ -105,6 +100,11 @@ function verse.plugins.smacks(stream)
 			--stream:unhook("bind-success", on_bind_success);
 			stream:debug("smacks: sending enable");
 			stream:send(verse.stanza("enable", { xmlns = xmlns_sm, resume = "true" }));
+			stream.smacks = true;
+
+			-- Catch stanzas
+			stream:hook("stanza", incoming_stanza);
+			stream:hook("outgoing", outgoing_stanza);
 		end
 	end
 
