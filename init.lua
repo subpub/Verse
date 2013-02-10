@@ -229,7 +229,7 @@ function new_listener(stream)
 	end
 	
 	function conn_listener.ondisconnect(conn, err)
-		if conn.conn ~= stream.conn then return end
+		if conn ~= stream.conn then return end
 		stream.connected = false;
 		stream:event("disconnected", { reason = err });
 	end
