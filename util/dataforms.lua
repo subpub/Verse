@@ -8,9 +8,10 @@
 
 local setmetatable = setmetatable;
 local pairs, ipairs = pairs, ipairs;
-local tostring, type = tostring, type;
+local tostring, type, next = tostring, type, next;
 local t_concat = table.concat;
 local st = require "util.stanza";
+local jid_prep = require "util.jid".prep;
 
 module "dataforms"
 
@@ -68,19 +69,15 @@ function form_t.form(layout, data, formtype)
 				end
 			elseif field_type == "list-single" then
 				local has_default = false;
-				if type(value) == "string" then
-					form:tag("value"):text(value):up();
-				else
-					for _, val in ipairs(value) do
-						if type(val) == "table" then
-							form:tag("option", { label = val.label }):tag("value"):text(val.value):up():up();
-							if val.default and (not has_default) then
-								form:tag("value"):text(val.value):up();
-								has_default = true;
-							end
-						else
-							form:tag("option", { label= val }):tag("value"):text(tostring(val)):up():up();
+				for _, val in ipairs(value) do
+					if type(val) == "table" then
+						form:tag("option", { label = val.label }):tag("value"):text(val.value):up():up();
+						if val.default and (not has_default) then
+							form:tag("value"):text(val.value):up();
+							has_default = true;
 						end
+					else
+						form:tag("option", { label= val }):tag("value"):text(tostring(val)):up():up();
 					end
 				end
 			elseif field_type == "list-multi" then
@@ -111,95 +108,123 @@ local field_readers = {};
 
 function form_t.data(layout, stanza)
 	local data = {};
-	
-	for field_tag in stanza:childtags() do
-		local field_type;
-		for n, field in ipairs(layout) do
+	local errors = {};
+
+	for _, field in ipairs(layout) do
+		local tag;
+		for field_tag in stanza:childtags() do
 			if field.name == field_tag.attr.var then
-				field_type = field.type;
+				tag = field_tag;
 				break;
 			end
 		end
-		
-		local reader = field_readers[field_type];
-		if reader then
-			data[field_tag.attr.var] = reader(field_tag);
+
+		if not tag then
+			if field.required then
+				errors[field.name] = "Required value missing";
+			end
+		else
+			local reader = field_readers[field.type];
+			if reader then
+				data[field.name], errors[field.name] = reader(tag, field.required);
+			end
 		end
-		
+	end
+	if next(errors) then
+		return data, errors;
 	end
 	return data;
 end
 
-field_readers["text-single"] = 
-	function (field_tag)
-		local value = field_tag:child_with_name("value");
-		if value then
-			return value[1];
+field_readers["text-single"] =
+	function (field_tag, required)
+		local data = field_tag:get_child_text("value");
+		if data and #data > 0 then
+			return data
+		elseif required then
+			return nil, "Required value missing";
 		end
 	end
 
-field_readers["text-private"] = 
+field_readers["text-private"] =
 	field_readers["text-single"];
 
 field_readers["jid-single"] =
-	field_readers["text-single"];
-
-field_readers["jid-multi"] = 
-	function (field_tag)
-		local result = {};
-		for value_tag in field_tag:childtags() do
-			if value_tag.name == "value" then
-				result[#result+1] = value_tag[1];
-			end
+	function (field_tag, required)
+		local raw_data = field_tag:get_child_text("value")
+		local data = jid_prep(raw_data);
+		if data and #data > 0 then
+			return data
+		elseif raw_data then
+			return nil, "Invalid JID: " .. raw_data;
+		elseif required then
+			return nil, "Required value missing";
 		end
-		return result;
 	end
 
-field_readers["text-multi"] = 
-	function (field_tag)
+field_readers["jid-multi"] =
+	function (field_tag, required)
 		local result = {};
-		for value_tag in field_tag:childtags() do
-			if value_tag.name == "value" then
-				result[#result+1] = value_tag[1];
+		local err = {};
+		for value_tag in field_tag:childtags("value") do
+			local raw_value = value_tag:get_text();
+			local value = jid_prep(raw_value);
+			result[#result+1] = value;
+			if raw_value and not value then
+				err[#err+1] = ("Invalid JID: " .. raw_value);
 			end
 		end
-		return t_concat(result, "\n");
+		if #result > 0 then
+			return result, (#err > 0 and t_concat(err, "\n") or nil);
+		elseif required then
+			return nil, "Required value missing";
+		end
+	end
+
+field_readers["list-multi"] =
+	function (field_tag, required)
+		local result = {};
+		for value in field_tag:childtags("value") do
+			result[#result+1] = value:get_text();
+		end
+		return result, (required and #result == 0 and "Required value missing" or nil);
+	end
+
+field_readers["text-multi"] =
+	function (field_tag, required)
+		local data, err = field_readers["list-multi"](field_tag, required);
+		if data then
+			data = t_concat(data, "\n");
+		end
+		return data, err;
 	end
 
 field_readers["list-single"] =
 	field_readers["text-single"];
 
-field_readers["list-multi"] =
-	function (field_tag)
-		local result = {};
-		for value_tag in field_tag:childtags() do
-			if value_tag.name == "value" then
-				result[#result+1] = value_tag[1];
-			end
-		end
-		return result;
-	end
+local boolean_values = {
+	["1"] = true, ["true"] = true,
+	["0"] = false, ["false"] = false,
+};
 
-field_readers["boolean"] = 
-	function (field_tag)
-		local value = field_tag:child_with_name("value");
-		if value then
-			if value[1] == "1" or value[1] == "true" then
-				return true;
-			else
-				return false;
-			end
-		end		
-	end
-
-field_readers["hidden"] = 
-	function (field_tag)
-		local value = field_tag:child_with_name("value");
-		if value then
-			return value[1];
+field_readers["boolean"] =
+	function (field_tag, required)
+		local raw_value = field_tag:get_child_text("value");
+		local value = boolean_values[raw_value ~= nil and raw_value];
+		if value ~= nil then
+			return value;
+		elseif raw_value then
+			return nil, "Invalid boolean representation";
+		elseif required then
+			return nil, "Required value missing";
 		end
 	end
-	
+
+field_readers["hidden"] =
+	function (field_tag)
+		return field_tag:get_child_text("value");
+	end
+
 return _M;
 
 
