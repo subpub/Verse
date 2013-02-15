@@ -24,6 +24,44 @@ function new(layout)
 	return setmetatable(layout, form_mt);
 end
 
+function from_stanza(stanza)
+	local layout = {
+		title = stanza:get_child_text("title");
+		instructions = stanza:get_child_text("instructions");
+	};
+	for tag in stanza:childtags("field") do
+		local field = {
+			name = tag.attr.var;
+			label = tag.attr.label;
+			type = tag.attr.type;
+			required = tag:get_child("required") and true or nil;
+			value = tag:get_child_text("value");
+		};
+		layout[#layout+1] = field;
+		if field.type then
+			local value = {};
+			if field.type:match"list%-" then
+				for tag in tag:childtags("option") do
+					value[#value+1] = { label = tag.attr.label, value = tag:get_child_text("value") };
+				end
+				for tag in tag:childtags("value") do
+					value[#value+1] = { label = tag.attr.label, value = tag:get_text(), default = true };
+				end
+			elseif field.type:match"%-multi" then
+				for tag in tag:childtags("value") do
+					value[#value+1] = tag.attr.label and { label = tag.attr.label, value = tag:get_text() } or tag:get_text();
+				end
+				if field.type == "text-multi" then
+					field.value = t_concat(value, "\n");
+				else
+					field.value = value;
+				end
+			end
+		end
+	end
+	return new(layout);
+end
+
 function form_t.form(layout, data, formtype)
 	local form = st.stanza("x", { xmlns = xmlns_forms, type = formtype or "form" });
 	if layout.title then
