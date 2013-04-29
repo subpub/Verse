@@ -51,6 +51,14 @@ function stream_callbacks.handlestanza(stream, stanza)
 	return stream:event("stanza", stanza);
 end
 
+function stream_callbacks.error(stream, e, stanza)
+	if stream:event(e, stanza) == nil then
+		local err = stanza:get_child(nil, "urn:ietf:params:xml:ns:xmpp-streams");
+		local text = stanza:get_child_text("text", "urn:ietf:params:xml:ns:xmpp-streams");
+		error(err.name..(text and ": "..text));
+	end
+end
+
 function stream:reset()
 	if self.stream then
 		self.stream:reset();
