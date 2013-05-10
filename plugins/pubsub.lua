@@ -79,6 +79,7 @@ function pubsub_service:subscriptions(callback)
 				for sub in subs:childtags("subscription") do
 					local node = self:node(sub.attr.node)
 					node.subscription = sub;
+					node.subscribed_jid = sub.attr.jid;
 					t_insert(nodes, node);
 					-- FIXME Good enough?
 					-- Or how about:
