@@ -215,6 +215,7 @@ function pubsub_node:affiliation(callback)
 end
 
 function pubsub_node:unsubscribe(jid, callback)
+	jid = jid or self.subscribed_jid or self.stream.jid;
 	self.stream:send_iq(pubsub_iq("set", self.service, nil, "unsubscribe", self.node, jid)
 	, callback);
 end
