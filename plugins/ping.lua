@@ -17,5 +17,8 @@ function verse.plugins.ping(stream)
 				callback(socket.gettime()-t, jid);
 			end);
 	end
+	stream:hook("iq/"..xmlns_ping, function(stanza)
+		return stream:send(verse.reply(stanza));
+	end);
 	return true;
 end
