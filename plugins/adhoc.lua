@@ -77,7 +77,7 @@ function verse.plugins.adhoc(stream)
 end
 
 function command_mt:_process_response(result)
-	if result.type == "error" then
+	if result.attr.type == "error" then
 		self.status = "canceled";
 		self.callback(self, {});
 		return;
