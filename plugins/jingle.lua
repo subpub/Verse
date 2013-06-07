@@ -237,7 +237,7 @@ function jingle_mt:offer(name, content)
 	end);
 	
 	self.stream:send_iq(session_initiate, function (result)
-		if result.type == "error" then
+		if result.attr.type == "error" then
 			self.state = "terminated";
 			local type, condition, text = result:get_error();
 			return self:event("error", { type = type, condition = condition, text = text });
