@@ -5,11 +5,14 @@ local xmlns_register = "jabber:iq:register";
 function verse.plugins.register(stream)
 	local function handle_features(features_stanza)
 		if features_stanza:get_child("register", "http://jabber.org/features/iq-register") then
-			stream:send_iq(verse.iq({ to = stream.host_, type = "set" })
+			local request = verse.iq({ to = stream.host_, type = "set" })
 				:tag("query", { xmlns = xmlns_register })
 					:tag("username"):text(stream.username):up()
-					:tag("password"):text(stream.password):up()
-			, function (result)
+					:tag("password"):text(stream.password):up();
+			if stream.register_email then
+				request:tag("email"):text(stream.register_email):up();
+			end
+			stream:send_iq(request, function (result)
 				if result.attr.type == "result" then
 					stream:event("registration-success");
 				else
