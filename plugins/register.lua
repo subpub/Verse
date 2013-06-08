@@ -20,7 +20,7 @@ function verse.plugins.register(stream)
 			end);
 		else
 			stream:debug("In-band registration not offered by server");
-			stream:event("registration-failed", { condition = "service-unavailable" });
+			stream:event("registration-failure", { condition = "service-unavailable" });
 		end
 		stream:unhook("stream-features", handle_features);
 		return true;
