@@ -39,7 +39,8 @@ function verse.plugins.archive(stream)
 		local function handle_archived_message(message)
 			local result_tag = message:get_child("result", xmlns_mam);
 			if result_tag and result_tag.attr.queryid == queryid then
-				local forwarded = message:get_child("forwarded", xmlns_forward);
+				local forwarded = result_tag:get_child("forwarded", xmlns_forward);
+				forwarded = forwarded or message:get_child("forwarded", xmlns_forward); -- COMPAT XEP-0313 pre 2013-05-31
 
 				local id = result_tag.attr.id;
 				local delay = forwarded:get_child("delay", xmlns_delay);
