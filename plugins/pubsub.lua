@@ -116,14 +116,16 @@ function pubsub_service:affiliations(callback)
 	end or nil);
 end
 
--- TODO Listing nodes? It's done with standard disco#items, but should
--- we have a wrapper here? If so, it could wrap items in pubsub_node objects
-
---[[
 function pubsub_service:nodes(callback)
-	self.stream:disco_items(...)
+	self.stream:disco_items(self.service, nil, function(items, ...)
+		if items then
+			for i=1,#items do
+				items[i] = self:node(items[i].node);
+			end
+		end
+		callback(items, ...)
+	end);
 end
---]]
 
 local pubsub_node = {};
 local pubsub_node_mt = { __index = pubsub_node };
