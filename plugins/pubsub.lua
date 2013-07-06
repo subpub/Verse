@@ -140,6 +140,7 @@ function pubsub_mt:__call(service, node)
 end
 
 function pubsub_node:hook(callback, prio)
+	self._hooks = self._hooks or setmetatable({}, { __mode = 'kv' });
 	local function hook(event)
 		-- FIXME service == nil would mean anyone,
 		-- publishing would be go to your bare jid.
@@ -149,12 +150,20 @@ function pubsub_node:hook(callback, prio)
 			return callback(event)
 		end
 	end
+	self._hooks[callback] = hook;
 	self.stream:hook("pubsub/event", hook, prio);
 	return hook;
 end
 
 function pubsub_node:unhook(callback)
-	self.stream:unhook("pubsub/event", callback);
+	if callback then
+		local hook = self._hooks[callback];
+		self.stream:unhook("pubsub/event", hook);
+	elseif self._hooks then
+		for hook in pairs(self._hooks) do
+			self.stream:unhook("pubsub/event", hook);
+		end
+	end
 end
 
 function pubsub_node:create(config, callback)
