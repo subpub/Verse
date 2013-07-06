@@ -235,12 +235,18 @@ function pubsub_node:configure_subscription(options, callback)
 	error("Not implemented yet.");
 end
 
-function pubsub_node:items(count, callback)
-	error("Not implemented yet.");
+function pubsub_node:items(full, callback)
+	if full then
+		self.stream:send_iq(pubsub_iq("get", self.service, nil, "items", self.node)
+		, callback);
+	else
+		self.stream:disco_items(self.service, self.node, callback);
+	end
 end
 
 function pubsub_node:item(id, callback)
-	error("Not implemented yet.");
+	self.stream:send_iq(pubsub_iq("get", self.service, nil, "items", self.node, nil, id)
+	, callback);
 end
 
 function pubsub_node:retract(id, callback)
