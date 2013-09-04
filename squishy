@@ -1,0 +1,81 @@
+Output "verse.lua"
+
+-- Verse-specific versions of libraries
+Module "util.encodings"		"libs/encodings.lua"
+Module "util.hashes"		"libs/hashes.lua"
+Module "util.sha1"		"util/sha1.lua"
+Module "lib.adhoc"              "libs/adhoc.lib.lua"
+
+AutoFetchURL("https://prosody-modules.googlecode.com/hg/mod_mam/?");
+Module "util.rsm"       "rsm.lib.lua"
+-- Prosody libraries
+if not GetOption("prosody") then
+	AutoFetchURL "http://hg.prosody.im/0.9/raw-file/381e0b874e6d/?"
+else
+	AutoFetchURL(GetOption("prosody").."/?")
+end
+
+Module "util.stanza"		"util/stanza.lua"
+Module "util.timer"		"util/timer.lua"
+Module "util.termcolours"	"util/termcolours.lua"
+Module "util.uuid"		"util/uuid.lua"
+Module "net.dns"               "net/dns.lua"
+Module "net.adns"              "net/adns.lua"
+Module "net.server"		"net/server_select.lua"
+Module "util.xmppstream"	"util/xmppstream.lua"
+Module "util.jid"		"util/jid.lua"
+Module "util.events"		"util/events.lua"
+Module "util.dataforms"		"util/dataforms.lua"
+Module "util.caps"		"util/caps.lua"
+Module "util.vcard"		"util/vcard.lua"
+Module "util.logger"		"util/logger.lua"
+Module "util.datetime"		"util/datetime.lua"
+
+-- Verse plugins
+plugins = {
+	-- Login
+	"tls", "sasl", "bind", "session", "legacy", "compression";
+	-- Reliability
+	"smacks", "keepalive";
+	-- Queries
+	"disco", "version", "ping", "uptime";
+	-- Privacy control
+	"blocking";
+	-- Jingle / file transfer
+	"jingle", "jingle_ft", "jingle_s5b", "proxy65", "jingle_ibb";
+	-- Pubsub
+	"pubsub", "pep";
+	-- Command and control
+	"adhoc";
+	-- Basics
+	"presence", "private", "roster", "register";
+	-- MUC
+	"groupchat";
+	-- vCard
+	"vcard", "vcard_update";
+	-- Carbons
+	"carbons";
+
+	"archive";
+}
+
+for _, plugin in ipairs(plugins) do
+	Module("verse.plugins."..plugin)("plugins/"..plugin..".lua")
+end
+	
+Module "net.httpclient_listener" "net/httpclient_listener.lua"
+Module "net.connlisteners" "net/connlisteners.lua"
+Module "util.httpstream" "util/httpstream.lua"
+Module "net.http" "net/http.lua"
+
+Module "verse.bosh" "bosh.lua"
+
+if GetOption "internal-bit-module" then
+	Module "bit" "libs/bit.lua"
+end
+
+Module "verse.client" "client.lua"
+Module "verse.component" "component.lua"
+
+-- Main verse file
+Main "init.lua"
