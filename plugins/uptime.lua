@@ -23,7 +23,7 @@ function verse.plugins.uptime(stream)
 			function (reply)
 				local query = reply:get_child("query", xmlns_last);
 				if reply.attr.type == "result" then
-					local seconds = query.attr.seconds;
+					local seconds = tonumber(query.attr.seconds);
 					callback({
 						seconds = seconds or nil;
 						});
