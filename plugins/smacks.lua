@@ -1,4 +1,5 @@
 local verse = require "verse";
+local now = socket.gettime;
 
 local xmlns_sm = "urn:xmpp:sm:2";
 
@@ -6,6 +7,8 @@ function verse.plugins.smacks(stream)
 	-- State for outgoing stanzas
 	local outgoing_queue = {};
 	local last_ack = 0;
+	local last_stanza_time = now();
+	local timer_active;
 	
 	-- State for incoming stanzas
 	local handled_stanza_count = 0;
@@ -24,11 +27,24 @@ function verse.plugins.smacks(stream)
 		if stanza.name and not stanza.attr.xmlns then
 			-- serialize stanzas in order to bypass this on resumption
 			outgoing_queue[#outgoing_queue+1] = tostring(stanza);
-			verse.add_task(1, function()
-				if #outgoing_queue > 0 then
+			last_stanza_time = now();
+			if not timer_active then
+				timer_active = true;
+				stream:debug("Waiting to send ack request...");
+				verse.add_task(1, function()
+					if #outgoing_queue == 0 then
+						timer_active = false;
+						return;
+					end
+					local time_since_last_stanza = now() - last_stanza_time;
+					if time_since_last_stanza < 1 and #outgoing_queue < 10 then
+						return 1 - time_since_last_stanza;
+					end
+					stream:debug("Time up, sending <r>...");
+					timer_active = false;
 					stream:send(verse.stanza("r", { xmlns = xmlns_sm }));
-				end
-			end);
+				end);
+			end
 		end
 	end
 
