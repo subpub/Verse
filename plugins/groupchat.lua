@@ -43,12 +43,11 @@ function verse.plugins.groupchat(stream)
 			return false, "no nickname supplied"
 		end
 		opts = opts or {};
-		local room = setmetatable({
+		local room = setmetatable(verse.eventable{
 			stream = stream, jid = jid, nick = nick,
 			subject = nil,
 			occupants = {},
 			opts = opts,
-			events = events.new()
 		}, room_mt);
 		if opts.source then
 			self.rooms[opts.source.." "..jid] = room;
@@ -175,13 +174,4 @@ end
 
 function room_mt:ban(nick, reason)
 	self:set_affiliation(nick, "outcast", reason);
-end
-
-function room_mt:event(name, arg)
-	self.stream:debug("Firing room event: %s", name);
-	return self.events.fire_event(name, arg);
-end
-
-function room_mt:hook(name, callback, priority)
-	return self.events.add_handler(name, callback, priority);
 end
