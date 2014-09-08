@@ -4,39 +4,49 @@
 
 local verse = require "verse";
 local st = require "util.stanza";
-local xmlns_mam = "urn:xmpp:mam:tmp"
+local xmlns_mam = "urn:xmpp:mam:0"
 local xmlns_forward = "urn:xmpp:forward:0";
 local xmlns_delay = "urn:xmpp:delay";
 local uuid = require "util.uuid".generate;
 local parse_datetime = require "util.datetime".parse;
 local datetime = require "util.datetime".datetime;
+local dataform = require"util.dataforms".new;
 local rsm = require "util.rsm";
-local tonumber = tonumber;
 local NULL = {};
+
+local query_form = dataform {
+	{ name = "FORM_TYPE"; type = "hidden"; value = xmlns_mam; };
+	{ name = "with"; type = "jid-single"; };
+	{ name = "start"; type = "text-single" };
+	{ name = "end"; type = "text-single"; };
+};
 
 function verse.plugins.archive(stream)
 	function stream:query_archive(where, query_params, callback)
 		local queryid = uuid();
-		local query_st = st.iq{ type="get", to = where }
+		local query_st = st.iq{ type="set", to = where }
 			:tag("query", { xmlns = xmlns_mam, queryid = queryid });
 
-		local qwith = query_params["with"];
-		if qwith then
-			query_st:tag("with"):text(qwith):up();
-		end
-
+		
 		local qstart, qend = tonumber(query_params["start"]), tonumber(query_params["end"]);
-		if qstart then
-			query_st:tag("start"):text(datetime(qstart)):up();
-		end
-		if qend then
-			query_st:tag("end"):text(datetime(qend)):up();
-		end
+		query_params["start"] = qstart and datetime(qstart);
+		query_params["end"] = qend and datetime(qend);
 
+		query_st:add_child(query_form:form(query_params, "submit"));
+		-- query_st:up();
 		query_st:add_child(rsm.generate(query_params));
 
 		local results = {};
 		local function handle_archived_message(message)
+
+			local finnished = message:get_child("fin", xmlns_mam)
+			if finnished and finnished.attr.queryid == queryid then
+				local rset = rsm.get(finnished);
+				for k,v in pairs(rset or NULL) do results[k]=v; end
+				self:unhook("message", handle_archived_message);
+				callback(results);
+				return true
+			end
 			local result_tag = message:get_child("result", xmlns_mam);
 			if result_tag and result_tag.attr.queryid == queryid then
 				local forwarded = result_tag:get_child("forwarded", xmlns_forward);
@@ -55,10 +65,11 @@ function verse.plugins.archive(stream)
 
 		self:hook("message", handle_archived_message, 1);
 		self:send_iq(query_st, function(reply)
-			self:unhook("message", handle_archived_message);
-			local rset = reply.tags[1] and rsm.get(reply.tags[1]);
-			for k,v in pairs(rset or NULL) do results[k]=v; end
-			callback(reply.attr.type == "result" and #results, results);
+			if reply.attr.type == "error" then
+				self:warn(table.concat({reply:get_error()}, " "))
+				self:unhook("message", handle_archived_message);
+				callback(false, reply:get_error())
+			end
 			return true
 		end);
 	end
