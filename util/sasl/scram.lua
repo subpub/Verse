@@ -50,7 +50,11 @@ local function scram(stream, name)
 	local nonce = "r=" .. c_nonce;
 	local client_first_message_bare = username .. "," .. nonce;
 	local cbind_data = "";
-	local gs2_cbind_flag = "n" -- TODO channel binding
+	local gs2_cbind_flag = "y";
+	if name == "SCRAM-SHA-1-PLUS" then
+		cbind_data = stream.conn:socket():getfinished();
+		gs2_cbind_flag = "p=tls-unique";
+	end
 	local gs2_header = gs2_cbind_flag .. ",,";
 	local client_first_message = gs2_header .. client_first_message_bare;
 	local cont, server_first_message = coroutine.yield(client_first_message);
@@ -98,6 +102,10 @@ return function (stream, mechanisms, preference, supported)
 	if stream.username and (stream.password or (stream.client_key or stream.server_key)) then
 		mechanisms["SCRAM-SHA-1"] = scram;
 		preference["SCRAM-SHA-1"] = 99;
-		-- TODO SCRAM-SHA-1-PLUS
+		local sock = stream.conn:ssl() and stream.conn:socket();
+		if sock and sock.getfinished then
+			mechanisms["SCRAM-SHA-1-PLUS"] = scram;
+			preference["SCRAM-SHA-1-PLUS"] = 100
+		end
 	end
 end
