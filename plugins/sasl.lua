@@ -20,7 +20,7 @@ function verse.plugins.sasl(stream)
 				local ok, impl = pcall(require, "util.sasl."..name:lower());
 				if ok then
 					stream:debug("Loaded SASL %s module", name);
-					mechanisms[name], preference[name] = impl(stream, name);
+					mechanisms[mech], preference[mech] = impl(stream, mech);
 				elseif not tostring(impl):match("not found") then
 					stream:debug("Loading failed: %s", tostring(impl));
 				end
