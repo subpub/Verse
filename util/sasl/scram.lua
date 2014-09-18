@@ -98,7 +98,7 @@ return function (stream, name)
 	if stream.username and (stream.password or (stream.client_key or stream.server_key)) then
 		if name == "SCRAM-SHA-1" then
 			return scram, 99;
-		elseif name = "SCRAM-SHA-1-PLUS" then
+		elseif name == "SCRAM-SHA-1-PLUS" then
 			local sock = stream.conn:ssl() and stream.conn:socket();
 			if sock and sock.getfinished then
 				return scram, 100;
