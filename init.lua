@@ -3,7 +3,7 @@
 pcall(require, "luarocks.require");
 
 -- Load LuaSec if available
-pcall(require, "ssl");
+local socket = require"socket";
 
 local server = require "net.server";
 local events = require "util.events";
