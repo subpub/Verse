@@ -43,8 +43,8 @@ end
 local function scram(stream, name)
 	local username = "n=" .. value_safe(stream.username);
 	local c_nonce = base64(crypto.rand.bytes(15));
-	local nonce = "r=" .. c_nonce;
-	local client_first_message_bare = username .. "," .. nonce;
+	local our_nonce = "r=" .. c_nonce;
+	local client_first_message_bare = username .. "," .. our_nonce;
 	local cbind_data = "";
 	local gs2_cbind_flag = "y";
 	if name == "SCRAM-SHA-1-PLUS" then
@@ -56,15 +56,14 @@ local function scram(stream, name)
 	local cont, server_first_message = coroutine.yield(client_first_message);
 	if cont ~= "challenge" then return false end
 
-	local salt, iteration_count;
-	nonce, salt, iteration_count = server_first_message:match("(r=[^,]+),s=([^,]*),i=(%d+)");
+	local nonce, salt, iteration_count = server_first_message:match("(r=[^,]+),s=([^,]*),i=(%d+)");
 	local i = tonumber(iteration_count);
 	salt = unbase64(salt);
 	if not nonce or not salt or not i then
 		return false, "Could not parse server_first_message";
 	elseif nonce:find(c_nonce, 3, true) ~= 3 then
 		return false, "nonce sent by server does not match our nonce";
-	elseif nonce == c_nonce then
+	elseif nonce == our_nonce then
 		return false, "server did not append s-nonce to nonce";
 	end
 
