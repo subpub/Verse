@@ -18,8 +18,9 @@ local function H(str)
 	return crypto.digest("sha1", str, true);
 end
 
+local _hmac_digest = crypto.hmac.digest;
 local function HMAC(key, str)
-	return crypto.hmac.digest("sha1", str, key, true);
+	return _hmac_digest("sha1", str, key, true);
 end
 
 local function Hi(str, salt, i)
