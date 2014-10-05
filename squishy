@@ -6,7 +6,7 @@ Module "util.hashes"		"libs/hashes.lua"
 Module "util.sha1"		"util/sha1.lua"
 Module "lib.adhoc"              "libs/adhoc.lib.lua"
 
-AutoFetchURL("https://prosody-modules.googlecode.com/hg/mod_mam/?");
+AutoFetchURL("http://hg.prosody.im/prosody-modules/raw-file/tip/mod_mam/?");
 Module "util.rsm"       "rsm.lib.lua"
 -- Prosody libraries
 if not GetOption("prosody") then
