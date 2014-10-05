@@ -47,7 +47,7 @@ local function scram(stream, name)
 	local our_nonce = "r=" .. c_nonce;
 	local client_first_message_bare = username .. "," .. our_nonce;
 	local cbind_data = "";
-	local gs2_cbind_flag = "y";
+	local gs2_cbind_flag = stream.conn:ssl() and "y" or "n";
 	if name == "SCRAM-SHA-1-PLUS" then
 		cbind_data = stream.conn:socket():getfinished();
 		gs2_cbind_flag = "p=tls-unique";
