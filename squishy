@@ -10,7 +10,7 @@ AutoFetchURL("http://hg.prosody.im/prosody-modules/raw-file/tip/mod_mam/?");
 Module "util.rsm"       "rsm.lib.lua"
 -- Prosody libraries
 if not GetOption("prosody") then
-	AutoFetchURL "http://hg.prosody.im/0.9/raw-file/381e0b874e6d/?"
+	AutoFetchURL "http://hg.prosody.im/0.9/raw-file/tip/?"
 else
 	AutoFetchURL(GetOption("prosody").."/?")
 end
@@ -67,9 +67,8 @@ for _, plugin in ipairs(plugins) do
 	Module("verse.plugins."..plugin)("plugins/"..plugin..".lua")
 end
 	
-Module "net.httpclient_listener" "net/httpclient_listener.lua"
-Module "net.connlisteners" "net/connlisteners.lua"
-Module "util.httpstream" "util/httpstream.lua"
+Module "util.http" "util/http.lua"
+Module "net.http.parser" "net/http/parser.lua"
 Module "net.http" "net/http.lua"
 
 Module "verse.bosh" "bosh.lua"
