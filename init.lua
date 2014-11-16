@@ -2,8 +2,10 @@
 -- Use LuaRocks if available
 pcall(require, "luarocks.require");
 
--- Load LuaSec if available
 local socket = require"socket";
+
+-- Load LuaSec if available
+pcall(require, "ssl");
 
 local server = require "net.server";
 local events = require "util.events";
