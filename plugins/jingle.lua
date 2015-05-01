@@ -16,7 +16,7 @@ function verse.plugins.jingle(stream)
 	stream:hook("ready", function ()
 		stream:add_disco_feature(xmlns_jingle);
 	end, 10);
-	
+
 	function stream:jingle(to)
 		return verse.eventable(setmetatable(base or {
 			role = "initiator";
@@ -25,20 +25,20 @@ function verse.plugins.jingle(stream)
 			stream = stream;
 		}, jingle_mt));
 	end
-	
+
 	function stream:register_jingle_transport(transport)
 		-- transport is a function that receives a
 		-- <transport> element, and returns a connection
 		-- We wait for 'connected' on that connection,
 		-- and use :send() and 'incoming-raw'.
 	end
-	
+
 	function stream:register_jingle_content_type(content)
 		-- Call content() for every 'incoming-raw'?
 		-- I think content() returns the object we return
 		-- on jingle:accept()
 	end
-	
+
 	local function handle_incoming_jingle(stanza)
 		local jingle_tag = stanza:get_child("jingle", xmlns_jingle);
 		local sid = jingle_tag.attr.sid;
@@ -57,21 +57,21 @@ function verse.plugins.jingle(stream)
 			stream:send(reply);
 			return;
 		end
-		
+
 		-- Ok, session-initiate, new session
-		
+
 		-- Create new Jingle object
 		local sid = jingle_tag.attr.sid;
-		
+
 		local jingle = verse.eventable{
 			role = "receiver";
 			peer = stanza.attr.from;
 			sid = sid;
 			stream = stream;
 		};
-		
+
 		setmetatable(jingle, jingle_mt);
-		
+
 		local content_tag;
 		local content, transport;
 		for tag in jingle_tag:childtags() do
@@ -84,10 +84,10 @@ function verse.plugins.jingle(stream)
 			 			content = desc_handler;
 			 		end
 			 	end
-				
+
 				local transport_tag = tag:child_with_name("transport");
 				local transport_xmlns = transport_tag.attr.xmlns;
-				
+
 				transport = stream:event("jingle/transport/"..transport_xmlns, jingle, transport_tag);
 				if content and transport then
 					content_tag = tag;
@@ -100,23 +100,23 @@ function verse.plugins.jingle(stream)
 			stream:send(verse.error_reply(stanza, "cancel", "feature-not-implemented", "The specified content is not supported"));
 			return true;
 		end
-		
+
 		if not transport then
 			-- FIXME: Refuse session, no transport
 			stream:send(verse.error_reply(stanza, "cancel", "feature-not-implemented", "The specified transport is not supported"));
 			return true;
 		end
-		
+
 		stream:send(verse.reply(stanza));
-		
+
 		jingle.content_tag = content_tag;
 		jingle.creator, jingle.name = content_tag.attr.creator, content_tag.attr.name;
 		jingle.content, jingle.transport = content, transport;
-		
+
 		function jingle:decline()
 			-- FIXME: Decline session
 		end
-		
+
 		stream:hook("jingle/"..sid, function (stanza)
 			if stanza.attr.from ~= jingle.peer then
 				return false;
@@ -124,11 +124,11 @@ function verse.plugins.jingle(stream)
 			local jingle_tag = stanza:get_child("jingle", xmlns_jingle);
 			return jingle:handle_command(jingle_tag);
 		end);
-		
+
 		stream:event("jingle", jingle);
 		return true;
 	end
-	
+
 	function jingle_mt:handle_command(jingle_tag)
 		local action = jingle_tag.attr.action;
 		stream:debug("Handling Jingle command: %s", action);
@@ -166,7 +166,7 @@ function verse.plugins.jingle(stream)
 			self.stream:send_iq(stanza, callback);
 		end
 	end
-		
+
 	function jingle_mt:accept(options)
 		local accept_stanza = verse.iq({ to = self.peer, type = "set" })
 			:tag("jingle", {
@@ -176,13 +176,13 @@ function verse.plugins.jingle(stream)
 				responder = stream.jid,
 			})
 				:tag("content", { creator = self.creator, name = self.name });
-		
+
 		local content_accept_tag = self.content:generate_accept(self.content_tag:child_with_name("description"), options);
 		accept_stanza:add_child(content_accept_tag);
-		
+
 		local transport_accept_tag = self.transport:generate_accept(self.content_tag:child_with_name("transport"), options);
 		accept_stanza:add_child(transport_accept_tag);
-		
+
 		local jingle = self;
 		stream:send_iq(accept_stanza, function (result)
 			if result.attr.type == "error" then
@@ -197,7 +197,7 @@ function verse.plugins.jingle(stream)
 			end);
 		end);
 	end
-	
+
 
 	stream:hook("iq/"..xmlns_jingle, handle_incoming_jingle);
 	return true;
@@ -207,26 +207,26 @@ function jingle_mt:offer(name, content)
 	local session_initiate = verse.iq({ to = self.peer, type = "set" })
 		:tag("jingle", { xmlns = xmlns_jingle, action = "session-initiate",
 			initiator = self.stream.jid, sid = self.sid });
-	
+
 	-- Content tag
 	session_initiate:tag("content", { creator = self.role, name = name });
-	
+
 	-- Need description element from someone who can turn 'content' into XML
 	local description = self.stream:event("jingle/describe/"..name, content);
-	
+
 	if not description then
 		return false, "Unknown content type";
 	end
-	
+
 	session_initiate:add_child(description);
-	
+
 	-- FIXME: Sort transports by 1) recipient caps 2) priority (SOCKS vs IBB, etc.)
 	-- Fixed to s5b in the meantime
 	local transport = self.stream:event("jingle/transport/".."urn:xmpp:jingle:transports:s5b:1", self);
 	self.transport = transport;
-	
+
 	session_initiate:add_child(transport:generate_initiate());
-	
+
 	self.stream:debug("Hooking %s", "jingle/"..self.sid);
 	self.stream:hook("jingle/"..self.sid, function (stanza)
 		if stanza.attr.from ~= self.peer then
@@ -235,7 +235,7 @@ function jingle_mt:offer(name, content)
 		local jingle_tag = stanza:get_child("jingle", xmlns_jingle);
 		return self:handle_command(jingle_tag)
 	end);
-	
+
 	self.stream:send_iq(session_initiate, function (result)
 		if result.attr.type == "error" then
 			self.state = "terminated";

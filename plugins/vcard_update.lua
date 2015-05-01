@@ -32,7 +32,7 @@ function verse.plugins.vcard_update(stream)
 
 	local x_vcard_update;
 
-	function update_vcard_photo(vCard) 
+	function update_vcard_photo(vCard)
 		local data;
 		for i=1,#vCard do
 			if vCard[i].name == "PHOTO" then

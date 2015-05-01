@@ -24,7 +24,7 @@ function verse.plugins.roster(stream)
 	local function item_lua2xml(item_table)
 		local xml_item = verse.stanza("item", { xmlns = xmlns_roster });
 		for k, v in pairs(item_table) do
-			if k ~= "groups" then 
+			if k ~= "groups" then
 				xml_item.attr[k] = v;
 			else
 				for i = 1,#v do

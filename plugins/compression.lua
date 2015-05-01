@@ -1,6 +1,6 @@
 -- Copyright (C) 2009-2010 Matthew Wild
 -- Copyright (C) 2009-2010 Tobias Markmann
--- 
+--
 -- This project is MIT/X11 licensed. Please see the
 -- COPYING file in the source package for more information.
 --
@@ -53,7 +53,7 @@ local function setup_compression(session, deflate_stream)
 				return;
 			end
 			session.conn:write(compressed);
-		end;	
+		end;
 end
 
 -- setup decompression for a stream
@@ -101,16 +101,16 @@ function verse.plugins.compression(stream)
 			-- create deflate and inflate streams
 			local deflate_stream = get_deflate_stream(stream);
 			if not deflate_stream then return end
-			
+
 			local inflate_stream = get_inflate_stream(stream);
 			if not inflate_stream then return end
-			
+
 			-- setup compression for stream.w
 			setup_compression(stream, deflate_stream);
-				
+
 			-- setup decompression for stream.data
 			setup_decompression(stream, inflate_stream);
-			
+
 			stream.compressed = true;
 			stream:reopen();
 		elseif stanza.name == "failure" then

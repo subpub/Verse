@@ -48,7 +48,7 @@ function verse.plugins.sasl(stream)
 		stream:send(auth_stanza);
 		return true;
 	end
-	
+
 	local function handle_sasl(sasl_stanza)
 		if sasl_stanza.name == "failure" then
 			local err = sasl_stanza.tags[1];
@@ -71,10 +71,10 @@ function verse.plugins.sasl(stream)
 		end
 		return true;
 	end
-	
+
 	stream:hook("stream-features", handle_features, 300);
 	stream:hook("stream/"..xmlns_sasl, handle_sasl);
-	
+
 	return true;
 end
 

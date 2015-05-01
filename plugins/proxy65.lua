@@ -19,12 +19,12 @@ function verse.plugins.proxy65(stream)
 			outstanding_proxies = outstanding_proxies + 1;
 			stream:send_iq(verse.iq({ to = service.jid, type = "get" })
 				:tag("query", { xmlns = xmlns_bytestreams }), function (result)
-				
+
 				outstanding_proxies = outstanding_proxies - 1;
 				if result.attr.type == "result" then
 					local streamhost = result:get_child("query", xmlns_bytestreams)
 						:get_child("streamhost").attr;
-					
+
 					stream.proxy65.available_streamhosts[streamhost.jid] = {
 						jid = streamhost.jid;
 						host = streamhost.host;
@@ -43,14 +43,14 @@ function verse.plugins.proxy65(stream)
 			streamhosts = {},
 			current_host = 0;
 		});
-		
+
 		-- Parse hosts from request
 		for tag in request.tags[1]:childtags() do
 			if tag.name == "streamhost" then
-				table.insert(conn.streamhosts, tag.attr);	
+				table.insert(conn.streamhosts, tag.attr);
 			end
 		end
-		
+
 		--Attempt to connect to the next host
 		local function attempt_next_streamhost()
 			-- First connect, or the last connect failed
@@ -68,7 +68,7 @@ function verse.plugins.proxy65(stream)
 			stream:send(verse.error_reply(request, "cancel", "item-not-found"));
 			-- Let disconnected event fall through to user handlers...
 		end
-		
+
 		function conn:accept()
 			conn:hook("disconnected", attempt_next_streamhost, 100);
 			-- When this event fires, we're connected to a streamhost
@@ -94,14 +94,14 @@ function proxy65_mt:new(target_jid, proxies)
 		target_jid = target_jid;
 		bytestream_sid = uuid.generate();
 	});
-	
+
 	local request = verse.iq{type="set", to = target_jid}
 		:tag("query", { xmlns = xmlns_bytestreams, mode = "tcp", sid = conn.bytestream_sid });
 	for _, proxy in ipairs(proxies or self.proxies) do
 		request:tag("streamhost", proxy):up();
 	end
-	
-	
+
+
 	self.stream:send_iq(request, function (reply)
 		if reply.attr.type == "error" then
 			local type, condition, text = reply:get_error();
@@ -123,7 +123,7 @@ function proxy65_mt:new(target_jid, proxies)
 			if not (host and port) then
 				--FIXME: Emit error
 			end
-			
+
 			conn:connect(host, port);
 
 			local function handle_proxy_connected()
@@ -158,7 +158,7 @@ function negotiate_socks5(stream, conn, sid, requester_jid, target_jid)
 	end
 	local function receive_connection_response(data)
 		conn:unhook("incoming-raw", receive_connection_response);
-		
+
 		if data:sub(1, 2) ~= "\005\000" then
 			return conn:event("error", "connection-failure");
 		end

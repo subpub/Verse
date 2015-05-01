@@ -12,7 +12,7 @@ local function negotiate_socks5(conn, hash)
 	end
 	local function receive_connection_response(data)
 		conn:unhook("incoming-raw", receive_connection_response);
-		
+
 		if data:sub(1, 2) ~= "\005\000" then
 			return conn:event("error", "connection-failure");
 		end
@@ -47,7 +47,7 @@ local function connect_to_usable_streamhost(callback, streamhosts, auth_token)
 	--Attempt to connect to the next host
 	local function attempt_next_streamhost(event)
 		if event then
-			return callback(nil, event.reason); 
+			return callback(nil, event.reason);
 		end
 		-- First connect, or the last connect failed
 		if conn.current_host < #conn.streamhosts then
@@ -58,7 +58,7 @@ local function connect_to_usable_streamhost(callback, streamhosts, auth_token)
 				conn.streamhosts[conn.current_host].port
 			);
 			if not ok then
-				conn:debug("Error connecting to proxy (%s:%s): %s", 
+				conn:debug("Error connecting to proxy (%s:%s): %s",
 					conn.streamhosts[conn.current_host].host,
 					conn.streamhosts[conn.current_host].port,
 					err
@@ -90,7 +90,7 @@ function verse.plugins.jingle_s5b(stream)
 	end, 10);
 
 	local s5b = {};
-	
+
 	function s5b:generate_initiate()
 		self.s5b_sid = uuid_generate();
 		local transport = verse.stanza("transport", { xmlns = xmlns_s5b,
@@ -104,13 +104,13 @@ function verse.plugins.jingle_s5b(stream)
 		stream:debug("Have %d proxies", p)
 		return transport;
 	end
-	
+
 	function s5b:generate_accept(initiate_transport)
 		local candidates = {};
 		self.s5b_peer_candidates = candidates;
 		self.s5b_mode = initiate_transport.attr.mode or "tcp";
 		self.s5b_sid = initiate_transport.attr.sid or self.jingle.sid;
-		
+
 		-- Import the list of candidates the initiator offered us
 		for candidate in initiate_transport:childtags() do
 			--if candidate.attr.jid == "asterix4@jabber.lagaule.org/Gajim"
@@ -125,21 +125,21 @@ function verse.plugins.jingle_s5b(stream)
 				};
 			--end
 		end
-		
+
 		-- Import our own candidates
 		-- TODO ^
 		local transport = verse.stanza("transport", { xmlns = xmlns_s5b });
 		return transport;
 	end
-	
+
 	function s5b:connect(callback)
 		stream:warn("Connecting!");
-		
+
 		local streamhost_array = {};
 		for cid, streamhost in pairs(self.s5b_peer_candidates or {}) do
 			streamhost_array[#streamhost_array+1] = streamhost;
 		end
-		
+
 		if #streamhost_array > 0 then
 			self.connecting_peer_candidates = true;
 			local function onconnect(streamhost, conn)
@@ -156,7 +156,7 @@ function verse.plugins.jingle_s5b(stream)
 			self.onconnect_callback = callback;
 		end
 	end
-	
+
 	function s5b:info_received(jingle_tag)
 		stream:warn("Info received");
 		local content_tag = jingle_tag:child_with_name("content");
@@ -171,7 +171,7 @@ function verse.plugins.jingle_s5b(stream)
 						self.jingle.stream:send_iq(verse.iq({ to = streamhost.jid, type = "set" })
 							:tag("query", { xmlns = xmlns_bytestreams, sid = self.s5b_sid })
 								:tag("activate"):text(self.jingle.peer), function (result)
-							
+
 							if result.attr.type == "result" then
 								self.jingle:send_command("transport-info", verse.stanza("content", content_tag.attr)
 									:tag("transport", { xmlns = xmlns_s5b, sid = self.s5b_sid })
@@ -184,7 +184,7 @@ function verse.plugins.jingle_s5b(stream)
 						end);
 					end
 				end
-				
+
 				-- FIXME: Another assumption that cid==jid, and that it was our candidate
 				self.jingle.stream:debug("CID: %s", self.jingle.stream.proxy65.available_streamhosts[candidate_used.attr.cid]);
 				local streamhost_array = {
@@ -198,13 +198,13 @@ function verse.plugins.jingle_s5b(stream)
 			self.onconnect_callback(self.conn);
 		end
 	end
-	
+
 	function s5b:disconnect()
 		if self.conn then
 			self.conn:close();
 		end
 	end
-	
+
 	function s5b:handle_accepted(jingle_tag)
 	end
 

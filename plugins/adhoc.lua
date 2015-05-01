@@ -25,15 +25,15 @@ function verse.plugins.adhoc(stream)
 			return callback(command_list);
 		end);
 	end
-	
+
 	function stream:execute_command(jid, command, callback)
 		local cmd = setmetatable({
 			stream = stream, jid = jid,
-			command = command, callback = callback 
+			command = command, callback = callback
 		}, command_mt);
 		return cmd:execute();
 	end
-	
+
 	-- ACL checker for commands we provide
 	local function has_affiliation(jid, aff)
 		if not(aff) or aff == "user" then return true; end
@@ -42,31 +42,31 @@ function verse.plugins.adhoc(stream)
 		end
 		-- TODO: Support 'roster', etc.
 	end
-	
+
 	function stream:add_adhoc_command(name, node, handler, permission)
 		commands[node] = adhoc.new(name, node, handler, permission);
 		stream:add_disco_item({ jid = stream.jid, node = node, name = name }, xmlns_commands);
 		return commands[node];
 	end
-	
+
 	local function handle_command(stanza)
 		local command_tag = stanza.tags[1];
 		local node = command_tag.attr.node;
-		
+
 		local handler = commands[node];
 		if not handler then return; end
-		
+
 		if not has_affiliation(stanza.attr.from, handler.permission) then
 			stream:send(verse.error_reply(stanza, "auth", "forbidden", "You don't have permission to execute this command"):up()
 			:add_child(handler:cmdtag("canceled")
 				:tag("note", {type="error"}):text("You don't have permission to execute this command")));
 			return true
 		end
-		
+
 		-- User has permission now execute the command
 		return adhoc.handle_cmd(handler, { send = function (d) return stream:send(d) end }, stanza);
 	end
-	
+
 	stream:hook("iq/"..xmlns_commands, function (stanza)
 		local type = stanza.attr.type;
 		local name = stanza.tags[1].name;
@@ -106,9 +106,9 @@ function command_mt:next(form)
 			node = self.command,
 			sessionid = self.sessionid
 		});
-	
+
 	if form then iq:add_child(form); end
-	
+
 	self.stream:send_iq(iq, function (result)
 		self:_process_response(result);
 	end);
