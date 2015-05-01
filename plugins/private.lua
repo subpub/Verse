@@ -18,7 +18,7 @@ function verse.plugins.private(stream)
 		end
 		self:send_iq(iq, callback);
 	end
-	
+
 	function stream:private_get(name, xmlns, callback)
 		self:send_iq(verse.iq({type="get"})
 			:tag("query", { xmlns = xmlns_private })

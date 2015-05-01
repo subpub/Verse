@@ -9,10 +9,10 @@ function verse.plugins.smacks(stream)
 	local last_ack = 0;
 	local last_stanza_time = now();
 	local timer_active;
-	
+
 	-- State for incoming stanzas
 	local handled_stanza_count = 0;
-	
+
 	-- Catch incoming stanzas
 	local function incoming_stanza(stanza)
 		if stanza.attr.xmlns == "jabber:client" or not stanza.attr.xmlns then
@@ -59,14 +59,14 @@ function verse.plugins.smacks(stream)
 			end);
 			return true;
 		end
-	end	
+	end
 
 	-- Graceful shutdown
 	local function on_close()
 		stream.resumption_token = nil;
 		stream:unhook("disconnected", on_disconnect);
 	end
-	
+
 	local function handle_sm_command(stanza)
 		if stanza.name == "r" then -- Request for acks for stanzas we received
 			stream:debug("Ack requested... acking %d handled stanzas", handled_stanza_count);

@@ -27,7 +27,7 @@ function verse.plugins.archive(stream)
 		local query_st = st.iq{ type="set", to = where }
 			:tag("query", { xmlns = xmlns_mam, queryid = queryid });
 
-		
+
 		local qstart, qend = tonumber(query_params["start"]), tonumber(query_params["end"]);
 		query_params["start"] = qstart and datetime(qstart);
 		query_params["end"] = qend and datetime(qend);

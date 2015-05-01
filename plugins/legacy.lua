@@ -51,14 +51,14 @@ function verse.plugins.legacy(stream)
 			end
 		end);
 	end
-	
+
 	function handle_opened(attr)
 		if not attr.version then
 			stream:send_iq(verse.iq({type="get"})
 				:tag("query", { xmlns = "jabber:iq:auth" })
 					:tag("username"):text(stream.username),
 				handle_auth_form);
-				
+
 		end
 	end
 	stream:hook("opened", handle_opened);

@@ -1,7 +1,7 @@
 -- Verse XMPP Library
 -- Copyright (C) 2010 Hubert Chathi <hubert@uhoreg.ca>
 -- Copyright (C) 2010 Matthew Wild <mwild1@gmail.com>
--- 
+--
 -- This project is MIT/X11 licensed. Please see the
 -- COPYING file in the source package for more information.
 --
@@ -118,7 +118,7 @@ function verse.plugins.disco(stream)
 			})
 		end
 	})
-	
+
 	function stream:set_identity(identity, node)
 		self.disco.info[node or false].identities = { identity };
 		stream:resend_presence();
@@ -135,7 +135,7 @@ function verse.plugins.disco(stream)
 		self.disco.info[node or false].features[feature] = true;
 		stream:resend_presence();
 	end
-	
+
 	function stream:remove_disco_feature(feature, node)
 		local feature = feature.var or feature;
 		self.disco.info[node or false].features[feature] = nil;
@@ -181,13 +181,13 @@ function verse.plugins.disco(stream)
 		end
 		return cached_disco.features[feature] or false;
 	end
-	
+
 	function stream:get_local_services(category, type)
 		local host_disco = self.disco.cache[self.host];
 		if not(host_disco) or not(host_disco.items) then
 			return nil, "no-cache";
 		end
-		
+
 		local results = {};
 		for _, service in ipairs(host_disco.items) do
 			if self:jid_has_identity(service.jid, category, type) then
@@ -196,7 +196,7 @@ function verse.plugins.disco(stream)
 		end
 		return results;
 	end
-	
+
 	function stream:disco_local_services(callback)
 		self:disco_items(self.host, nil, function (items)
 			if not items then
@@ -209,7 +209,7 @@ function verse.plugins.disco(stream)
 					return callback(items);
 				end
 			end
-			
+
 			for _, item in ipairs(items) do
 				if item.jid then
 					n_items = n_items + 1;
@@ -221,7 +221,7 @@ function verse.plugins.disco(stream)
 			end
 		end);
 	end
-	
+
 	function stream:disco_info(jid, node, callback)
 		local disco_request = verse.iq({ to = jid, type = "get" })
 			:tag("query", { xmlns = xmlns_disco_info, node = node });
@@ -229,9 +229,9 @@ function verse.plugins.disco(stream)
 			if result.attr.type == "error" then
 				return callback(nil, result:get_error());
 			end
-			
+
 			local identities, features = {}, {};
-			
+
 			for tag in result:get_child("query", xmlns_disco_info):childtags() do
 				if tag.name == "identity" then
 					identities[tag.attr.category.."/"..tag.attr.type] = tag.attr.name or true;
@@ -239,7 +239,7 @@ function verse.plugins.disco(stream)
 					features[tag.attr.var] = true;
 				end
 			end
-			
+
 
 			if not self.disco.cache[jid] then
 				self.disco.cache[jid] = { nodes = {} };
@@ -258,7 +258,7 @@ function verse.plugins.disco(stream)
 			return callback(self.disco.cache[jid]);
 		end);
 	end
-	
+
 	function stream:disco_items(jid, node, callback)
 		local disco_request = verse.iq({ to = jid, type = "get" })
 			:tag("query", { xmlns = xmlns_disco_items, node = node });
@@ -276,11 +276,11 @@ function verse.plugins.disco(stream)
 					});
 				end
 			end
-			
+
 			if not self.disco.cache[jid] then
 				self.disco.cache[jid] = { nodes = {} };
 			end
-			
+
 			if node then
 				if not self.disco.cache[jid].nodes[node] then
 					self.disco.cache[jid].nodes[node] = { nodes = {} };
@@ -292,7 +292,7 @@ function verse.plugins.disco(stream)
 			return callback(disco_items);
 		end);
 	end
-	
+
 	stream:hook("iq/"..xmlns_disco_info, function (stanza)
 		local query = stanza.tags[1];
 		if stanza.attr.type == 'get' and query.name == "query" then
@@ -337,7 +337,7 @@ function verse.plugins.disco(stream)
 			return true
 		end
 	end);
-	
+
 	local initial_disco_started;
 	stream:hook("ready", function ()
 		if initial_disco_started then return; end
@@ -358,7 +358,7 @@ function verse.plugins.disco(stream)
 		end);
 		return true;
 	end, 50);
-	
+
 	stream:hook("presence-out", function (presence)
 		if not presence:get_child("c", xmlns_caps) then
 			presence:reset():add_child(stream:caps()):reset();

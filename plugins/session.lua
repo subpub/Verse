@@ -3,7 +3,7 @@ local verse = require "verse";
 local xmlns_session = "urn:ietf:params:xml:ns:xmpp-session";
 
 function verse.plugins.session(stream)
-	
+
 	local function handle_features(features)
 		local session_feature = features:get_child("session", xmlns_session);
 		if session_feature and not session_feature:get_child("optional") then
@@ -25,6 +25,6 @@ function verse.plugins.session(stream)
 		end
 	end
 	stream:hook("stream-features", handle_features);
-	
+
 	return true;
 end
