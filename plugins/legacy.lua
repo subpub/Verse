@@ -4,7 +4,7 @@ local uuid = require "util.uuid".generate;
 local xmlns_auth = "jabber:iq:auth";
 
 function verse.plugins.legacy(stream)
-	function handle_auth_form(result)
+	local function handle_auth_form(result)
 		local query = result:get_child("query", xmlns_auth);
 		if result.attr.type ~= "result" or not query then
 			local type, cond, text = result:get_error();
@@ -52,13 +52,12 @@ function verse.plugins.legacy(stream)
 		end);
 	end
 
-	function handle_opened(attr)
+	local function handle_opened(attr)
 		if not attr.version then
 			stream:send_iq(verse.iq({type="get"})
 				:tag("query", { xmlns = "jabber:iq:auth" })
 					:tag("username"):text(stream.username),
 				handle_auth_form);
-
 		end
 	end
 	stream:hook("opened", handle_opened);
