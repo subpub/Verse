@@ -119,6 +119,7 @@ function stream:connect(connect_host, connect_port)
 	-- Create and initiate connection
 	local conn = socket.tcp()
 	conn:settimeout(0);
+	conn:setoption("keepalive", true);
 	local success, err = conn:connect(connect_host, connect_port);
 	
 	if not success and err ~= "timeout" then
