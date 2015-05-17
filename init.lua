@@ -23,9 +23,9 @@ verse.plugins = {};
 
 function verse.init(...)
 	for i=1,select("#", ...) do
-		local ok = pcall(require, "verse."..select(i,...));
+		local ok, err = pcall(require, "verse."..select(i,...));
 		if not ok then
-			error("Verse connection module not found: verse."..select(i,...));
+			error("Verse connection module not found: verse."..select(i,...)..err);
 		end
 	end
 	return verse;
