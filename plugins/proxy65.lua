@@ -1,6 +1,6 @@
 local events = require "util.events";
 local uuid = require "util.uuid";
-local sha1 = require "util.sha1";
+local sha1 = require "util.hashes".sha1;
 
 local proxy65_mt = {};
 proxy65_mt.__index = proxy65_mt;
@@ -151,7 +151,7 @@ function proxy65_mt:new(target_jid, proxies)
 end
 
 function negotiate_socks5(stream, conn, sid, requester_jid, target_jid)
-	local hash = sha1.sha1(sid..requester_jid..target_jid);
+	local hash = sha1(sid..requester_jid..target_jid);
 	local function suppress_connected()
 		conn:unhook("connected", suppress_connected);
 		return true;

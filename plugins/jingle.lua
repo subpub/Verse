@@ -1,5 +1,4 @@
 local verse = require "verse";
-local sha1 = require "util.sha1".sha1;
 local timer = require "util.timer";
 local uuid_generate = require "util.uuid".generate;
 

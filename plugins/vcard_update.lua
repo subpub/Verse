@@ -2,15 +2,7 @@ local verse = require "verse";
 
 local xmlns_vcard, xmlns_vcard_update = "vcard-temp", "vcard-temp:x:update";
 
--- MMMmmmm.. hacky
-local ok, fun = pcall(function() return require("util.hashes").sha1; end);
-if not ok then
-	ok, fun = pcall(function() return require("util.sha1").sha1; end);
-	if not ok then
-		error("Could not find a sha1()")
-	end
-end
-local sha1 = fun;
+local sha1 = require("util.hashes").sha1;
 
 local ok, fun = pcall(function()
 	local unb64 = require("util.encodings").base64.decode;

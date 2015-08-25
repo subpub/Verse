@@ -8,7 +8,7 @@
 
 local verse = require "verse";
 local b64 = require("mime").b64;
-local sha1 = require("util.sha1").sha1;
+local sha1 = require("util.hashes").sha1;
 
 local xmlns_caps = "http://jabber.org/protocol/caps";
 local xmlns_disco = "http://jabber.org/protocol/disco";
