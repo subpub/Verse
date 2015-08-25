@@ -7,6 +7,6 @@ local mime = require "mime";
 module "encodings"
 
 stringprep = {};
-base64 = { encode = mime.b64, decode = not_impl }; --mime.unb64 is buggy with \0
+base64 = { encode = mime.b64, decode = mime.unb64 };
 
 return _M;
