@@ -31,6 +31,7 @@ Module "util.datetime"		"util/datetime.lua"
 Module "util.json"		"util/json.lua"
 Module "util.xml"		"util/xml.lua"
 Module "util.rsm"       "util/rsm.lua"
+Module "util.random"       "util/random.lua"
 
 Module "util.sasl.scram" "util/sasl/scram.lua"
 Module "util.sasl.plain" "util/sasl/plain.lua"
