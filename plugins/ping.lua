@@ -1,10 +1,11 @@
 local verse = require "verse";
+local gettime = require"socket".gettime;
 
 local xmlns_ping = "urn:xmpp:ping";
 
 function verse.plugins.ping(stream)
 	function stream:ping(jid, callback)
-		local t = socket.gettime();
+		local t = gettime();
 		stream:send_iq(verse.iq{ to = jid, type = "get" }:tag("ping", { xmlns = xmlns_ping }),
 			function (reply)
 				if reply.attr.type == "error" then
@@ -14,7 +15,7 @@ function verse.plugins.ping(stream)
 						return;
 					end
 				end
-				callback(socket.gettime()-t, jid);
+				callback(gettime()-t, jid);
 			end);
 	end
 	stream:hook("iq/"..xmlns_ping, function(stanza)
