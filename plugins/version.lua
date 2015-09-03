@@ -28,8 +28,8 @@ function verse.plugins.version(stream)
 	end);
 
 	function stream:query_version(target_jid, callback)
-		callback = callback or function (version) return stream:event("version/response", version); end
-		stream:send_iq(verse.iq({ type = "get", to = target_jid })
+		callback = callback or function (version) return self:event("version/response", version); end
+		self:send_iq(verse.iq({ type = "get", to = target_jid })
 			:tag("query", { xmlns = xmlns_version }),
 			function (reply)
 				if reply.attr.type == "result" then

@@ -14,7 +14,6 @@ function verse.plugins.session(stream)
 						if reply.attr.type == "result" then
 							stream:event("session-success");
 						elseif reply.attr.type == "error" then
-							local err = reply:child_with_name("error");
 							local type, condition, text = reply:get_error();
 							stream:event("session-failure", { error = condition, text = text, type = type });
 						end

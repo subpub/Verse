@@ -1,4 +1,4 @@
--- local verse = require"verse";
+local verse = require"verse";
 local base64, unbase64 = require "mime".b64, require"mime".unb64;
 local xmlns_sasl = "urn:ietf:params:xml:ns:xmpp-sasl";
 
