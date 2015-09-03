@@ -1,5 +1,5 @@
 local verse = require "verse";
-local now = socket.gettime;
+local now = require"socket".gettime;
 
 local xmlns_sm = "urn:xmpp:sm:2";
 
