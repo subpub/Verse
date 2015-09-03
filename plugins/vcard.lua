@@ -7,8 +7,7 @@ function verse.plugins.vcard(stream)
 	function stream:get_vcard(jid, callback) --jid = nil for self
 		stream:send_iq(verse.iq({to = jid, type="get"})
 			:tag("vCard", {xmlns=xmlns_vcard}), callback and function(stanza)
-				local lCard, xCard;
-				vCard = stanza:get_child("vCard", xmlns_vcard);
+				local vCard = stanza:get_child("vCard", xmlns_vcard);
 				if stanza.attr.type == "result" and vCard then
 					vCard = vcard.from_xep54(vCard)
 					callback(vCard)

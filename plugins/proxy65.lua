@@ -1,4 +1,4 @@
-local events = require "util.events";
+local verse =	require "verse";
 local uuid = require "util.uuid";
 local sha1 = require "util.hashes".sha1;
 
@@ -109,9 +109,9 @@ function proxy65_mt:new(target_jid, proxies)
 		else
 			-- Target connected to streamhost, connect ourselves
 			local streamhost_used = reply.tags[1]:get_child("streamhost-used");
-			if not streamhost_used then
+			-- if not streamhost_used then
 				--FIXME: Emit error
-			end
+			-- end
 			conn.streamhost_jid = streamhost_used.attr.jid;
 			local host, port;
 			for _, proxy in ipairs(proxies or self.proxies) do
@@ -120,24 +120,23 @@ function proxy65_mt:new(target_jid, proxies)
 					break;
 				end
 			end
-			if not (host and port) then
+			-- if not (host and port) then
 				--FIXME: Emit error
-			end
+			-- end
 
 			conn:connect(host, port);
 
 			local function handle_proxy_connected()
 				conn:unhook("connected", handle_proxy_connected);
 				-- Both of us connected, tell proxy to activate connection
-				local request = verse.iq{to = conn.streamhost_jid, type="set"}
+				local activate_request = verse.iq{to = conn.streamhost_jid, type="set"}
 					:tag("query", { xmlns = xmlns_bytestreams, sid = conn.bytestream_sid })
 						:tag("activate"):text(target_jid);
-				self.stream:send_iq(request, function (reply)
-					if reply.attr.type == "result" then
+				self.stream:send_iq(activate_request, function (activated)
+					if activated.attr.type == "result" then
 						-- Connection activated, ready to use
 						conn:event("connected", conn);
-					else
-						--FIXME: Emit error
+					-- else --FIXME: Emit error
 					end
 				end);
 				return true;

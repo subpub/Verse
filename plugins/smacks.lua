@@ -22,7 +22,7 @@ function verse.plugins.smacks(stream)
 	end
 
 	-- Catch outgoing stanzas
-	function outgoing_stanza(stanza)
+	local function outgoing_stanza(stanza)
 		-- NOTE: This will not behave nice if stanzas are serialized before this point
 		if stanza.name and not stanza.attr.xmlns then
 			-- serialize stanzas in order to bypass this on resumption

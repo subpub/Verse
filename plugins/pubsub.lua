@@ -1,12 +1,11 @@
 local verse = require "verse";
-local jid_bare = require "util.jid".bare;
 
 local t_insert = table.insert;
 
 local xmlns_pubsub = "http://jabber.org/protocol/pubsub";
 local xmlns_pubsub_owner = "http://jabber.org/protocol/pubsub#owner";
 local xmlns_pubsub_event = "http://jabber.org/protocol/pubsub#event";
-local xmlns_pubsub_errors = "http://jabber.org/protocol/pubsub#errors";
+-- local xmlns_pubsub_errors = "http://jabber.org/protocol/pubsub#errors";
 
 local pubsub = {};
 local pubsub_mt = { __index = pubsub };
@@ -213,7 +212,7 @@ function pubsub_node:subscribe(jid, options, callback)
 	if options ~= nil then
 		error("Subscription configuration is not implemented yet.");
 	end
-	self.stream:send_iq(pubsub_iq("set", self.service, nil, "subscribe", self.node, jid, id)
+	self.stream:send_iq(pubsub_iq("set", self.service, nil, "subscribe", self.node, jid)
 	, callback);
 end
 

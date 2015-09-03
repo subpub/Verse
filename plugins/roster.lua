@@ -39,7 +39,6 @@ function verse.plugins.roster(stream)
 		local item_table = { };
 		local groups = {};
 		item_table.groups = groups;
-		local jid = xml_item.attr.jid;
 
 		for k, v in pairs(xml_item.attr) do
 			if k ~= "xmlns" then
@@ -75,8 +74,7 @@ function verse.plugins.roster(stream)
 			if reply.attr.type == "result" then
 				callback(true);
 			else
-				local type, condition, text = reply:get_error();
-				callback(nil, { type, condition, text });
+				callback(nil, reply);
 			end
 		end);
 	end
@@ -94,8 +92,7 @@ function verse.plugins.roster(stream)
 				if reply.attr.type == "result" then
 					callback(true);
 				else
-					local type, condition, text = reply:get_error();
-					callback(nil, { type, condition, text });
+					callback(nil, reply);
 				end
 			end);
 	end
@@ -126,8 +123,7 @@ function verse.plugins.roster(stream)
 					end
 					callback(roster);
 				else
-					local type, condition, text = stanza:get_error();
-					callback(nil, { type, condition, text }); --FIXME
+					callback(nil, result);
 				end
 			end);
 	end
