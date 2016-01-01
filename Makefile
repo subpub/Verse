@@ -26,5 +26,6 @@ rsm.lib.lua:
 	wget https://hg.prosody.im/prosody-modules/raw-file/tip/mod_mam/rsm.lib.lua -O rsm.lib.lua
 
 release: $(MISSING_FILES)
+	rm config.unix
 
 .PHONY: all release clean install
