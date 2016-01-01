@@ -8,6 +8,9 @@ all: verse.lua
 verse.lua: $(SOURCE_FILES)
 	./buildscripts/squish
 
+install: verse.lua
+	install -t $(LUA_DIR) -m 644 $^
+
 clean:
 	rm verse.lua
 
@@ -20,4 +23,4 @@ rsm.lib.lua:
 
 release: $(MISSING_FILES)
 
-.PHONY: all release clean
+.PHONY: all release clean install
