@@ -1,5 +1,9 @@
 include config.unix
 
+ifndef SQUISH
+  $(error Please run ./configure first)
+endif
+
 SOURCE_FILES=$(shell $(SQUISH) --list-files)
 MISSING_FILES=$(shell $(SQUISH) --list-missing-files)
 
