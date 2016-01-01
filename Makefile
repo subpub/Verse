@@ -1,5 +1,5 @@
-SQUISH=./buildscripts/squish
-PROSODY_URL=https://hg.prosody.im/0.9/raw-file/tip/
+include config.unix
+
 SOURCE_FILES=$(shell $(SQUISH) --list-files)
 MISSING_FILES=$(shell $(SQUISH) --list-missing-files)
 
