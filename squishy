@@ -8,7 +8,7 @@ Module "lib.adhoc"              "libs/adhoc.lib.lua"
 
 -- Prosody libraries
 if not GetOption("prosody") then
-	AutoFetchURL "http://hg.prosody.im/0.9/raw-file/tip/?"
+	AutoFetchURL "http://hg.prosody.im/0.9/raw-file/0.9.9/?"
 else
 	AutoFetchURL(GetOption("prosody").."/?")
 end
