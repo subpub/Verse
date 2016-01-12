@@ -1,0 +1,58 @@
+# Verse
+
+Verse is an XMPP library for Lua. It allows you to connect to an XMPP server, as
+either a client or a component. It also supports connecting over HTTP (BOSH).
+
+Currently Verse supports Lua 5.1 and LuaJIT, though support for later versions of
+Lua is planned (contributions welcome).
+
+Verse shares some of its underlying code with the Prosody XMPP server. To avoid
+duplication, the shared files are not part of the Verse project, but are available
+in Prosody's source repository, and are bundled with official Verse releases.
+
+## Features
+
+  - Standard XMPP, including SRV and TLS support
+  - Roster management
+  - Service discovery
+  - Stream management (XEP-0198)
+  - MUC
+  - Ad-hoc commands
+  - Jingle (peer-to-peer TCP and file transfer)
+  - File transfer proxies
+  - Message receipts
+  - Pubsub
+  - Message archive management
+  - PEP
+  - Many more...
+
+## Dependencies
+
+Verse requires:
+
+  - LuaSocket
+  - LuaExpat
+  - LuaSec
+
+All these libraries are available for Windows, OS X, many popular Linux distributions, and
+also via LuaRocks.
+
+## Building
+
+To generate a self-contained verse.lua:
+
+	./configure
+	make
+
+The configure script will take a guess at the best place to install verse.lua. To install:
+
+	make install # (may require root, e.g. sudo)
+
+If you fetched Verse from its source repository, some files will automatically be fetched
+from Prosody's repository the first time you run 'make'. Official Verse releases already
+include these files.
+
+## Documentation
+
+See doc/ for a number of example scripts.
+
