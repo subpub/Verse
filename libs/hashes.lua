@@ -35,13 +35,13 @@ else
 	local t_concat = table.concat;
 
 	local function hmac_sha1(key, message, hexres)
-		if #key > 20 then
+		if #key > 64 then
 			key = sha1(key);
-		elseif #key < 20 then
-			key = key .. s_rep("\0", 20 - #key);
+		elseif #key < 64 then
+			key = key .. s_rep("\0", 64 - #key);
 		end
 		local o_key_pad, i_key_pad = {}, {}
-		for i = 1, 20 do
+		for i = 1, 64 do
 			local b = s_byte(key, i)
 			o_key_pad[i] = s_char(bxor(b, 0x5c));
 			i_key_pad[i] = s_char(bxor(b, 0x36));
