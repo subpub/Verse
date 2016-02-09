@@ -59,7 +59,7 @@ function stream:connect_component(jid, pass)
 	function self.data(conn, data)
 		local ok, err = self.stream:feed(data);
 		if ok then return; end
-		stream:debug("debug", "Received invalid XML (%s) %d bytes: %s", tostring(err), #data, data:sub(1, 300):gsub("[\r\n]+", " "));
+		stream:debug("Received invalid XML (%s) %d bytes: %s", tostring(err), #data, data:sub(1, 300):gsub("[\r\n]+", " "));
 		stream:close("xml-not-well-formed");
 	end
 	
